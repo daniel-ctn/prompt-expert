@@ -3,7 +3,9 @@ import { getModel } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { trackUsage } from "@/lib/track-usage";
+import { getUserApiKey } from "@/lib/actions/api-keys";
 import { SYSTEM_PROMPT_ANALYZER } from "@/config/prompts";
+import type { AIProvider } from "@/types";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -22,10 +24,14 @@ export async function POST(req: Request) {
     return Response.json({ error: "Prompt is required" }, { status: 400 });
   }
 
+  const userKey = await getUserApiKey(session.user.id, "openai");
+  const userKeys: Partial<Record<AIProvider, string>> = {};
+  if (userKey) userKeys.openai = userKey;
+
   trackUsage(session.user.id, "analyze", "gpt-4.1-mini");
 
   const { text } = await generateText({
-    model: getModel("gpt-4.1-mini"),
+    model: getModel("gpt-4.1-mini", userKeys),
     system: SYSTEM_PROMPT_ANALYZER,
     prompt: `Analyze this prompt:\n\n${prompt}`,
     temperature: 0.3,

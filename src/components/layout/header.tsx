@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Sparkles, LogOut, LayoutDashboard, Menu } from "lucide-react";
+import { Sparkles, LogOut, LayoutDashboard, Menu, FileText, Settings, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -99,6 +99,18 @@ export function Header() {
                 <DropdownMenuItem render={<Link href="/prompts" />}>
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   My Prompts
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/system-prompts" />}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  System Prompts
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/history" />}>
+                  <History className="mr-2 h-4 w-4" />
+                  History
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/settings" />}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>

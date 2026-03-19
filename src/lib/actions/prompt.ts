@@ -6,11 +6,13 @@ import { getDb } from "@/lib/db";
 import {
   prompts,
   promptVersions,
+  promptEvents,
   users,
   favorites,
   collections,
   collectionPrompts,
 } from "@/lib/db/schema";
+import { trackPromptEvent } from "@/lib/track-event";
 import { auth } from "@/lib/auth";
 import {
   createPromptSchema,
@@ -288,6 +290,7 @@ export async function forkPrompt(id: string) {
     })
     .returning();
 
+  trackPromptEvent(id, "fork");
   revalidatePath("/prompts");
   return forked;
 }
@@ -468,4 +471,40 @@ export async function deleteCollection(id: string) {
     .where(and(eq(collections.id, id), eq(collections.userId, userId)));
 
   revalidatePath("/prompts");
+}
+
+export async function getPromptAnalytics(promptId: string) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const prompt = await db.query.prompts.findFirst({
+    where: and(eq(prompts.id, promptId), eq(prompts.userId, userId)),
+  });
+  if (!prompt) throw new Error("Prompt not found");
+
+  const events = await db
+    .select({
+      event: promptEvents.event,
+      count: sql<number>`count(*)`,
+    })
+    .from(promptEvents)
+    .where(eq(promptEvents.promptId, promptId))
+    .groupBy(promptEvents.event);
+
+  const favoriteCount = await getFavoriteCount(promptId);
+
+  const stats: Record<string, number> = {
+    copy: 0,
+    fork: 0,
+    share: 0,
+    test: 0,
+    optimize: 0,
+    favorites: favoriteCount,
+  };
+
+  for (const row of events) {
+    stats[row.event] = Number(row.count);
+  }
+
+  return stats;
 }

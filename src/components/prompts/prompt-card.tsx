@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deletePrompt, duplicatePrompt } from "@/lib/actions/prompt";
+import { trackPromptEvent } from "@/lib/track-event";
 import { toast } from "sonner";
 
 interface PromptCardProps {
@@ -51,6 +52,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
+    trackPromptEvent(prompt.id, "copy");
     toast.success("Prompt copied to clipboard");
   };
 
@@ -109,6 +111,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                     await navigator.clipboard.writeText(
                       `${window.location.origin}/share/${prompt.id}`,
                     );
+                    trackPromptEvent(prompt.id, "share");
                     toast.success("Share link copied");
                   }}
                 >

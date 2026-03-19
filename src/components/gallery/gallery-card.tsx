@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { forkPrompt, toggleFavorite } from "@/lib/actions/prompt";
+import { trackPromptEvent } from "@/lib/track-event";
 import { toast } from "sonner";
 
 interface GalleryCardProps {
@@ -36,6 +37,7 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
+    trackPromptEvent(prompt.id, "copy");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast.success("Prompt copied to clipboard");

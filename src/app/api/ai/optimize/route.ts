@@ -1,10 +1,12 @@
 import { streamText } from "ai";
-import { getModel } from "@/lib/ai";
+import { getModel, getProviderForModel } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { trackUsage } from "@/lib/track-usage";
+import { getUserApiKey } from "@/lib/actions/api-keys";
+import { savePromptHistory } from "@/lib/actions/prompt-history";
 import { SYSTEM_PROMPT_OPTIMIZER } from "@/config/prompts";
-import type { AIModel } from "@/types";
+import type { AIModel, AIProvider } from "@/types";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -24,13 +26,27 @@ export async function POST(req: Request) {
     return Response.json({ error: "Prompt is required" }, { status: 400 });
   }
 
-  trackUsage(session.user.id, "optimize", model);
+  const provider = getProviderForModel(model);
+  const userKey = await getUserApiKey(session.user.id, provider);
+  const userKeys: Partial<Record<AIProvider, string>> = {};
+  if (userKey) userKeys[provider] = userKey;
+
+  const userId = session.user.id;
+  trackUsage(userId, "optimize", model);
 
   const result = streamText({
-    model: getModel(model),
+    model: getModel(model, userKeys),
     system: SYSTEM_PROMPT_OPTIMIZER,
     prompt: `Optimize this prompt:\n\n${prompt}`,
     temperature: 0.7,
+    onFinish: ({ text }) => {
+      savePromptHistory(userId, {
+        promptContent: prompt,
+        output: text,
+        model,
+        endpoint: "optimize",
+      });
+    },
   });
 
   return result.toTextStreamResponse();

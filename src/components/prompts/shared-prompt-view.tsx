@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { forkPrompt } from "@/lib/actions/prompt";
+import { trackPromptEvent } from "@/lib/track-event";
 import { toast } from "sonner";
 
 interface SharedPromptViewProps {
@@ -38,12 +39,14 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
+    trackPromptEvent(prompt.id, "copy");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShareLink = async () => {
     await navigator.clipboard.writeText(window.location.href);
+    trackPromptEvent(prompt.id, "share");
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 2000);
     toast.success("Link copied to clipboard");

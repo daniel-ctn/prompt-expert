@@ -1,9 +1,11 @@
 import { streamText } from "ai";
-import { getModel } from "@/lib/ai";
+import { getModel, getProviderForModel } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { trackUsage } from "@/lib/track-usage";
-import type { AIModel } from "@/types";
+import { getUserApiKey } from "@/lib/actions/api-keys";
+import { savePromptHistory } from "@/lib/actions/prompt-history";
+import type { AIModel, AIProvider } from "@/types";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -30,12 +32,27 @@ export async function POST(req: Request) {
     return Response.json({ error: "Prompt is required" }, { status: 400 });
   }
 
+  const provider = getProviderForModel(model);
+  const userKey = await getUserApiKey(session.user.id, provider);
+  const userKeys: Partial<Record<AIProvider, string>> = {};
+  if (userKey) userKeys[provider] = userKey;
+
   trackUsage(session.user.id, "test", model);
 
+  const userId = session.user.id;
+
   const result = streamText({
-    model: getModel(model),
+    model: getModel(model, userKeys),
     prompt,
     temperature,
+    onFinish: ({ text }) => {
+      savePromptHistory(userId, {
+        promptContent: prompt,
+        output: text,
+        model,
+        endpoint: "test",
+      });
+    },
   });
 
   return result.toTextStreamResponse();

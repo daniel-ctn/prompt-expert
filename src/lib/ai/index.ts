@@ -3,12 +3,6 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import type { AIModel, AIProvider } from "@/types";
 
-const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-});
-
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
   "gpt-4.1": { provider: "openai", modelId: "gpt-4.1" },
   "gpt-4.1-mini": { provider: "openai", modelId: "gpt-4.1-mini" },
@@ -18,16 +12,37 @@ const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
   "gemini-2.5-flash": { provider: "google", modelId: "gemini-2.5-flash" },
 };
 
-export function getModel(model: AIModel) {
-  const config = MODEL_MAP[model];
-  switch (config.provider) {
+function getProviderInstance(
+  provider: AIProvider,
+  userKeys?: Partial<Record<AIProvider, string>>,
+) {
+  switch (provider) {
     case "openai":
-      return openai(config.modelId);
+      return createOpenAI({
+        apiKey: userKeys?.openai ?? process.env.OPENAI_API_KEY,
+      });
     case "anthropic":
-      return anthropic(config.modelId);
+      return createAnthropic({
+        apiKey: userKeys?.anthropic ?? process.env.ANTHROPIC_API_KEY,
+      });
     case "google":
-      return google(config.modelId);
+      return createGoogleGenerativeAI({
+        apiKey: userKeys?.google ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      });
   }
+}
+
+export function getModel(
+  model: AIModel,
+  userKeys?: Partial<Record<AIProvider, string>>,
+) {
+  const config = MODEL_MAP[model];
+  const provider = getProviderInstance(config.provider, userKeys);
+  return provider(config.modelId);
+}
+
+export function getProviderForModel(model: AIModel): AIProvider {
+  return MODEL_MAP[model].provider;
 }
 
 export function assemblePrompt({

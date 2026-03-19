@@ -95,16 +95,16 @@
 
 ---
 
-## Phase 6 — Premium/Advanced Features
+## Phase 6 — Premium/Advanced Features ✅
 
 
-| #   | Task                     | Details                                                                   |
-| --- | ------------------------ | ------------------------------------------------------------------------- |
-| 6.1 | Prompt analytics         | Track usage stats — copies, uses, shares.                                 |
-| 6.2 | Custom system prompts    | Reusable system prompt fragments.                                         |
-| 6.3 | API key management       | Users bring their own API keys instead of relying on server keys.         |
-| 6.4 | Webhook/API access       | Expose user prompts via a personal API endpoint for external integration. |
-| 6.5 | Prompt history/usage log | Log when prompts are tested, with outputs, for learning and iteration.    |
+| #   | Task                     | Status | Details                                                                                     |
+| --- | ------------------------ | ------ | ------------------------------------------------------------------------------------------- |
+| 6.1 | Prompt analytics         | ✅     | `prompt_events` table tracking copy/fork/share/test/optimize + `getPromptAnalytics` action. |
+| 6.2 | Custom system prompts    | ✅     | `system_prompts` table + `/system-prompts` page with CRUD management UI.                    |
+| 6.3 | API key management       | ✅     | `user_api_keys` table, AES-256-GCM encryption, `/settings` page, user keys in AI routes.   |
+| 6.4 | Webhook/API access       | ✅     | `api_tokens` table, SHA-256 hashed tokens, `GET /api/v1/prompts` REST endpoint.             |
+| 6.5 | Prompt history/usage log | ✅     | `prompt_history` table, `onFinish` callbacks on test/optimize, `/history` page with viewer.  |
 
 
 ---
