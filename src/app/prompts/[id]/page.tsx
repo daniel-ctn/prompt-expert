@@ -4,7 +4,8 @@ import { getPromptById, getPromptVersions } from "@/lib/actions/prompt";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
 
 export const metadata: Metadata = {
-  title: "Edit Prompt - Prompt Expert",
+  title: "Edit Prompt",
+  description: "Edit your prompt content, settings, tags, and version history.",
 };
 
 export default async function PromptDetailPage({

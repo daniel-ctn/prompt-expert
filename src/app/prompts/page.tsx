@@ -8,8 +8,8 @@ import { PromptList } from "@/components/prompts/prompt-list";
 import { ExportImport } from "@/components/prompts/export-import";
 
 export const metadata: Metadata = {
-  title: "My Prompts - Prompt Expert",
-  description: "Manage your saved prompts.",
+  title: "My Prompts",
+  description: "Manage your saved prompts, collections, and prompt versions.",
 };
 
 export default async function PromptsPage({

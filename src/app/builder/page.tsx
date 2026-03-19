@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { PromptBuilder } from "@/components/prompt-builder";
+import dynamic from "next/dynamic";
+
+const PromptBuilder = dynamic(
+  () => import("@/components/prompt-builder").then((m) => m.PromptBuilder),
+  { ssr: false },
+);
 
 export const metadata: Metadata = {
-  title: "Prompt Builder - Prompt Expert",
-  description: "Build and optimize AI prompts with fine-tuned controls.",
+  title: "Prompt Builder",
+  description:
+    "Build and optimize AI prompts with fine-tuned controls for model, tone, format, and constraints.",
 };
 
 export default function BuilderPage() {

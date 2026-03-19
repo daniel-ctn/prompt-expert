@@ -17,9 +17,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prompt Expert - Build Better AI Prompts",
+  title: {
+    default: "Prompt Expert - Build Better AI Prompts",
+    template: "%s | Prompt Expert",
+  },
   description:
     "Create efficient, optimized prompts for any AI model. Adjust tone, format, constraints, and more with an intuitive builder.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://prompt-expert.vercel.app",
+  ),
+  openGraph: {
+    title: "Prompt Expert - Build Better AI Prompts",
+    description:
+      "Create efficient, optimized prompts for any AI model with an intuitive builder.",
+    siteName: "Prompt Expert",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prompt Expert - Build Better AI Prompts",
+    description:
+      "Create efficient, optimized prompts for any AI model with an intuitive builder.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
-import { PromptChainBuilder } from "@/components/prompt-chain/chain-builder";
+import dynamic from "next/dynamic";
+
+const PromptChainBuilder = dynamic(
+  () =>
+    import("@/components/prompt-chain/chain-builder").then(
+      (m) => m.PromptChainBuilder,
+    ),
+  { ssr: false },
+);
 
 export const metadata: Metadata = {
-  title: "Prompt Chain - Prompt Expert",
-  description: "Build multi-step prompt workflows where outputs feed into the next step.",
+  title: "Prompt Chain",
+  description:
+    "Build multi-step prompt workflows where each step's output feeds into the next.",
 };
 
 export default function ChainPage() {

@@ -1,7 +1,7 @@
 "use server";
 
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { getDb } from "@/lib/db";
 import {
   prompts,
@@ -187,17 +187,12 @@ export async function getUserPrompts({
   };
 }
 
-export async function getPublicPrompts({
-  search,
-  category,
-  page = 1,
-  pageSize = 12,
-}: {
-  search?: string;
-  category?: string;
-  page?: number;
-  pageSize?: number;
-} = {}) {
+async function fetchPublicPrompts(
+  search: string,
+  category: string,
+  page: number,
+  pageSize: number,
+) {
   const db = getDb();
 
   const conditions = [eq(prompts.isPublic, true)];
@@ -246,6 +241,25 @@ export async function getPublicPrompts({
     pageSize,
     totalPages: Math.ceil(Number(countResult[0].count) / pageSize),
   };
+}
+
+export async function getPublicPrompts({
+  search = "",
+  category = "",
+  page = 1,
+  pageSize = 12,
+}: {
+  search?: string;
+  category?: string;
+  page?: number;
+  pageSize?: number;
+} = {}) {
+  const cached = unstable_cache(
+    () => fetchPublicPrompts(search, category, page, pageSize),
+    ["public-prompts", search, category, String(page)],
+    { revalidate: 60 },
+  );
+  return cached();
 }
 
 export async function forkPrompt(id: string) {

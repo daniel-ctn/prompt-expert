@@ -4,8 +4,9 @@ import { GalleryFilters } from "@/components/gallery/gallery-filters";
 import { GalleryList } from "@/components/gallery/gallery-list";
 
 export const metadata: Metadata = {
-  title: "Prompt Gallery - Prompt Expert",
-  description: "Discover and fork public prompts from the community.",
+  title: "Prompt Gallery",
+  description:
+    "Discover, fork, and favorite community prompts from the public gallery.",
 };
 
 export default async function GalleryPage({

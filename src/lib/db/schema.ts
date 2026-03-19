@@ -121,6 +121,16 @@ export const favorites = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.promptId] })],
 );
 
+export const apiUsage = pgTable("api_usage", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  endpoint: text("endpoint").notNull(),
+  model: text("model").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
 export const promptVersions = pgTable("prompt_versions", {
   id: uuid("id").defaultRandom().primaryKey(),
   promptId: uuid("prompt_id")
