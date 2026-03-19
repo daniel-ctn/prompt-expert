@@ -29,6 +29,12 @@ function NavLinks({ className }: { className?: string }) {
         Builder
       </Link>
       <Link
+        href="/chain"
+        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      >
+        Chain
+      </Link>
+      <Link
         href="/prompts"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >

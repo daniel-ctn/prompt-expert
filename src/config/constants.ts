@@ -46,6 +46,15 @@ export const OUTPUT_FORMATS: { value: OutputFormat; label: string }[] = [
   { value: "table", label: "Table" },
 ];
 
+export const MODEL_RECOMMENDATIONS: Record<PromptCategory, { model: AIModel; reason: string }> = {
+  instruction: { model: "gpt-4.1-mini", reason: "Fast and precise for step-by-step instructions" },
+  creative: { model: "claude-sonnet-4-6", reason: "Excellent at creative writing and nuanced language" },
+  code: { model: "claude-sonnet-4-6", reason: "Top-tier code generation and understanding" },
+  analysis: { model: "gemini-2.5-pro", reason: "Strong analytical reasoning with large context" },
+  qa: { model: "gpt-4.1-mini", reason: "Fast, accurate responses for Q&A tasks" },
+  conversation: { model: "claude-sonnet-4-6", reason: "Natural, empathetic conversational tone" },
+};
+
 export const DEFAULT_PROMPT_SETTINGS = {
   model: "gpt-4.1-mini" as AIModel,
   category: "instruction" as PromptCategory,

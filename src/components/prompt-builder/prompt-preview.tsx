@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
-import { Copy, RotateCcw, Sparkles, Check } from "lucide-react";
+import { Copy, Sparkles, Check, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,6 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { assemblePrompt } from "@/lib/ai";
 import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { ModelComparison } from "./model-comparison";
+import { PromptAnalysis } from "./prompt-analysis";
+import {
+  VariableFiller,
+  extractVariables,
+  resolveVariables,
+} from "./variable-filler";
 
 export function PromptPreview() {
   const {
@@ -24,7 +31,9 @@ export function PromptPreview() {
     setIsOptimizing,
   } = usePromptBuilderStore();
 
-  const [copied, setCopied] = useState<"assembled" | "optimized" | null>(null);
+  const [copied, setCopied] = useState<"assembled" | "optimized" | "test" | null>(null);
+  const [activeTab, setActiveTab] = useState("assembled");
+  const [variableValues, setVariableValues] = useState<Record<string, string>>({});
 
   const assembledPrompt = useMemo(
     () =>
@@ -42,8 +51,9 @@ export function PromptPreview() {
     [role, context, task, constraints, settings],
   );
 
-  const { complete, isLoading } = useCompletion({
+  const { complete: completeOptimize, isLoading: isOptimizeLoading } = useCompletion({
     api: "/api/ai/optimize",
+    id: "optimize",
     onFinish: (_prompt, completion) => {
       setOptimizedPrompt(completion);
       setIsOptimizing(false);
@@ -53,17 +63,51 @@ export function PromptPreview() {
     },
   });
 
+  const {
+    completion: testOutput,
+    complete: completeTest,
+    isLoading: isTesting,
+  } = useCompletion({
+    api: "/api/ai/test",
+    id: "test",
+  });
+
   const handleOptimize = useCallback(() => {
     if (!assembledPrompt.trim()) return;
     setIsOptimizing(true);
     setOptimizedPrompt("");
-    complete(assembledPrompt, {
+    completeOptimize(assembledPrompt, {
       body: { prompt: assembledPrompt, model: settings.model },
     });
-  }, [assembledPrompt, settings.model, complete, setIsOptimizing, setOptimizedPrompt]);
+  }, [assembledPrompt, settings.model, completeOptimize, setIsOptimizing, setOptimizedPrompt]);
+
+  const currentPrompt = optimizedPrompt || assembledPrompt;
+  const variables = useMemo(
+    () => extractVariables(currentPrompt),
+    [currentPrompt],
+  );
+  const resolvedPrompt = useMemo(
+    () =>
+      variables.length > 0
+        ? resolveVariables(currentPrompt, variableValues)
+        : currentPrompt,
+    [currentPrompt, variables, variableValues],
+  );
+
+  const handleTest = useCallback(() => {
+    if (!resolvedPrompt.trim()) return;
+    setActiveTab("test");
+    completeTest(resolvedPrompt, {
+      body: {
+        prompt: resolvedPrompt,
+        model: settings.model,
+        temperature: settings.temperature,
+      },
+    });
+  }, [resolvedPrompt, settings.model, settings.temperature, completeTest]);
 
   const handleCopy = useCallback(
-    async (text: string, type: "assembled" | "optimized") => {
+    async (text: string, type: "assembled" | "optimized" | "test") => {
       await navigator.clipboard.writeText(text);
       setCopied(type);
       setTimeout(() => setCopied(null), 2000);
@@ -77,14 +121,14 @@ export function PromptPreview() {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
-        if (hasContent && !isLoading && !isOptimizing) {
+        if (hasContent && !isOptimizeLoading && !isOptimizing) {
           handleOptimize();
         }
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [hasContent, isLoading, isOptimizing, handleOptimize]);
+  }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize]);
 
   return (
     <Card className="flex h-full flex-col">
@@ -92,15 +136,32 @@ export function PromptPreview() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Prompt Preview</CardTitle>
           <div className="flex items-center gap-2">
+            <ModelComparison
+              prompt={resolvedPrompt}
+              disabled={!hasContent}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTest}
+              disabled={!hasContent || isTesting}
+            >
+              {isTesting ? (
+                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+              ) : (
+                <Play className="mr-1.5 h-4 w-4" />
+              )}
+              {isTesting ? "Running..." : "Test"}
+            </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={handleOptimize}
-              disabled={!hasContent || isLoading || isOptimizing}
+              disabled={!hasContent || isOptimizeLoading || isOptimizing}
             >
               <Sparkles className="mr-1.5 h-4 w-4" />
-              {isLoading ? "Optimizing..." : "Optimize"}
-              {!isLoading && (
+              {isOptimizeLoading ? "Optimizing..." : "Optimize"}
+              {!isOptimizeLoading && (
                 <kbd className="ml-1.5 hidden rounded border bg-muted px-1 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-block">
                   ⌘↵
                 </kbd>
@@ -118,11 +179,18 @@ export function PromptPreview() {
             </p>
           </div>
         ) : (
-          <Tabs defaultValue="assembled" className="flex h-full flex-col">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="flex h-full flex-col"
+          >
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="assembled">Assembled</TabsTrigger>
               <TabsTrigger value="optimized" disabled={!optimizedPrompt}>
                 Optimized
+              </TabsTrigger>
+              <TabsTrigger value="test" disabled={!testOutput && !isTesting}>
+                Test Output
               </TabsTrigger>
             </TabsList>
             <TabsContent value="assembled" className="flex-1">
@@ -171,7 +239,53 @@ export function PromptPreview() {
                 </div>
               </div>
             </TabsContent>
+            <TabsContent value="test" className="flex-1">
+              <div className="relative">
+                <ScrollArea className="h-[400px] rounded-md border p-4">
+                  {isTesting && !testOutput && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating response...
+                    </div>
+                  )}
+                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                    {testOutput}
+                  </pre>
+                </ScrollArea>
+                {testOutput && (
+                  <div className="absolute right-2 top-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleCopy(testOutput, "test")}
+                    >
+                      {copied === "test" ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
           </Tabs>
+          {variables.length > 0 && (
+            <>
+              <Separator className="my-4" />
+              <VariableFiller
+                variables={variables}
+                values={variableValues}
+                onChange={setVariableValues}
+              />
+            </>
+          )}
+          <Separator className="my-4" />
+          <PromptAnalysis
+            prompt={resolvedPrompt}
+            disabled={!hasContent}
+          />
         )}
       </CardContent>
     </Card>
