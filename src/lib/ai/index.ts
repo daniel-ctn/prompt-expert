@@ -10,12 +10,12 @@ const google = createGoogleGenerativeAI({
 });
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
-  "gpt-4o": { provider: "openai", modelId: "gpt-4o" },
-  "gpt-4o-mini": { provider: "openai", modelId: "gpt-4o-mini" },
-  "claude-3.5-sonnet": { provider: "anthropic", modelId: "claude-3-5-sonnet-latest" },
-  "claude-3-haiku": { provider: "anthropic", modelId: "claude-3-haiku-20240307" },
-  "gemini-2.0-flash": { provider: "google", modelId: "gemini-2.0-flash" },
-  "gemini-1.5-pro": { provider: "google", modelId: "gemini-1.5-pro" },
+  "gpt-4.1": { provider: "openai", modelId: "gpt-4.1" },
+  "gpt-4.1-mini": { provider: "openai", modelId: "gpt-4.1-mini" },
+  "claude-opus-4-6": { provider: "anthropic", modelId: "claude-opus-4-6" },
+  "claude-sonnet-4-6": { provider: "anthropic", modelId: "claude-sonnet-4-6" },
+  "gemini-2.5-pro": { provider: "google", modelId: "gemini-2.5-pro" },
+  "gemini-2.5-flash": { provider: "google", modelId: "gemini-2.5-flash" },
 };
 
 export function getModel(model: AIModel) {

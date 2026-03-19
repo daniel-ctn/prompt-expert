@@ -23,12 +23,12 @@ export type OutputFormat =
   | "table";
 
 export type AIModel =
-  | "gpt-4o"
-  | "gpt-4o-mini"
-  | "claude-3.5-sonnet"
-  | "claude-3-haiku"
-  | "gemini-2.0-flash"
-  | "gemini-1.5-pro";
+  | "gpt-4.1"
+  | "gpt-4.1-mini"
+  | "claude-opus-4-6"
+  | "claude-sonnet-4-6"
+  | "gemini-2.5-pro"
+  | "gemini-2.5-flash";
 
 export type AIProvider = "openai" | "anthropic" | "google";
 

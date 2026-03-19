@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +16,10 @@ import { PROMPT_CATEGORIES } from "@/config/constants";
 export function PromptFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("search") ?? "",
+  );
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -31,6 +35,16 @@ export function PromptFilters() {
     [router, searchParams],
   );
 
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      updateParam("search", searchValue);
+    }, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [searchValue, updateParam]);
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <div className="relative flex-1">
@@ -38,8 +52,8 @@ export function PromptFilters() {
         <Input
           placeholder="Search prompts..."
           className="pl-9"
-          defaultValue={searchParams.get("search") ?? ""}
-          onChange={(e) => updateParam("search", e.target.value)}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
       <Select

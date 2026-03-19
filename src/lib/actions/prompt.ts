@@ -153,9 +153,7 @@ export async function getUserPrompts({
   }
 
   if (tags && tags.length > 0) {
-    conditions.push(
-      sql`${prompts.tags} && ${sql.raw(`ARRAY[${tags.map((t) => `'${t}'`).join(",")}]::text[]`)}`,
-    );
+    conditions.push(sql`${prompts.tags} && ${tags}::text[]`);
   }
 
   const offset = (page - 1) * pageSize;

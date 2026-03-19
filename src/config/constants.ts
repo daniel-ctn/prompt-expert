@@ -11,12 +11,12 @@ export const APP_DESCRIPTION =
   "Create efficient, optimized prompts for any AI model";
 
 export const AI_MODELS: { value: AIModel; label: string; provider: AIProvider }[] = [
-  { value: "gpt-4o", label: "GPT-4o", provider: "openai" },
-  { value: "gpt-4o-mini", label: "GPT-4o Mini", provider: "openai" },
-  { value: "claude-3.5-sonnet", label: "Claude 3.5 Sonnet", provider: "anthropic" },
-  { value: "claude-3-haiku", label: "Claude 3 Haiku", provider: "anthropic" },
-  { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash", provider: "google" },
-  { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro", provider: "google" },
+  { value: "gpt-4.1", label: "GPT-4.1", provider: "openai" },
+  { value: "gpt-4.1-mini", label: "GPT-4.1 Mini", provider: "openai" },
+  { value: "claude-opus-4-6", label: "Claude Opus 4.6", provider: "anthropic" },
+  { value: "claude-sonnet-4-6", label: "Claude Sonnet 4.6", provider: "anthropic" },
+  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro", provider: "google" },
+  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash", provider: "google" },
 ];
 
 export const PROMPT_CATEGORIES: { value: PromptCategory; label: string; description: string }[] = [
@@ -47,7 +47,7 @@ export const OUTPUT_FORMATS: { value: OutputFormat; label: string }[] = [
 ];
 
 export const DEFAULT_PROMPT_SETTINGS = {
-  model: "gpt-4o" as AIModel,
+  model: "gpt-4.1-mini" as AIModel,
   category: "instruction" as PromptCategory,
   tone: "formal" as ToneStyle,
   outputFormat: "text" as OutputFormat,

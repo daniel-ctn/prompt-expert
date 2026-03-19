@@ -1,6 +1,5 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { auth } from "@/lib/auth";
 import { getPromptById, getPromptVersions } from "@/lib/actions/prompt";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
 
@@ -13,11 +12,6 @@ export default async function PromptDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/login");
-  }
-
   const { id } = await params;
   const prompt = await getPromptById(id);
   if (!prompt) {

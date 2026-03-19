@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
 import { getUserPrompts } from "@/lib/actions/prompt";
 import { PromptFilters } from "@/components/prompts/prompt-filters";
 import { PromptList } from "@/components/prompts/prompt-list";
@@ -18,11 +16,6 @@ export default async function PromptsPage({
 }: {
   searchParams: Promise<{ search?: string; category?: string; page?: string }>;
 }) {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/login");
-  }
-
   const params = await searchParams;
   const { prompts, total } = await getUserPrompts({
     search: params.search,
