@@ -17,10 +17,11 @@ export default async function PromptsPage({
   searchParams: Promise<{ search?: string; category?: string; page?: string }>;
 }) {
   const params = await searchParams;
-  const { prompts, total } = await getUserPrompts({
+  const currentPage = params.page ? parseInt(params.page) : 1;
+  const { prompts, total, totalPages } = await getUserPrompts({
     search: params.search,
     category: params.category,
-    page: params.page ? parseInt(params.page) : 1,
+    page: currentPage,
   });
 
   return (
@@ -40,7 +41,13 @@ export default async function PromptsPage({
 
       <div className="space-y-6">
         <PromptFilters />
-        <PromptList prompts={prompts} total={total} />
+        <PromptList
+          prompts={prompts}
+          total={total}
+          page={currentPage}
+          totalPages={totalPages}
+          hasFilters={!!(params.search || params.category)}
+        />
       </div>
     </div>
   );

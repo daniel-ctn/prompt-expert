@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { Copy, RotateCcw, Sparkles, Check } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -74,6 +73,19 @@ export function PromptPreview() {
 
   const hasContent = assembledPrompt.trim().length > 0;
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (hasContent && !isLoading && !isOptimizing) {
+          handleOptimize();
+        }
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [hasContent, isLoading, isOptimizing, handleOptimize]);
+
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="pb-3">
@@ -87,7 +99,12 @@ export function PromptPreview() {
               disabled={!hasContent || isLoading || isOptimizing}
             >
               <Sparkles className="mr-1.5 h-4 w-4" />
-              {isLoading ? "Optimizing..." : "Optimize with AI"}
+              {isLoading ? "Optimizing..." : "Optimize"}
+              {!isLoading && (
+                <kbd className="ml-1.5 hidden rounded border bg-muted px-1 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-block">
+                  ⌘↵
+                </kbd>
+              )}
             </Button>
           </div>
         </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Copy, Check, Save } from "lucide-react";
+import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +17,51 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { updatePrompt } from "@/lib/actions/prompt";
 import { toast } from "sonner";
+
+function computeDiff(oldText: string, newText: string) {
+  const oldLines = oldText.split("\n");
+  const newLines = newText.split("\n");
+  const result: { type: "same" | "added" | "removed"; text: string }[] = [];
+
+  const maxLen = Math.max(oldLines.length, newLines.length);
+  let oi = 0;
+  let ni = 0;
+
+  while (oi < oldLines.length || ni < newLines.length) {
+    if (oi < oldLines.length && ni < newLines.length) {
+      if (oldLines[oi] === newLines[ni]) {
+        result.push({ type: "same", text: oldLines[oi] });
+        oi++;
+        ni++;
+      } else {
+        result.push({ type: "removed", text: oldLines[oi] });
+        oi++;
+        if (ni < newLines.length) {
+          result.push({ type: "added", text: newLines[ni] });
+          ni++;
+        }
+      }
+    } else if (oi < oldLines.length) {
+      result.push({ type: "removed", text: oldLines[oi] });
+      oi++;
+    } else {
+      result.push({ type: "added", text: newLines[ni] });
+      ni++;
+    }
+  }
+
+  return result;
+}
 
 interface PromptDetailProps {
   prompt: {
@@ -49,8 +91,18 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
   const [content, setContent] = useState(prompt.content);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [diffLeft, setDiffLeft] = useState<string | null>(null);
+  const [diffRight, setDiffRight] = useState<string | null>(null);
 
-  const handleSave = async () => {
+  const diffResult = useMemo(() => {
+    if (!diffLeft || !diffRight || diffLeft === diffRight) return null;
+    const left = versions.find((v) => v.id === diffLeft);
+    const right = versions.find((v) => v.id === diffRight);
+    if (!left || !right) return null;
+    return computeDiff(left.content, right.content);
+  }, [diffLeft, diffRight, versions]);
+
+  const handleSave = useCallback(async () => {
     setSaving(true);
     try {
       await updatePrompt({
@@ -66,7 +118,18 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
     } finally {
       setSaving(false);
     }
-  };
+  }, [prompt.id, title, description, content, router]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault();
+        if (!saving) handleSave();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [saving, handleSave]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(content);
@@ -148,7 +211,7 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="versions" className="mt-4">
+        <TabsContent value="versions" className="mt-4 space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Version History</CardTitle>
@@ -184,6 +247,89 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
               )}
             </CardContent>
           </Card>
+
+          {versions.length >= 2 && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <GitCompareArrows className="h-4 w-4" />
+                  <CardTitle className="text-base">Compare Versions</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Older version</Label>
+                    <Select
+                      value={diffLeft ?? undefined}
+                      onValueChange={setDiffLeft}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select version..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {versions.map((v) => (
+                          <SelectItem key={v.id} value={v.id}>
+                            Version {v.versionNumber}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Newer version</Label>
+                    <Select
+                      value={diffRight ?? undefined}
+                      onValueChange={setDiffRight}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select version..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {versions.map((v) => (
+                          <SelectItem key={v.id} value={v.id}>
+                            Version {v.versionNumber}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {diffLeft && diffRight && diffLeft === diffRight && (
+                  <p className="text-sm text-muted-foreground">
+                    Select two different versions to compare.
+                  </p>
+                )}
+                {diffResult && (
+                  <ScrollArea className="h-64 rounded-md border">
+                    <div className="p-3 font-mono text-xs">
+                      {diffResult.map((line, i) => (
+                        <div
+                          key={i}
+                          className={
+                            line.type === "added"
+                              ? "bg-green-500/15 text-green-700 dark:text-green-400"
+                              : line.type === "removed"
+                                ? "bg-red-500/15 text-red-700 dark:text-red-400"
+                                : "text-muted-foreground"
+                          }
+                        >
+                          <span className="mr-2 inline-block w-4 select-none text-right opacity-60">
+                            {line.type === "added"
+                              ? "+"
+                              : line.type === "removed"
+                                ? "-"
+                                : " "}
+                          </span>
+                          {line.text || "\u00A0"}
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>

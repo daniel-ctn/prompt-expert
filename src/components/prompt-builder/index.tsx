@@ -16,6 +16,7 @@ import { ConstraintsInput } from "./constraints-input";
 import { AdvancedSettings } from "./advanced-settings";
 import { PromptPreview } from "./prompt-preview";
 import { SavePromptDialog } from "./save-prompt-dialog";
+import { TemplateSelector } from "./template-selector";
 
 export function PromptBuilder() {
   const reset = usePromptBuilderStore((s) => s.reset);
@@ -29,6 +30,7 @@ export function PromptBuilder() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Configure Your Prompt</CardTitle>
               <div className="flex items-center gap-2">
+                <TemplateSelector />
                 <Button variant="ghost" size="sm" onClick={reset}>
                   <RotateCcw className="mr-1.5 h-4 w-4" />
                   Reset

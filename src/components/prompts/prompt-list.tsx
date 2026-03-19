@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PromptCard } from "./prompt-card";
 
@@ -15,26 +15,47 @@ interface PromptListProps {
     updatedAt: Date;
   }[];
   total: number;
+  page: number;
+  totalPages: number;
+  hasFilters?: boolean;
 }
 
-export function PromptList({ prompts, total }: PromptListProps) {
+export function PromptList({ prompts, total, page, totalPages, hasFilters }: PromptListProps) {
   if (prompts.length === 0) {
+    if (hasFilters) {
+      return (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <Search className="mb-4 h-10 w-10 text-muted-foreground/50" />
+          <h3 className="mb-2 text-lg font-semibold">No matching prompts</h3>
+          <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+            Try adjusting your search terms or clearing the filters to see all
+            your prompts.
+          </p>
+          <Button variant="outline" render={<Link href="/prompts" />}>
+            Clear filters
+          </Button>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+        <Sparkles className="mb-4 h-10 w-10 text-muted-foreground/50" />
         <h3 className="mb-2 text-lg font-semibold">No prompts yet</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Create your first prompt using the builder.
+        <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+          Get started by creating your first prompt with the builder. Choose a
+          template or start from scratch.
         </p>
         <Button render={<Link href="/builder" />}>
           <Plus className="mr-2 h-4 w-4" />
-          Create Prompt
+          Create your first prompt
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
         {total} prompt{total !== 1 ? "s" : ""}
       </p>
@@ -43,6 +64,41 @@ export function PromptList({ prompts, total }: PromptListProps) {
           <PromptCard key={prompt.id} prompt={prompt} />
         ))}
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            render={
+              <Link
+                href={`/prompts?page=${page - 1}`}
+                aria-label="Previous page"
+              />
+            }
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Previous
+          </Button>
+          <span className="px-3 text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page >= totalPages}
+            render={
+              <Link
+                href={`/prompts?page=${page + 1}`}
+                aria-label="Next page"
+              />
+            }
+          >
+            Next
+            <ChevronRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
