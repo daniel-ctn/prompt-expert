@@ -1,13 +1,5 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-const PromptChainBuilder = dynamic(
-  () =>
-    import("@/components/prompt-chain/chain-builder").then(
-      (m) => m.PromptChainBuilder,
-    ),
-  { ssr: false },
-);
+import { ChainClient } from "./chain-client";
 
 export const metadata: Metadata = {
   title: "Prompt Chain",
@@ -25,7 +17,7 @@ export default function ChainPage() {
           the next.
         </p>
       </div>
-      <PromptChainBuilder />
+      <ChainClient />
     </div>
   );
 }

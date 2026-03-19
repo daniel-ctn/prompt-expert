@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-const PromptBuilder = dynamic(
-  () => import("@/components/prompt-builder").then((m) => m.PromptBuilder),
-  { ssr: false },
-);
+import { BuilderClient } from "./builder-client";
 
 export const metadata: Metadata = {
   title: "Prompt Builder",
@@ -21,7 +16,7 @@ export default function BuilderPage() {
           Configure your prompt parameters and see the result in real-time.
         </p>
       </div>
-      <PromptBuilder />
+      <BuilderClient />
     </div>
   );
 }
