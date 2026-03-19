@@ -3,7 +3,14 @@
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
-import { prompts, promptVersions } from "@/lib/db/schema";
+import {
+  prompts,
+  promptVersions,
+  users,
+  favorites,
+  collections,
+  collectionPrompts,
+} from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import {
   createPromptSchema,
@@ -180,6 +187,123 @@ export async function getUserPrompts({
   };
 }
 
+export async function getPublicPrompts({
+  search,
+  category,
+  page = 1,
+  pageSize = 12,
+}: {
+  search?: string;
+  category?: string;
+  page?: number;
+  pageSize?: number;
+} = {}) {
+  const db = getDb();
+
+  const conditions = [eq(prompts.isPublic, true)];
+
+  if (search) {
+    conditions.push(ilike(prompts.title, `%${search}%`));
+  }
+
+  if (category) {
+    conditions.push(eq(prompts.category, category));
+  }
+
+  const offset = (page - 1) * pageSize;
+
+  const [results, countResult] = await Promise.all([
+    db
+      .select({
+        id: prompts.id,
+        title: prompts.title,
+        description: prompts.description,
+        category: prompts.category,
+        content: prompts.content,
+        tags: prompts.tags,
+        isPublic: prompts.isPublic,
+        updatedAt: prompts.updatedAt,
+        userId: prompts.userId,
+        authorName: users.name,
+        authorImage: users.image,
+      })
+      .from(prompts)
+      .leftJoin(users, eq(prompts.userId, users.id))
+      .where(and(...conditions))
+      .orderBy(desc(prompts.updatedAt))
+      .limit(pageSize)
+      .offset(offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(prompts)
+      .where(and(...conditions)),
+  ]);
+
+  return {
+    prompts: results,
+    total: Number(countResult[0].count),
+    page,
+    pageSize,
+    totalPages: Math.ceil(Number(countResult[0].count) / pageSize),
+  };
+}
+
+export async function forkPrompt(id: string) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const original = await db.query.prompts.findFirst({
+    where: and(eq(prompts.id, id), eq(prompts.isPublic, true)),
+  });
+
+  if (!original) {
+    throw new Error("Public prompt not found");
+  }
+
+  const [forked] = await db
+    .insert(prompts)
+    .values({
+      userId,
+      title: `${original.title} (fork)`,
+      description: original.description,
+      category: original.category,
+      content: original.content,
+      settings: original.settings,
+      tags: original.tags,
+      isPublic: false,
+    })
+    .returning();
+
+  revalidatePath("/prompts");
+  return forked;
+}
+
+export async function getPublicPromptById(id: string) {
+  const db = getDb();
+
+  const results = await db
+    .select({
+      id: prompts.id,
+      title: prompts.title,
+      description: prompts.description,
+      category: prompts.category,
+      content: prompts.content,
+      settings: prompts.settings,
+      tags: prompts.tags,
+      isPublic: prompts.isPublic,
+      createdAt: prompts.createdAt,
+      updatedAt: prompts.updatedAt,
+      authorName: users.name,
+      authorImage: users.image,
+    })
+    .from(prompts)
+    .leftJoin(users, eq(prompts.userId, users.id))
+    .where(and(eq(prompts.id, id), eq(prompts.isPublic, true)))
+    .limit(1);
+
+  return results[0] ?? null;
+}
+
 export async function getPromptById(id: string) {
   const userId = await getAuthenticatedUserId();
   const db = getDb();
@@ -205,4 +329,129 @@ export async function getPromptVersions(promptId: string) {
     where: eq(promptVersions.promptId, promptId),
     orderBy: desc(promptVersions.versionNumber),
   });
+}
+
+export async function toggleFavorite(promptId: string) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const existing = await db
+    .select()
+    .from(favorites)
+    .where(and(eq(favorites.userId, userId), eq(favorites.promptId, promptId)))
+    .limit(1);
+
+  if (existing.length > 0) {
+    await db
+      .delete(favorites)
+      .where(
+        and(eq(favorites.userId, userId), eq(favorites.promptId, promptId)),
+      );
+    return { favorited: false };
+  }
+
+  await db.insert(favorites).values({ userId, promptId });
+  return { favorited: true };
+}
+
+export async function getUserFavoriteIds(): Promise<Set<string>> {
+  const session = await auth();
+  if (!session?.user?.id) return new Set();
+
+  const db = getDb();
+  const result = await db
+    .select({ promptId: favorites.promptId })
+    .from(favorites)
+    .where(eq(favorites.userId, session.user.id));
+
+  return new Set(result.map((r) => r.promptId));
+}
+
+export async function getFavoriteCount(promptId: string): Promise<number> {
+  const db = getDb();
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(favorites)
+    .where(eq(favorites.promptId, promptId));
+
+  return Number(result[0].count);
+}
+
+export async function createCollection(name: string, description = "") {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const [collection] = await db
+    .insert(collections)
+    .values({ userId, name, description })
+    .returning();
+
+  revalidatePath("/prompts");
+  return collection;
+}
+
+export async function getUserCollections() {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  return db
+    .select()
+    .from(collections)
+    .where(eq(collections.userId, userId))
+    .orderBy(desc(collections.createdAt));
+}
+
+export async function addPromptToCollection(
+  collectionId: string,
+  promptId: string,
+) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const collection = await db.query.collections.findFirst({
+    where: and(eq(collections.id, collectionId), eq(collections.userId, userId)),
+  });
+  if (!collection) throw new Error("Collection not found");
+
+  await db
+    .insert(collectionPrompts)
+    .values({ collectionId, promptId })
+    .onConflictDoNothing();
+
+  revalidatePath("/prompts");
+}
+
+export async function removePromptFromCollection(
+  collectionId: string,
+  promptId: string,
+) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  const collection = await db.query.collections.findFirst({
+    where: and(eq(collections.id, collectionId), eq(collections.userId, userId)),
+  });
+  if (!collection) throw new Error("Collection not found");
+
+  await db
+    .delete(collectionPrompts)
+    .where(
+      and(
+        eq(collectionPrompts.collectionId, collectionId),
+        eq(collectionPrompts.promptId, promptId),
+      ),
+    );
+
+  revalidatePath("/prompts");
+}
+
+export async function deleteCollection(id: string) {
+  const userId = await getAuthenticatedUserId();
+  const db = getDb();
+
+  await db
+    .delete(collections)
+    .where(and(eq(collections.id, id), eq(collections.userId, userId)));
+
+  revalidatePath("/prompts");
 }

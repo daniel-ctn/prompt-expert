@@ -31,9 +31,13 @@ export function PromptPreview() {
     setIsOptimizing,
   } = usePromptBuilderStore();
 
-  const [copied, setCopied] = useState<"assembled" | "optimized" | "test" | null>(null);
+  const [copied, setCopied] = useState<
+    "assembled" | "optimized" | "test" | null
+  >(null);
   const [activeTab, setActiveTab] = useState("assembled");
-  const [variableValues, setVariableValues] = useState<Record<string, string>>({});
+  const [variableValues, setVariableValues] = useState<Record<string, string>>(
+    {},
+  );
 
   const assembledPrompt = useMemo(
     () =>
@@ -51,17 +55,18 @@ export function PromptPreview() {
     [role, context, task, constraints, settings],
   );
 
-  const { complete: completeOptimize, isLoading: isOptimizeLoading } = useCompletion({
-    api: "/api/ai/optimize",
-    id: "optimize",
-    onFinish: (_prompt, completion) => {
-      setOptimizedPrompt(completion);
-      setIsOptimizing(false);
-    },
-    onError: () => {
-      setIsOptimizing(false);
-    },
-  });
+  const { complete: completeOptimize, isLoading: isOptimizeLoading } =
+    useCompletion({
+      api: "/api/ai/optimize",
+      id: "optimize",
+      onFinish: (_prompt, completion) => {
+        setOptimizedPrompt(completion);
+        setIsOptimizing(false);
+      },
+      onError: () => {
+        setIsOptimizing(false);
+      },
+    });
 
   const {
     completion: testOutput,
@@ -79,7 +84,13 @@ export function PromptPreview() {
     completeOptimize(assembledPrompt, {
       body: { prompt: assembledPrompt, model: settings.model },
     });
-  }, [assembledPrompt, settings.model, completeOptimize, setIsOptimizing, setOptimizedPrompt]);
+  }, [
+    assembledPrompt,
+    settings.model,
+    completeOptimize,
+    setIsOptimizing,
+    setOptimizedPrompt,
+  ]);
 
   const currentPrompt = optimizedPrompt || assembledPrompt;
   const variables = useMemo(
@@ -136,10 +147,7 @@ export function PromptPreview() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Prompt Preview</CardTitle>
           <div className="flex items-center gap-2">
-            <ModelComparison
-              prompt={resolvedPrompt}
-              disabled={!hasContent}
-            />
+            <ModelComparison prompt={resolvedPrompt} disabled={!hasContent} />
             <Button
               variant="outline"
               size="sm"
@@ -179,113 +187,99 @@ export function PromptPreview() {
             </p>
           </div>
         ) : (
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="flex h-full flex-col"
-          >
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="assembled">Assembled</TabsTrigger>
-              <TabsTrigger value="optimized" disabled={!optimizedPrompt}>
-                Optimized
-              </TabsTrigger>
-              <TabsTrigger value="test" disabled={!testOutput && !isTesting}>
-                Test Output
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="assembled" className="flex-1">
-              <div className="relative">
-                <ScrollArea className="h-[400px] rounded-md border p-4">
-                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                    {assembledPrompt}
-                  </pre>
-                </ScrollArea>
-                <div className="absolute right-2 top-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handleCopy(assembledPrompt, "assembled")}
-                  >
-                    {copied === "assembled" ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="optimized" className="flex-1">
-              <div className="relative">
-                <ScrollArea className="h-[400px] rounded-md border p-4">
-                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                    {optimizedPrompt}
-                  </pre>
-                </ScrollArea>
-                <div className="absolute right-2 top-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handleCopy(optimizedPrompt, "optimized")}
-                  >
-                    {copied === "optimized" ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="test" className="flex-1">
-              <div className="relative">
-                <ScrollArea className="h-[400px] rounded-md border p-4">
-                  {isTesting && !testOutput && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Generating response...
-                    </div>
-                  )}
-                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                    {testOutput}
-                  </pre>
-                </ScrollArea>
-                {testOutput && (
+          <>
+            <>
+              <TabsContent value="assembled" className="flex-1">
+                <div className="relative">
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                      {assembledPrompt}
+                    </pre>
+                  </ScrollArea>
                   <div className="absolute right-2 top-2">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleCopy(testOutput, "test")}
+                      onClick={() => handleCopy(assembledPrompt, "assembled")}
                     >
-                      {copied === "test" ? (
+                      {copied === "assembled" ? (
                         <Check className="h-4 w-4 text-green-500" />
                       ) : (
                         <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
-          {variables.length > 0 && (
-            <>
-              <Separator className="my-4" />
-              <VariableFiller
-                variables={variables}
-                values={variableValues}
-                onChange={setVariableValues}
-              />
+                </div>
+              </TabsContent>
+              <TabsContent value="optimized" className="flex-1">
+                <div className="relative">
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                      {optimizedPrompt}
+                    </pre>
+                  </ScrollArea>
+                  <div className="absolute right-2 top-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleCopy(optimizedPrompt, "optimized")}
+                    >
+                      {copied === "optimized" ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+              <TabsContent value="test" className="flex-1">
+                <div className="relative">
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    {isTesting && !testOutput && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Generating response...
+                      </div>
+                    )}
+                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                      {testOutput}
+                    </pre>
+                  </ScrollArea>
+                  {testOutput && (
+                    <div className="absolute right-2 top-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleCopy(testOutput, "test")}
+                      >
+                        {copied === "test" ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
             </>
-          )}
-          <Separator className="my-4" />
-          <PromptAnalysis
-            prompt={resolvedPrompt}
-            disabled={!hasContent}
-          />
+            {variables.length > 0 && (
+              <>
+                <Separator className="my-4" />
+                <VariableFiller
+                  variables={variables}
+                  values={variableValues}
+                  onChange={setVariableValues}
+                />
+              </>
+            )}
+            <Separator className="my-4" />
+            <PromptAnalysis prompt={resolvedPrompt} disabled={!hasContent} />
+          </>
         )}
       </CardContent>
     </Card>

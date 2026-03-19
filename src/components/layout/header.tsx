@@ -35,6 +35,12 @@ function NavLinks({ className }: { className?: string }) {
         Chain
       </Link>
       <Link
+        href="/gallery"
+        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      >
+        Gallery
+      </Link>
+      <Link
         href="/prompts"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >

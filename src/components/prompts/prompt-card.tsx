@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Copy, MoreVertical, Pencil, Trash2, Globe, Lock } from "lucide-react";
+import { Copy, MoreVertical, Pencil, Trash2, Globe, Lock, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,6 +103,19 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 <Copy className="mr-2 h-4 w-4" />
                 Duplicate
               </DropdownMenuItem>
+              {prompt.isPublic && (
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(
+                      `${window.location.origin}/share/${prompt.id}`,
+                    );
+                    toast.success("Share link copied");
+                  }}
+                >
+                  <Share2 className="mr-2 h-4 w-4" />
+                  Copy share link
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem render={<Link href={`/prompts/${prompt.id}`} />}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit

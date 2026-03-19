@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getUserPrompts } from "@/lib/actions/prompt";
 import { PromptFilters } from "@/components/prompts/prompt-filters";
 import { PromptList } from "@/components/prompts/prompt-list";
+import { ExportImport } from "@/components/prompts/export-import";
 
 export const metadata: Metadata = {
   title: "My Prompts - Prompt Expert",
@@ -33,10 +34,13 @@ export default async function PromptsPage({
             Manage and organize your saved prompts.
           </p>
         </div>
-        <Button render={<Link href="/builder" />}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Prompt
-        </Button>
+        <div className="flex items-center gap-2">
+          <ExportImport prompts={prompts} />
+          <Button render={<Link href="/builder" />}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Prompt
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-6">
