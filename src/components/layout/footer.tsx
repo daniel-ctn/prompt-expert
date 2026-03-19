@@ -9,8 +9,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br from-primary/80 to-primary/50">
-              <Sparkles className="h-3 w-3 text-primary-foreground" />
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br from-[#0E7490] to-[#0D9488]">
+              <Sparkles className="h-3 w-3 text-white" />
             </div>
             <span className="font-display text-sm font-medium">{APP_NAME}</span>
           </div>
@@ -24,6 +24,9 @@ export function Footer() {
             </Link>
             <Link href="/chain" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
               Chain
+            </Link>
+            <Link href="/pricing" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
+              Pricing
             </Link>
           </nav>
 

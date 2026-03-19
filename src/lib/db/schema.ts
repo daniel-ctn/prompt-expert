@@ -186,6 +186,53 @@ export const apiUsage = pgTable("api_usage", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
+// ──────────────────────────────────────────────
+// Billing & credits
+// ──────────────────────────────────────────────
+
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id").unique(),
+  plan: text("plan").notNull().default("free"),
+  status: text("status").notNull().default("active"),
+  currentPeriodStart: timestamp("current_period_start", { mode: "date" }),
+  currentPeriodEnd: timestamp("current_period_end", { mode: "date" }),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const creditBalances = pgTable("credit_balances", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
+  monthlyCredits: integer("monthly_credits").notNull().default(50),
+  bonusCredits: integer("bonus_credits").notNull().default(0),
+  resetAt: timestamp("reset_at", { mode: "date" }),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const creditTransactions = pgTable("credit_transactions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  amount: integer("amount").notNull(),
+  type: text("type").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+// ──────────────────────────────────────────────
+// Prompt versioning
+// ──────────────────────────────────────────────
+
 export const promptVersions = pgTable("prompt_versions", {
   id: uuid("id").defaultRandom().primaryKey(),
   promptId: uuid("prompt_id")

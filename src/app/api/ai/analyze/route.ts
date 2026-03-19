@@ -5,6 +5,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { trackUsage } from "@/lib/track-usage";
 import { getUserApiKey } from "@/lib/actions/api-keys";
 import { SYSTEM_PROMPT_ANALYZER } from "@/config/prompts";
+import { hasCredits, deductCredit } from "@/lib/credits";
+import { CREDIT_COSTS } from "@/config/plans";
 import type { AIProvider } from "@/types";
 
 export async function POST(req: Request) {
@@ -18,6 +20,14 @@ export async function POST(req: Request) {
     return Response.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
   }
 
+  const canProceed = await hasCredits(session.user.id, CREDIT_COSTS.analyze);
+  if (!canProceed) {
+    return Response.json(
+      { error: "insufficient_credits", message: "You've run out of credits. Upgrade your plan or buy more." },
+      { status: 403 },
+    );
+  }
+
   const { prompt }: { prompt: string } = await req.json();
 
   if (!prompt?.trim()) {
@@ -28,6 +38,7 @@ export async function POST(req: Request) {
   const userKeys: Partial<Record<AIProvider, string>> = {};
   if (userKey) userKeys.openai = userKey;
 
+  await deductCredit(session.user.id, CREDIT_COSTS.analyze, "Analyze prompt (gpt-4.1-mini)");
   trackUsage(session.user.id, "analyze", "gpt-4.1-mini");
 
   const { text } = await generateText({

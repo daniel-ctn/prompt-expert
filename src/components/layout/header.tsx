@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -14,6 +15,8 @@ import {
   History,
   Moon,
   Sun,
+  Coins,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -37,6 +40,7 @@ const navItems = [
   { href: "/chain", label: "Chain" },
   { href: "/gallery", label: "Gallery" },
   { href: "/prompts", label: "My Prompts" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 function NavLinks({ className, mobile }: { className?: string; mobile?: boolean }) {
@@ -89,6 +93,20 @@ function ThemeToggle() {
   );
 }
 
+function CreditsBadge() {
+  const [credits, setCredits] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/credits")
+      .then((r) => r.json())
+      .then((data) => setCredits(data.total))
+      .catch(() => {});
+  }, []);
+
+  if (credits === null) return <span>...</span>;
+  return <span>{credits} credits</span>;
+}
+
 export function Header() {
   const { data: session, status } = useSession();
 
@@ -96,8 +114,8 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
         <Link href="/" className="group mr-8 flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 shadow-sm transition-shadow group-hover:glow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-[#0E7490] to-[#0D9488] shadow-sm transition-shadow group-hover:shadow-[0_0_16px_rgba(13,148,136,0.35)]">
+            <Sparkles className="h-3.5 w-3.5 text-white" />
           </div>
           <span className="font-display text-base font-semibold tracking-tight">
             {APP_NAME}
@@ -112,6 +130,15 @@ export function Header() {
           {status === "loading" ? (
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : session?.user ? (
+            <Link
+              href="/pricing"
+              className="hidden items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground sm:flex"
+            >
+              <Coins className="h-3.5 w-3.5" />
+              <CreditsBadge />
+            </Link>
+          ) : null}
+          {status === "loading" ? null : session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -156,6 +183,10 @@ export function Header() {
                 <DropdownMenuItem render={<Link href="/settings" />}>
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/pricing" />}>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Pricing & Credits
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>

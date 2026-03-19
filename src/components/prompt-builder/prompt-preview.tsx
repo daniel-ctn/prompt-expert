@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { assemblePrompt } from "@/lib/ai";
 import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { useUpgradeModal } from "@/stores/upgrade-modal";
 import { ModelComparison } from "./model-comparison";
 import { PromptAnalysis } from "./prompt-analysis";
 import {
@@ -31,6 +32,7 @@ export function PromptPreview() {
     setIsOptimizing,
   } = usePromptBuilderStore();
 
+  const upgradeModal = useUpgradeModal();
   const [copied, setCopied] = useState<
     "assembled" | "optimized" | "test" | null
   >(null);
@@ -63,8 +65,11 @@ export function PromptPreview() {
         setOptimizedPrompt(completion);
         setIsOptimizing(false);
       },
-      onError: () => {
+      onError: (error) => {
         setIsOptimizing(false);
+        if (error.message.includes("insufficient_credits")) {
+          upgradeModal.open();
+        }
       },
     });
 
@@ -75,6 +80,11 @@ export function PromptPreview() {
   } = useCompletion({
     api: "/api/ai/test",
     id: "test",
+    onError: (error) => {
+      if (error.message.includes("insufficient_credits")) {
+        upgradeModal.open();
+      }
+    },
   });
 
   const handleOptimize = useCallback(() => {

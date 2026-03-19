@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { AI_MODELS } from "@/config/constants";
 import { toast } from "sonner";
+import { useUpgradeModal } from "@/stores/upgrade-modal";
 import type { AIModel } from "@/types";
 
 interface ChainStep {
@@ -60,6 +61,7 @@ export function PromptChainBuilder() {
   const [steps, setSteps] = useState<ChainStep[]>([DEFAULT_STEP()]);
   const [isRunningChain, setIsRunningChain] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const upgradeModal = useUpgradeModal();
 
   const updateStep = useCallback(
     (id: string, patch: Partial<ChainStep>) => {
@@ -101,7 +103,16 @@ export function PromptChainBuilder() {
           }),
         });
 
-        if (!res.ok) throw new Error("Request failed");
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          if (data.error === "insufficient_credits") {
+            upgradeModal.open();
+            updateStep(step.id, { isRunning: false });
+            setIsRunningChain(false);
+            return;
+          }
+          throw new Error("Request failed");
+        }
         if (!res.body) throw new Error("No response body");
 
         const reader = res.body.getReader();

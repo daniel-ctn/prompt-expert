@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AI_MODELS } from "@/config/constants";
+import { useUpgradeModal } from "@/stores/upgrade-modal";
 import type { AIModel } from "@/types";
 
 interface ModelComparisonProps {
@@ -42,9 +43,15 @@ function ComparisonSlot({
   onStart: () => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const upgradeModal = useUpgradeModal();
   const { completion, complete, isLoading } = useCompletion({
     api: "/api/ai/test",
     id: `compare-${id}`,
+    onError: (error) => {
+      if (error.message.includes("insufficient_credits")) {
+        upgradeModal.open();
+      }
+    },
   });
 
   const handleRun = useCallback(() => {

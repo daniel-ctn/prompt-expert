@@ -5,6 +5,7 @@ import { BarChart3, Loader2, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useUpgradeModal } from "@/stores/upgrade-modal";
 
 interface AnalysisResult {
   scores: {
@@ -52,6 +53,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const upgradeModal = useUpgradeModal();
 
   const handleAnalyze = useCallback(async () => {
     if (!prompt.trim()) return;
@@ -62,7 +64,14 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
-      if (!res.ok) throw new Error("Analysis failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data.error === "insufficient_credits") {
+          upgradeModal.open();
+          return;
+        }
+        throw new Error("Analysis failed");
+      }
       const data = await res.json();
       setAnalysis(data);
       setExpanded(true);
@@ -71,7 +80,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
     } finally {
       setIsAnalyzing(false);
     }
-  }, [prompt]);
+  }, [prompt, upgradeModal]);
 
   return (
     <div className="space-y-3">

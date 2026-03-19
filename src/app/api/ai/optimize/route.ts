@@ -6,6 +6,8 @@ import { trackUsage } from "@/lib/track-usage";
 import { getUserApiKey } from "@/lib/actions/api-keys";
 import { savePromptHistory } from "@/lib/actions/prompt-history";
 import { SYSTEM_PROMPT_OPTIMIZER } from "@/config/prompts";
+import { hasCredits, deductCredit } from "@/lib/credits";
+import { CREDIT_COSTS } from "@/config/plans";
 import type { AIModel, AIProvider } from "@/types";
 
 export async function POST(req: Request) {
@@ -17,6 +19,14 @@ export async function POST(req: Request) {
   const { success } = rateLimit({ key: `ai:${session.user.id}`, limit: 20, windowMs: 60_000 });
   if (!success) {
     return Response.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
+  }
+
+  const canProceed = await hasCredits(session.user.id, CREDIT_COSTS.optimize);
+  if (!canProceed) {
+    return Response.json(
+      { error: "insufficient_credits", message: "You've run out of credits. Upgrade your plan or buy more." },
+      { status: 403 },
+    );
   }
 
   const { prompt, model = "gpt-4.1-mini" }: { prompt: string; model?: AIModel } =
@@ -32,6 +42,7 @@ export async function POST(req: Request) {
   if (userKey) userKeys[provider] = userKey;
 
   const userId = session.user.id;
+  await deductCredit(userId, CREDIT_COSTS.optimize, `Optimize prompt (${model})`);
   trackUsage(userId, "optimize", model);
 
   const result = streamText({

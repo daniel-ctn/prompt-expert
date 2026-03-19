@@ -5,6 +5,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { trackUsage } from "@/lib/track-usage";
 import { getUserApiKey } from "@/lib/actions/api-keys";
 import { savePromptHistory } from "@/lib/actions/prompt-history";
+import { hasCredits, deductCredit } from "@/lib/credits";
+import { CREDIT_COSTS } from "@/config/plans";
 import type { AIModel, AIProvider } from "@/types";
 
 export async function POST(req: Request) {
@@ -16,6 +18,14 @@ export async function POST(req: Request) {
   const { success } = rateLimit({ key: `ai:${session.user.id}`, limit: 20, windowMs: 60_000 });
   if (!success) {
     return Response.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
+  }
+
+  const canProceed = await hasCredits(session.user.id, CREDIT_COSTS.test);
+  if (!canProceed) {
+    return Response.json(
+      { error: "insufficient_credits", message: "You've run out of credits. Upgrade your plan or buy more." },
+      { status: 403 },
+    );
   }
 
   const {
@@ -37,9 +47,9 @@ export async function POST(req: Request) {
   const userKeys: Partial<Record<AIProvider, string>> = {};
   if (userKey) userKeys[provider] = userKey;
 
-  trackUsage(session.user.id, "test", model);
-
   const userId = session.user.id;
+  await deductCredit(userId, CREDIT_COSTS.test, `Test prompt (${model})`);
+  trackUsage(userId, "test", model);
 
   const result = streamText({
     model: getModel(model, userKeys),
