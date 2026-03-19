@@ -142,10 +142,11 @@ export function PromptPreview() {
   }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize]);
 
   return (
-    <Card className="flex h-full flex-col">
+    <Card className="relative flex h-full flex-col overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent" />
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Prompt Preview</CardTitle>
+          <CardTitle className="font-display text-lg">Prompt Preview</CardTitle>
           <div className="flex items-center gap-2">
             <ModelComparison prompt={resolvedPrompt} disabled={!hasContent} />
             <Button
@@ -153,6 +154,7 @@ export function PromptPreview() {
               size="sm"
               onClick={handleTest}
               disabled={!hasContent || isTesting}
+              className="border-border/60"
             >
               {isTesting ? (
                 <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
@@ -162,15 +164,15 @@ export function PromptPreview() {
               {isTesting ? "Running..." : "Test"}
             </Button>
             <Button
-              variant="outline"
               size="sm"
               onClick={handleOptimize}
               disabled={!hasContent || isOptimizeLoading || isOptimizing}
+              className="gap-1.5 bg-primary shadow-sm transition-all hover:glow-sm"
             >
-              <Sparkles className="mr-1.5 h-4 w-4" />
+              <Sparkles className="h-3.5 w-3.5" />
               {isOptimizeLoading ? "Optimizing..." : "Optimize"}
               {!isOptimizeLoading && (
-                <kbd className="ml-1.5 hidden rounded border bg-muted px-1 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-block">
+                <kbd className="ml-1 hidden rounded border border-primary-foreground/20 bg-primary-foreground/10 px-1 py-0.5 font-mono text-[10px] text-primary-foreground/70 sm:inline-block">
                   ⌘↵
                 </kbd>
               )}
@@ -178,13 +180,16 @@ export function PromptPreview() {
           </div>
         </div>
       </CardHeader>
-      <Separator />
+      <Separator className="opacity-50" />
       <CardContent className="flex-1 pt-4">
         {!hasContent ? (
           <div className="flex h-full items-center justify-center text-muted-foreground">
-            <p className="text-center text-sm">
-              Fill in the fields on the left to see your prompt preview here.
-            </p>
+            <div className="text-center">
+              <Sparkles className="mx-auto mb-3 h-8 w-8 opacity-20" />
+              <p className="text-sm">
+                Fill in the fields on the left to see your prompt preview here.
+              </p>
+            </div>
           </div>
         ) : (
           <>

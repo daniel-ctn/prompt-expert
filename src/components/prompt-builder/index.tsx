@@ -25,21 +25,22 @@ export function PromptBuilder() {
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Left panel: Controls */}
       <div className="space-y-6">
-        <Card>
+        <Card className="relative overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent" />
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Configure Your Prompt</CardTitle>
+              <CardTitle className="font-display text-lg">Configure Your Prompt</CardTitle>
               <div className="flex items-center gap-2">
                 <TemplateSelector />
-                <Button variant="ghost" size="sm" onClick={reset}>
-                  <RotateCcw className="mr-1.5 h-4 w-4" />
+                <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground hover:text-foreground">
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
                   Reset
                 </Button>
                 <SavePromptDialog />
               </div>
             </div>
           </CardHeader>
-          <Separator />
+          <Separator className="opacity-50" />
           <CardContent className="space-y-6 pt-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <ModelSelector />
@@ -50,7 +51,7 @@ export function PromptBuilder() {
 
             <FormatSelector />
 
-            <Separator />
+            <Separator className="opacity-50" />
 
             <RoleInput />
 
@@ -60,7 +61,7 @@ export function PromptBuilder() {
 
             <ConstraintsInput />
 
-            <Separator />
+            <Separator className="opacity-50" />
 
             <AdvancedSettings />
           </CardContent>

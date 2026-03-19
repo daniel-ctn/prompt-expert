@@ -7,9 +7,9 @@ import {
   ArrowRight,
   Brain,
   Layers,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
   {
@@ -28,7 +28,7 @@ const features = [
     icon: Layers,
     title: "Multi-Model Support",
     description:
-      "Target GPT-4o, Claude, Gemini, and more -- each prompt optimized for your chosen model.",
+      "Target GPT-4, Claude, Gemini, and more — each prompt optimized for your chosen model.",
   },
   {
     icon: Copy,
@@ -54,72 +54,123 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center px-4 pb-16 pt-24 text-center sm:px-6 md:pt-32">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span>AI-powered prompt engineering</span>
+      <section className="relative flex flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-28 text-center sm:px-6 md:pt-36 lg:pb-32">
+        {/* Ambient background orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="animate-pulse-glow absolute -left-32 top-0 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px]" />
+          <div className="animate-pulse-glow absolute -right-32 top-20 h-[400px] w-[400px] rounded-full bg-[oklch(0.55_0.25_290/0.08)] blur-[100px]" style={{ animationDelay: "1.5s" }} />
+          <div className="animate-pulse-glow absolute -bottom-20 left-1/3 h-[350px] w-[350px] rounded-full bg-[oklch(0.7_0.15_195/0.06)] blur-[100px]" style={{ animationDelay: "3s" }} />
+        </div>
+
+        {/* Dot grid pattern */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.04]"
+          style={{
+            backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-3xl space-y-8">
+          <div className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm text-primary backdrop-blur-sm">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span className="font-medium">AI-powered prompt engineering</span>
+            <ChevronRight className="h-3.5 w-3.5 opacity-50" />
           </div>
 
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          <h1 className="animate-fade-in-up animate-delay-100 font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             Build Better Prompts,
             <br />
-            <span className="text-primary">Get Better Results</span>
+            <span className="text-gradient">Get Better Results</span>
           </h1>
 
-          <p className="mx-auto max-w-xl text-lg text-muted-foreground">
+          <p className="animate-fade-in-up animate-delay-200 mx-auto max-w-xl text-base text-muted-foreground sm:text-lg">
             Stop guessing. Use structured controls and AI optimization to create
             prompts that deliver exactly what you need, every time.
           </p>
 
-          <div className="flex items-center justify-center gap-4">
-            <Button render={<Link href="/builder" />} size="lg">
+          <div className="animate-fade-in-up animate-delay-300 flex items-center justify-center gap-4">
+            <Button
+              render={<Link href="/builder" />}
+              size="lg"
+              className="gap-2 bg-primary px-6 shadow-md transition-all hover:glow-sm"
+            >
               Start Building
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button render={<Link href="/login" />} variant="outline" size="lg">
-              Sign In
+            <Button
+              render={<Link href="/gallery" />}
+              variant="outline"
+              size="lg"
+              className="border-border/60 px-6"
+            >
+              Explore Gallery
             </Button>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="border-t bg-muted/30 px-4 py-20 sm:px-6">
+      <section className="relative border-t border-border/50 px-4 py-24 sm:px-6">
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent" />
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-12 text-center text-3xl font-bold tracking-tight">
-            Everything you need to craft perfect prompts
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <Card key={feature.title} className="border-0 bg-background">
-                <CardContent className="pt-6">
-                  <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-2.5">
-                    <feature.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="mb-2 font-semibold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+          <div className="mb-14 text-center">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              Everything you need to craft
+              <span className="text-gradient"> perfect prompts</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+              A complete toolkit for prompt engineering — from ideation to optimization.
+            </p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, i) => (
+              <div
+                key={feature.title}
+                className={`animate-fade-in-up group relative rounded-xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-card/80 ${
+                  i === 0 ? "animate-delay-100" :
+                  i === 1 ? "animate-delay-200" :
+                  i === 2 ? "animate-delay-300" :
+                  i === 3 ? "animate-delay-100" :
+                  i === 4 ? "animate-delay-200" :
+                  "animate-delay-300"
+                }`}
+              >
+                <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-2.5 transition-colors group-hover:bg-primary/15">
+                  <feature.icon className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="mb-2 font-display font-semibold">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {feature.description}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight">
-            Ready to level up your prompts?
+      <section className="relative px-4 py-24 sm:px-6">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="animate-pulse-glow absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[120px]" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Ready to level up
+            <span className="text-gradient"> your prompts?</span>
           </h2>
-          <p className="mb-8 text-muted-foreground">
-            Create your first optimized prompt in under a minute.
+          <p className="mt-4 mb-8 text-muted-foreground">
+            Create your first optimized prompt in under a minute — no credit card required.
           </p>
-          <Button render={<Link href="/builder" />} size="lg">
+          <Button
+            render={<Link href="/builder" />}
+            size="lg"
+            className="gap-2 bg-primary px-8 shadow-md transition-all hover:glow-sm"
+          >
             Get Started Free
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
       </section>

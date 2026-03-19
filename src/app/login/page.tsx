@@ -13,13 +13,20 @@ import {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
+    <div className="relative flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+      {/* Background atmosphere */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animate-pulse-glow absolute left-1/2 top-1/3 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[120px]" />
+        <div className="animate-pulse-glow absolute right-1/4 bottom-1/3 h-[300px] w-[300px] rounded-full bg-[oklch(0.55_0.25_290/0.06)] blur-[100px]" style={{ animationDelay: "2s" }} />
+      </div>
+
+      <Card className="animate-fade-in-up relative w-full max-w-sm border-border/50 bg-card/80 backdrop-blur-xl">
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent" />
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 inline-flex rounded-full bg-primary/10 p-3">
-            <Sparkles className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/70 shadow-md">
+            <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+          <CardTitle className="font-display text-2xl">Welcome back</CardTitle>
           <CardDescription>
             Sign in to save and manage your prompts
           </CardDescription>
@@ -27,7 +34,7 @@ export default function LoginPage() {
         <CardContent className="space-y-3">
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full border-border/60 transition-colors hover:border-border hover:bg-accent"
             onClick={() => signIn("google", { callbackUrl: "/prompts" })}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -52,7 +59,7 @@ export default function LoginPage() {
           </Button>
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full border-border/60 transition-colors hover:border-border hover:bg-accent"
             onClick={() => signIn("github", { callbackUrl: "/prompts" })}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
