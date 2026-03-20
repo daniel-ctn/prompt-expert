@@ -19,13 +19,14 @@ A comprehensive guide for developers joining the project. Covers setup, architec
 11. [State Management](#11-state-management)
 12. [Components](#12-components)
 13. [AI Integration](#13-ai-integration)
-14. [Security](#14-security)
-15. [Styling](#15-styling)
-16. [Testing](#16-testing)
-17. [Deployment](#17-deployment)
-18. [How-To Guides](#18-how-to-guides)
-19. [Coding Conventions](#19-coding-conventions)
-20. [Troubleshooting](#20-troubleshooting)
+14. [Payments & Credits](#14-payments--credits)
+15. [Security](#15-security)
+16. [Styling](#16-styling)
+17. [Testing](#17-testing)
+18. [Deployment](#18-deployment)
+19. [How-To Guides](#19-how-to-guides)
+20. [Coding Conventions](#20-coding-conventions)
+21. [Troubleshooting](#21-troubleshooting)
 
 ---
 
@@ -40,6 +41,7 @@ A comprehensive guide for developers joining the project. Covers setup, architec
 - Fork community prompts from a public gallery
 - Chain multiple prompts into multi-step workflows
 - Manage their own API keys for AI providers
+- Subscribe to Pro for more credits, or purchase credit packs
 - Access their prompts via a REST API
 
 ---
@@ -62,6 +64,7 @@ A comprehensive guide for developers joining the project. Covers setup, architec
 | Validation | Zod | 4.3.6 |
 | Testing | Vitest + Testing Library | 4.1.0 |
 | Package Manager | pnpm | 10.26.0 |
+| Payments | Stripe | 20.4.x |
 | Analytics | Vercel Analytics | 2.x |
 | Compiler | React Compiler (babel plugin) | 1.0.0 |
 
@@ -123,6 +126,13 @@ GOOGLE_GENERATIVE_AI_API_KEY="AIza..."
 # ── Encryption (for user API key storage) ─────────
 ENCRYPTION_KEY="at-least-32-characters-long-secret-key"
 
+# ── Stripe (payments) ─────────────────────────────
+STRIPE_SECRET_KEY="sk_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_..."
+STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
+STRIPE_CREDIT_PACK_PRICE_ID="price_..."
+
 # ── Optional ──────────────────────────────────────
 NEXT_PUBLIC_APP_URL="https://your-domain.com"
 ```
@@ -156,12 +166,15 @@ prompt-expert/
 │   │   ├── api/
 │   │   │   ├── ai/             # AI endpoints (optimize, test, analyze)
 │   │   │   ├── auth/           # NextAuth route handler
+│   │   │   ├── credits/        # Credits balance endpoint
+│   │   │   ├── stripe/         # Stripe checkout, portal, webhook
 │   │   │   └── v1/             # Public REST API (token-authenticated)
 │   │   ├── builder/            # Prompt builder page
 │   │   ├── chain/              # Prompt chaining page
 │   │   ├── gallery/            # Public prompt gallery
 │   │   ├── history/            # Prompt test/optimize history
 │   │   ├── login/              # Login page
+│   │   ├── pricing/            # Pricing page + plan cards
 │   │   ├── prompts/            # User's saved prompts (list + detail)
 │   │   ├── settings/           # API keys + tokens management
 │   │   ├── share/[id]/         # Public prompt share view
@@ -178,28 +191,33 @@ prompt-expert/
 │   │   ├── prompt-builder/     # Builder controls + preview (16 components)
 │   │   ├── prompt-chain/       # Chain builder
 │   │   ├── prompts/            # Prompt CRUD components (cards, detail, filters)
-│   │   ├── settings/           # API key + token managers
+│   │   ├── settings/           # API key + token + billing managers
 │   │   ├── system-prompts/     # System prompt manager
 │   │   ├── ui/                 # shadcn/ui primitives (do not edit manually)
+│   │   ├── upgrade-modal.tsx   # Out-of-credits upgrade dialog
 │   │   └── providers.tsx       # SessionProvider + Toaster + TooltipProvider
 │   ├── config/
 │   │   ├── constants.ts        # Models, categories, tones, templates, defaults
+│   │   ├── plans.ts            # Plan definitions, credit costs, pricing
 │   │   └── prompts.ts          # System prompts for AI optimizer + analyzer
 │   ├── lib/
 │   │   ├── actions/            # Server Actions (prompt CRUD, API keys, etc.)
 │   │   ├── ai/index.ts         # AI model factory (getModel, assemblePrompt)
-│   │   ├── auth/index.ts       # Auth.js configuration
+│   │   ├── auth/index.ts       # Auth.js configuration (includes plan in session)
 │   │   ├── db/
 │   │   │   ├── index.ts        # Database connection (Neon + Drizzle)
 │   │   │   └── schema.ts       # All table definitions
 │   │   ├── validators/         # Zod schemas
+│   │   ├── credits.ts          # Credit balance management + transactions
 │   │   ├── crypto.ts           # AES-256-GCM encrypt/decrypt for API keys
 │   │   ├── rate-limit.ts       # In-memory rate limiter
+│   │   ├── stripe.ts           # Stripe SDK, checkout, portal, customer mgmt
 │   │   ├── track-event.ts      # Prompt event tracking (copy, fork, share)
 │   │   ├── track-usage.ts      # AI API usage tracking
 │   │   └── utils.ts            # cn() utility (clsx + tailwind-merge)
 │   ├── stores/
-│   │   └── prompt-builder.ts   # Zustand store for builder state
+│   │   ├── prompt-builder.ts   # Zustand store for builder state
+│   │   └── upgrade-modal.ts    # Zustand store for upgrade modal
 │   ├── types/
 │   │   └── index.ts            # Shared TypeScript types
 │   └── middleware.ts           # Auth middleware for protected routes
@@ -225,7 +243,11 @@ Browser
   │
   ├─ Server Components (pages) ──► Server Actions ──► Drizzle ORM ──► Neon PostgreSQL
   │
-  ├─ Client Components ──► API Routes (/api/ai/*) ──► Vercel AI SDK ──► AI Provider APIs
+  ├─ Client Components ──► API Routes (/api/ai/*) ──► Credits check ──► Vercel AI SDK ──► AI Provider APIs
+  │
+  ├─ Client Components ──► API Routes (/api/stripe/*) ──► Stripe API (checkout, portal)
+  │
+  ├─ Stripe Webhooks ──► /api/stripe/webhook ──► Subscription + credit updates ──► Database
   │
   └─ REST API clients ──► /api/v1/prompts (Bearer token auth) ──► Database
 ```
@@ -280,6 +302,14 @@ All tables are defined in `src/lib/db/schema.ts`. Here's the full entity map:
 | `user_api_keys` | Encrypted user-provided API keys (AES-256-GCM) |
 | `api_tokens` | Personal access tokens for the REST API (SHA-256 hashed) |
 | `api_usage` | Per-user AI API call tracking |
+
+#### Payment Tables
+
+| Table | Purpose |
+|---|---|
+| `subscriptions` | Stripe subscription state (plan, status, period dates, stripe IDs) |
+| `credit_balances` | Per-user credit balance (monthly + bonus credits, reset date) |
+| `credit_transactions` | Credit ledger (deductions, monthly resets, top-ups) |
 
 ### Working with Migrations
 
@@ -367,12 +397,13 @@ Auth.js (NextAuth v5) is configured in `src/lib/auth/index.ts` with:
 | `/login` | Public | Client | OAuth sign-in (Google + GitHub) |
 | `/builder` | Public | Client | Prompt builder (dynamic import) |
 | `/chain` | Public | Client | Multi-step prompt chaining (dynamic import) |
+| `/pricing` | Public | Server | Pricing plans + credit purchase |
 | `/gallery` | Public | Server | Public prompt gallery with search/filters |
 | `/share/[id]` | Public | Server | Read-only view of a shared public prompt |
 | `/prompts` | Protected | Server | User's saved prompts with filters + pagination |
 | `/prompts/[id]` | Protected | Server | Edit prompt detail + version history |
 | `/system-prompts` | Protected | Server | Manage custom system prompt fragments |
-| `/settings` | Protected | Server | API key + token management |
+| `/settings` | Protected | Server | API key + token + billing management |
 | `/history` | Protected | Server | Prompt test/optimize history log |
 
 ### Special Files
@@ -414,9 +445,31 @@ All three AI routes share the same pattern: auth check → rate limit → parse 
 **Security layers on every AI route:**
 1. `auth()` — 401 if not logged in
 2. `rateLimit()` — 429 if over 20 requests/minute
-3. User API keys are checked — user's own key is used if available, otherwise falls back to server key
-4. `trackUsage()` — logs the call to `api_usage` table
-5. `savePromptHistory()` — logs prompt + output to `prompt_history` (on `onFinish` callback)
+3. `hasCredits()` — 403 with `insufficient_credits` error if out of credits
+4. User API keys are checked — user's own key is used if available, otherwise falls back to server key
+5. `deductCredit()` — deducts 1 credit per call
+6. `trackUsage()` — logs the call to `api_usage` table
+7. `savePromptHistory()` — logs prompt + output to `prompt_history` (on `onFinish` callback)
+
+### Stripe Endpoints
+
+| Endpoint | Method | Purpose | Response |
+|---|---|---|---|
+| `/api/stripe/checkout` | POST | Create Stripe checkout session for Pro subscription or credit pack | `{ url }` |
+| `/api/stripe/portal` | POST | Create Stripe billing portal session for managing subscription | `{ url }` |
+| `/api/stripe/webhook` | POST | Handle Stripe webhook events (signature-verified) | 200 |
+
+**Webhook events handled:**
+- `checkout.session.completed` — Upgrades plan to Pro or adds bonus credits for credit pack purchase
+- `invoice.paid` — Resets monthly credits on subscription renewal
+- `customer.subscription.updated` — Syncs subscription status changes
+- `customer.subscription.deleted` — Downgrades to Free plan and resets credits
+
+### Credits Endpoint
+
+| Endpoint | Method | Auth | Purpose |
+|---|---|---|---|
+| `/api/credits` | GET | Session | Returns user's credit balance (monthly, bonus, total, plan) |
 
 ### REST API
 
@@ -560,7 +613,7 @@ Components are organized by feature:
 | `prompts/` | Prompt CRUD: cards, list, detail, filters, export/import, share view |
 | `gallery/` | Public gallery: cards, filters, list |
 | `history/` | History list with expandable entries |
-| `settings/` | API key manager + API token manager |
+| `settings/` | API key manager + API token manager + billing section |
 | `system-prompts/` | System prompt CRUD manager |
 
 ### Key Components
@@ -622,11 +675,14 @@ Client Component
     → API Route:
       1. auth() check
       2. rateLimit() check
-      3. Look up user's API key for the model's provider
-      4. getModel(model, userKeys) — creates provider instance
-      5. streamText({ model, prompt }) — Vercel AI SDK
-      6. return result.toTextStreamResponse()
+      3. hasCredits() check — 403 if insufficient
+      4. Look up user's API key for the model's provider
+      5. getModel(model, userKeys) — creates provider instance
+      6. deductCredit() — 1 credit per call
+      7. streamText({ model, prompt }) — Vercel AI SDK
+      8. return result.toTextStreamResponse()
     → Client receives streaming text via useCompletion()
+    → On 403 insufficient_credits: opens upgrade modal
 ```
 
 ### Adding a New Model
@@ -651,7 +707,81 @@ Users can also create their own reusable system prompt fragments via the System 
 
 ---
 
-## 14. Security
+## 14. Payments & Credits
+
+### Plans
+
+Defined in `src/config/plans.ts`:
+
+| Plan | Credits/Month | Price | Key Limits |
+|---|---|---|---|
+| Free | 50 | $0 | Save up to 10 prompts, no REST API access |
+| Pro | 1,000 | $15/mo | Unlimited prompts, REST API access, buy credit packs |
+
+**Credit pack:** 200 additional credits for $5 (Pro plan only).
+
+**Credit costs:** All AI operations (optimize, test, analyze) cost 1 credit each.
+
+### Stripe Integration
+
+Payment processing uses **Stripe** (`src/lib/stripe.ts`):
+
+- **`getOrCreateStripeCustomer(userId, email)`** — Creates or retrieves a Stripe customer, stores the ID in the `subscriptions` table
+- **`createCheckoutSession(userId, email, mode)`** — Creates a Stripe Checkout session for Pro subscription (`"subscription"` mode) or credit pack (`"payment"` mode)
+- **`createPortalSession(userId)`** — Opens the Stripe billing portal for subscription management
+
+### Credits System
+
+Credit logic lives in `src/lib/credits.ts`:
+
+| Function | Purpose |
+|---|---|
+| `getUserCredits(userId)` | Returns `{ monthly, bonus, total, plan }` |
+| `hasCredits(userId, cost)` | Boolean check for sufficient balance |
+| `deductCredit(userId, cost, description)` | Deducts from monthly first, then bonus; logs transaction |
+| `resetMonthlyCredits(userId, plan)` | Resets monthly credits to plan amount on renewal |
+| `addBonusCredits(userId, amount, description)` | Adds bonus credits from credit pack purchases |
+| `ensureCreditBalance(userId)` | Initializes credit balance row for new users |
+
+### Payment Flows
+
+**Pro subscription:**
+1. User clicks "Upgrade to Pro" → `POST /api/stripe/checkout` with `type: "pro"`
+2. Redirected to Stripe Checkout → completes payment
+3. Stripe fires `checkout.session.completed` webhook
+4. Webhook updates subscription to Pro, resets credits to 1,000
+
+**Credit pack purchase (Pro only):**
+1. User clicks "Buy 200 Credits" → `POST /api/stripe/checkout` with `type: "credit_pack"`
+2. One-time Stripe Checkout → completes payment
+3. Webhook fires → `addBonusCredits(userId, 200)` adds bonus credits
+
+**Monthly renewal:**
+1. Stripe fires `invoice.paid` on subscription renewal
+2. Webhook calls `resetMonthlyCredits()` → monthly credits reset to 1,000
+
+**Downgrade/cancellation:**
+1. Stripe fires `customer.subscription.deleted`
+2. Webhook sets plan to Free, resets credits to 50
+
+### UI Components
+
+| Component | Location | Purpose |
+|---|---|---|
+| `PricingCards` | `src/app/pricing/pricing-cards.tsx` | Plan comparison cards with upgrade/manage buttons |
+| `BillingSection` | `src/components/settings/billing-section.tsx` | Plan + credits display on Settings page |
+| `UpgradeModal` | `src/components/upgrade-modal.tsx` | Dialog shown when user runs out of credits |
+| `CreditsBadge` | `src/components/layout/header.tsx` | Credits count in the header nav |
+
+The upgrade modal is managed by a Zustand store (`src/stores/upgrade-modal.ts`) and opens automatically when any AI endpoint returns `insufficient_credits`.
+
+### Auth Session Extension
+
+The Auth.js session includes the user's plan (`session.user.plan`). The session callback in `src/lib/auth/index.ts` queries the `subscriptions` table and defaults to `"free"` if no subscription exists.
+
+---
+
+## 15. Security
 
 ### Authentication
 
@@ -684,7 +814,7 @@ In-memory rate limiter (`src/lib/rate-limit.ts`): 20 requests per minute per use
 
 ---
 
-## 15. Styling
+## 16. Styling
 
 ### Tailwind CSS v4
 
@@ -739,7 +869,7 @@ Supported via `next-themes` (included in shadcn setup). CSS variables in `global
 
 ---
 
-## 16. Testing
+## 17. Testing
 
 ### Setup
 
@@ -786,7 +916,7 @@ vi.mock("@/lib/db", () => ({
 
 ---
 
-## 17. Deployment
+## 18. Deployment
 
 ### Vercel (Recommended)
 
@@ -805,6 +935,18 @@ pnpm db:migrate
 
 Or use `pnpm db:push` for initial setup.
 
+### Stripe
+
+1. Create products and prices in the [Stripe Dashboard](https://dashboard.stripe.com)
+2. Set `STRIPE_PRO_MONTHLY_PRICE_ID` and `STRIPE_CREDIT_PACK_PRICE_ID` to the price IDs
+3. Set up a webhook endpoint pointing to `https://your-domain.com/api/stripe/webhook` with events: `checkout.session.completed`, `invoice.paid`, `customer.subscription.updated`, `customer.subscription.deleted`
+4. Set `STRIPE_WEBHOOK_SECRET` to the webhook signing secret
+
+For local development, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhooks:
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
 ### Build Verification
 
 ```bash
@@ -814,7 +956,7 @@ pnpm start   # Test locally in production mode
 
 ---
 
-## 18. How-To Guides
+## 19. How-To Guides
 
 ### Add a New Page
 
@@ -880,7 +1022,7 @@ curl -H "Authorization: Bearer pe_your_token_here" \
 
 ---
 
-## 19. Coding Conventions
+## 20. Coding Conventions
 
 ### TypeScript
 
@@ -924,7 +1066,7 @@ Only add comments that explain *why*, not *what*. The code should be self-docume
 
 ---
 
-## 20. Troubleshooting
+## 21. Troubleshooting
 
 ### "DATABASE_URL is not set"
 
@@ -969,6 +1111,13 @@ pnpm build      # Full production build
 - Verify your API keys are correct in `.env`
 - Check the AI provider's status page for outages
 - If using user API keys, verify the key in Settings page
+
+### Stripe / payment issues
+
+- **Webhooks not firing locally:** Use `stripe listen --forward-to localhost:3000/api/stripe/webhook` with the Stripe CLI
+- **"Webhook signature verification failed":** Ensure `STRIPE_WEBHOOK_SECRET` matches the signing secret from Stripe (use the CLI secret for local dev, the dashboard secret for production)
+- **Credits not updating after purchase:** Check the Stripe webhook logs in the dashboard for failed deliveries
+- **Plan not reflecting after upgrade:** The session callback reads from the `subscriptions` table — verify the row was updated by checking `pnpm db:studio`
 
 ---
 
