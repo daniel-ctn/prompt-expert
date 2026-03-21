@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,11 +6,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { PROMPT_CATEGORIES } from "@/config/constants";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
-import type { PromptCategory } from "@/types";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { PROMPT_CATEGORIES } from '@/config/constants';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import type { PromptCategory } from '@/types';
 
 export function CategorySelector() {
   const { settings, updateSettings } = usePromptBuilderStore();
@@ -32,7 +32,7 @@ export function CategorySelector() {
             <SelectItem key={cat.value} value={cat.value}>
               <div className="flex flex-col">
                 <span>{cat.label}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   {cat.description}
                 </span>
               </div>

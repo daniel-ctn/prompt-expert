@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { useState } from 'react';
+import { Plus, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
 
 export function ConstraintsInput() {
   const { constraints, addConstraint, removeConstraint, updateConstraint } =
     usePromptBuilderStore();
-  const [newConstraint, setNewConstraint] = useState("");
+  const [newConstraint, setNewConstraint] = useState('');
 
   const handleAdd = () => {
     const trimmed = newConstraint.trim();
     if (trimmed && constraints.length < 10) {
       addConstraint(trimmed);
-      setNewConstraint("");
+      setNewConstraint('');
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       handleAdd();
     }
@@ -71,7 +71,7 @@ export function ConstraintsInput() {
           </div>
         )}
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-muted-foreground text-xs">
         {constraints.length}/10 constraints
       </p>
     </div>

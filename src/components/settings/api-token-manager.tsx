@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Plus, Trash2, Copy, Check, Key } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { Plus, Trash2, Copy, Check, Key } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -18,10 +18,10 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { createApiToken, deleteApiToken } from "@/lib/actions/api-tokens";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { createApiToken, deleteApiToken } from '@/lib/actions/api-tokens';
+import { toast } from 'sonner';
 
 interface Token {
   id: string;
@@ -37,7 +37,7 @@ interface Props {
 export function ApiTokenManager({ initialTokens }: Props) {
   const [tokens, setTokens] = useState<Token[]>(initialTokens);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [newToken, setNewToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -55,9 +55,9 @@ export function ApiTokenManager({ initialTokens }: Props) {
         },
         ...prev,
       ]);
-      setName("");
+      setName('');
     } catch {
-      toast.error("Failed to create token");
+      toast.error('Failed to create token');
     }
   };
 
@@ -65,9 +65,9 @@ export function ApiTokenManager({ initialTokens }: Props) {
     try {
       await deleteApiToken(id);
       setTokens((prev) => prev.filter((t) => t.id !== id));
-      toast.success("Token deleted");
+      toast.success('Token deleted');
     } catch {
-      toast.error("Failed to delete token");
+      toast.error('Failed to delete token');
     }
   };
 
@@ -87,10 +87,10 @@ export function ApiTokenManager({ initialTokens }: Props) {
             API Tokens
           </CardTitle>
           <CardDescription>
-            Create personal access tokens to use the{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+            Create personal access tokens to use the{' '}
+            <code className="bg-muted rounded px-1 py-0.5 text-xs">
               GET /api/v1/prompts
-            </code>{" "}
+            </code>{' '}
             endpoint.
           </CardDescription>
         </CardHeader>
@@ -109,9 +109,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
           </Button>
 
           {tokens.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No API tokens yet.
-            </p>
+            <p className="text-muted-foreground text-sm">No API tokens yet.</p>
           ) : (
             <div className="divide-y rounded-md border">
               {tokens.map((token) => (
@@ -121,7 +119,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
                 >
                   <div>
                     <p className="text-sm font-medium">{token.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       Created {new Date(token.createdAt).toLocaleDateString()}
                       {token.lastUsedAt &&
                         ` · Last used ${new Date(token.lastUsedAt).toLocaleDateString()}`}
@@ -130,7 +128,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-destructive"
+                    className="text-destructive h-8 w-8"
                     onClick={() => handleDelete(token.id)}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -152,7 +150,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {newToken ? "Token Created" : "New API Token"}
+              {newToken ? 'Token Created' : 'New API Token'}
             </DialogTitle>
             {newToken && (
               <DialogDescription>
@@ -163,11 +161,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
 
           {newToken ? (
             <div className="flex gap-2">
-              <Input
-                value={newToken}
-                readOnly
-                className="font-mono text-xs"
-              />
+              <Input value={newToken} readOnly className="font-mono text-xs" />
               <Button variant="outline" size="icon" onClick={handleCopyToken}>
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -193,10 +187,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
               <Button onClick={() => setDialogOpen(false)}>Done</Button>
             ) : (
               <>
-                <Button
-                  variant="outline"
-                  onClick={() => setDialogOpen(false)}
-                >
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancel
                 </Button>
                 <Button onClick={handleCreate} disabled={!name.trim()}>

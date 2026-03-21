@@ -1,6 +1,6 @@
-export type PlanId = "free" | "pro";
+export type PlanId = 'free' | 'pro';
 
-export type CreditOperation = "optimize" | "test" | "analyze";
+export type CreditOperation = 'optimize' | 'test' | 'analyze';
 
 export interface PlanDefinition {
   name: string;
@@ -11,30 +11,30 @@ export interface PlanDefinition {
 
 export const PLANS: Record<PlanId, PlanDefinition> = {
   free: {
-    name: "Free",
+    name: 'Free',
     credits: 50,
     price: 0,
     features: [
-      "50 AI credits per month",
-      "Prompt builder & templates",
-      "Save up to 10 prompts",
-      "Public gallery access",
-      "Community sharing",
+      '50 AI credits per month',
+      'Prompt builder & templates',
+      'Save up to 10 prompts',
+      'Public gallery access',
+      'Community sharing',
     ],
   },
   pro: {
-    name: "Pro",
+    name: 'Pro',
     credits: 1000,
     price: 15,
     features: [
-      "1,000 AI credits per month",
-      "Prompt builder & templates",
-      "Unlimited saved prompts",
-      "Public gallery access",
-      "Community sharing",
-      "Buy additional credit packs",
-      "Priority support",
-      "REST API access",
+      '1,000 AI credits per month',
+      'Prompt builder & templates',
+      'Unlimited saved prompts',
+      'Public gallery access',
+      'Community sharing',
+      'Buy additional credit packs',
+      'Priority support',
+      'REST API access',
     ],
   },
 } as const;

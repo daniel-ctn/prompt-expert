@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
 
 export function AdvancedSettings() {
   const { settings, updateSettings } = usePromptBuilderStore();
@@ -13,7 +13,7 @@ export function AdvancedSettings() {
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <Label htmlFor="examples">Include Examples</Label>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             Ask the AI to provide examples in the response
           </p>
         </div>
@@ -29,8 +29,8 @@ export function AdvancedSettings() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label>Temperature</Label>
-          <span className="text-sm text-muted-foreground">
-            {settings.temperature?.toFixed(1) ?? "0.7"}
+          <span className="text-muted-foreground text-sm">
+            {settings.temperature?.toFixed(1) ?? '0.7'}
           </span>
         </div>
         <Slider
@@ -45,7 +45,7 @@ export function AdvancedSettings() {
           step={0.1}
           className="w-full"
         />
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="text-muted-foreground flex justify-between text-xs">
           <span>Precise</span>
           <span>Balanced</span>
           <span>Creative</span>

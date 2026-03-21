@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { FolderPlus, Trash2, Folder } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { FolderPlus, Trash2, Folder } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -12,9 +12,9 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { createCollection, deleteCollection } from "@/lib/actions/prompt";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { createCollection, deleteCollection } from '@/lib/actions/prompt';
+import { toast } from 'sonner';
 
 interface Collection {
   id: string;
@@ -34,7 +34,7 @@ export function CollectionManager({
   onSelect,
 }: CollectionManagerProps) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
 
   const handleCreate = async () => {
@@ -42,11 +42,11 @@ export function CollectionManager({
     setCreating(true);
     try {
       await createCollection(name.trim());
-      toast.success("Collection created");
-      setName("");
+      toast.success('Collection created');
+      setName('');
       setOpen(false);
     } catch {
-      toast.error("Failed to create collection");
+      toast.error('Failed to create collection');
     } finally {
       setCreating(false);
     }
@@ -56,16 +56,16 @@ export function CollectionManager({
     try {
       await deleteCollection(id);
       if (activeCollection === id) onSelect(null);
-      toast.success("Collection deleted");
+      toast.success('Collection deleted');
     } catch {
-      toast.error("Failed to delete collection");
+      toast.error('Failed to delete collection');
     }
   };
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Button
-        variant={activeCollection === null ? "secondary" : "ghost"}
+        variant={activeCollection === null ? 'secondary' : 'ghost'}
         size="sm"
         onClick={() => onSelect(null)}
       >
@@ -74,7 +74,7 @@ export function CollectionManager({
       {collections.map((c) => (
         <div key={c.id} className="group flex items-center">
           <Button
-            variant={activeCollection === c.id ? "secondary" : "ghost"}
+            variant={activeCollection === c.id ? 'secondary' : 'ghost'}
             size="sm"
             onClick={() => onSelect(c.id)}
           >
@@ -105,7 +105,7 @@ export function CollectionManager({
             onChange={(e) => setName(e.target.value)}
             placeholder="Collection name..."
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleCreate();
+              if (e.key === 'Enter') handleCreate();
             }}
           />
           <DialogFooter>
@@ -113,7 +113,7 @@ export function CollectionManager({
               Cancel
             </Button>
             <Button onClick={handleCreate} disabled={!name.trim() || creating}>
-              {creating ? "Creating..." : "Create"}
+              {creating ? 'Creating...' : 'Create'}
             </Button>
           </DialogFooter>
         </DialogContent>

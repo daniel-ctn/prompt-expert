@@ -1,7 +1,13 @@
-import Link from "next/link";
-import { Plus, ChevronLeft, ChevronRight, Search, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { PromptCard } from "./prompt-card";
+import Link from 'next/link';
+import {
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Sparkles,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PromptCard } from './prompt-card';
 
 interface PromptListProps {
   prompts: {
@@ -20,14 +26,20 @@ interface PromptListProps {
   hasFilters?: boolean;
 }
 
-export function PromptList({ prompts, total, page, totalPages, hasFilters }: PromptListProps) {
+export function PromptList({
+  prompts,
+  total,
+  page,
+  totalPages,
+  hasFilters,
+}: PromptListProps) {
   if (prompts.length === 0) {
     if (hasFilters) {
       return (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <Search className="mb-4 h-10 w-10 text-muted-foreground/50" />
+          <Search className="text-muted-foreground/50 mb-4 h-10 w-10" />
           <h3 className="mb-2 text-lg font-semibold">No matching prompts</h3>
-          <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+          <p className="text-muted-foreground mb-4 max-w-sm text-sm">
             Try adjusting your search terms or clearing the filters to see all
             your prompts.
           </p>
@@ -40,9 +52,9 @@ export function PromptList({ prompts, total, page, totalPages, hasFilters }: Pro
 
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <Sparkles className="mb-4 h-10 w-10 text-muted-foreground/50" />
+        <Sparkles className="text-muted-foreground/50 mb-4 h-10 w-10" />
         <h3 className="mb-2 text-lg font-semibold">No prompts yet</h3>
-        <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+        <p className="text-muted-foreground mb-4 max-w-sm text-sm">
           Get started by creating your first prompt with the builder. Choose a
           template or start from scratch.
         </p>
@@ -56,8 +68,8 @@ export function PromptList({ prompts, total, page, totalPages, hasFilters }: Pro
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        {total} prompt{total !== 1 ? "s" : ""}
+      <p className="text-muted-foreground text-sm">
+        {total} prompt{total !== 1 ? 's' : ''}
       </p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {prompts.map((prompt) => (
@@ -80,7 +92,7 @@ export function PromptList({ prompts, total, page, totalPages, hasFilters }: Pro
             <ChevronLeft className="mr-1 h-4 w-4" />
             Previous
           </Button>
-          <span className="px-3 text-sm text-muted-foreground">
+          <span className="text-muted-foreground px-3 text-sm">
             Page {page} of {totalPages}
           </span>
           <Button
@@ -88,10 +100,7 @@ export function PromptList({ prompts, total, page, totalPages, hasFilters }: Pro
             size="sm"
             disabled={page >= totalPages}
             render={
-              <Link
-                href={`/prompts?page=${page + 1}`}
-                aria-label="Next page"
-              />
+              <Link href={`/prompts?page=${page + 1}`} aria-label="Next page" />
             }
           >
             Next

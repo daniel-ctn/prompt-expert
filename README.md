@@ -14,19 +14,19 @@ Build better prompts, get better results. An AI-powered prompt engineering tool 
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| Framework | Next.js (App Router) | 16.1 |
-| Language | TypeScript | 5.9 |
-| Styling | Tailwind CSS | 4.2 |
-| UI Components | shadcn/ui | 4.0 |
-| State Management | Zustand | 5.0 |
-| AI Integration | Vercel AI SDK | 6.0 |
-| Authentication | Auth.js (NextAuth) | 5.0 |
-| Database | Neon PostgreSQL | -- |
-| ORM | Drizzle ORM | 0.45 |
-| Validation | Zod | 4.3 |
-| Deployment | Vercel | -- |
+| Layer            | Technology           | Version |
+| ---------------- | -------------------- | ------- |
+| Framework        | Next.js (App Router) | 16.1    |
+| Language         | TypeScript           | 5.9     |
+| Styling          | Tailwind CSS         | 4.2     |
+| UI Components    | shadcn/ui            | 4.0     |
+| State Management | Zustand              | 5.0     |
+| AI Integration   | Vercel AI SDK        | 6.0     |
+| Authentication   | Auth.js (NextAuth)   | 5.0     |
+| Database         | Neon PostgreSQL      | --      |
+| ORM              | Drizzle ORM          | 0.45    |
+| Validation       | Zod                  | 4.3     |
+| Deployment       | Vercel               | --      |
 
 ## Getting Started
 
@@ -54,17 +54,17 @@ Copy the example env file and fill in your values:
 cp .env.example .env.local
 ```
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `AUTH_SECRET` | Random secret for Auth.js (`openssl rand -base64 32`) |
-| `AUTH_GOOGLE_ID` | Google OAuth client ID |
-| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
-| `AUTH_GITHUB_ID` | GitHub OAuth client ID |
-| `AUTH_GITHUB_SECRET` | GitHub OAuth client secret |
-| `OPENAI_API_KEY` | OpenAI API key (optional) |
-| `ANTHROPIC_API_KEY` | Anthropic API key (optional) |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI API key (optional) |
+| Variable                       | Description                                           |
+| ------------------------------ | ----------------------------------------------------- |
+| `DATABASE_URL`                 | Neon PostgreSQL connection string                     |
+| `AUTH_SECRET`                  | Random secret for Auth.js (`openssl rand -base64 32`) |
+| `AUTH_GOOGLE_ID`               | Google OAuth client ID                                |
+| `AUTH_GOOGLE_SECRET`           | Google OAuth client secret                            |
+| `AUTH_GITHUB_ID`               | GitHub OAuth client ID                                |
+| `AUTH_GITHUB_SECRET`           | GitHub OAuth client secret                            |
+| `OPENAI_API_KEY`               | OpenAI API key (optional)                             |
+| `ANTHROPIC_API_KEY`            | Anthropic API key (optional)                          |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI API key (optional)                          |
 
 ### Database Setup
 
@@ -124,16 +124,16 @@ src/
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Production build |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm db:push` | Push schema to database |
-| `pnpm db:generate` | Generate SQL migrations |
-| `pnpm db:migrate` | Run migrations |
-| `pnpm db:studio` | Open Drizzle Studio |
+| Command            | Description              |
+| ------------------ | ------------------------ |
+| `pnpm dev`         | Start development server |
+| `pnpm build`       | Production build         |
+| `pnpm start`       | Start production server  |
+| `pnpm lint`        | Run ESLint               |
+| `pnpm db:push`     | Push schema to database  |
+| `pnpm db:generate` | Generate SQL migrations  |
+| `pnpm db:migrate`  | Run migrations           |
+| `pnpm db:studio`   | Open Drizzle Studio      |
 
 ## Deployment
 

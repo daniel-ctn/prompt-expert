@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
-import { randomBytes, createHash } from "crypto";
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/db";
-import { apiTokens } from "@/lib/db/schema";
-import { auth } from "@/lib/auth";
+import { randomBytes, createHash } from 'crypto';
+import { and, eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { getDb } from '@/lib/db';
+import { apiTokens } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
 
 function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
+  return createHash('sha256').update(token).digest('hex');
 }
 
 async function getAuthenticatedUserId(): Promise<string> {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
   return session.user.id;
 }
 
@@ -21,12 +21,12 @@ export async function createApiToken(name: string) {
   const userId = await getAuthenticatedUserId();
   const db = getDb();
 
-  const raw = `pe_${randomBytes(32).toString("hex")}`;
+  const raw = `pe_${randomBytes(32).toString('hex')}`;
   const tokenHash = hashToken(raw);
 
   await db.insert(apiTokens).values({ userId, name, tokenHash });
 
-  revalidatePath("/settings");
+  revalidatePath('/settings');
   return raw;
 }
 
@@ -53,12 +53,10 @@ export async function deleteApiToken(id: string) {
     .delete(apiTokens)
     .where(and(eq(apiTokens.id, id), eq(apiTokens.userId, userId)));
 
-  revalidatePath("/settings");
+  revalidatePath('/settings');
 }
 
-export async function validateApiToken(
-  token: string,
-): Promise<string | null> {
+export async function validateApiToken(token: string): Promise<string | null> {
   const db = getDb();
   const tokenHash = hashToken(token);
 

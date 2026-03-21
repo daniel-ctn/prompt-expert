@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 import {
   Sparkles,
   LogOut,
@@ -17,33 +17,35 @@ import {
   Sun,
   Coins,
   CreditCard,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { APP_NAME } from "@/config/constants";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { APP_NAME } from '@/config/constants';
+import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: "/builder", label: "Builder" },
-  { href: "/chain", label: "Chain" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/prompts", label: "My Prompts" },
-  { href: "/pricing", label: "Pricing" },
+  { href: '/builder', label: 'Builder' },
+  { href: '/chain', label: 'Chain' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/prompts', label: 'My Prompts' },
+  { href: '/pricing', label: 'Pricing' },
 ];
 
-function NavLinks({ className, mobile }: { className?: string; mobile?: boolean }) {
+function NavLinks({
+  className,
+  mobile,
+}: {
+  className?: string;
+  mobile?: boolean;
+}) {
   const pathname = usePathname();
 
   return (
@@ -55,19 +57,17 @@ function NavLinks({ className, mobile }: { className?: string; mobile?: boolean 
             key={item.href}
             href={item.href}
             className={cn(
-              "text-sm font-medium transition-colors",
-              mobile
-                ? "rounded-lg px-3 py-2"
-                : "relative px-1 py-0.5",
+              'text-sm font-medium transition-colors',
+              mobile ? 'rounded-lg px-3 py-2' : 'relative px-1 py-0.5',
               isActive
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground",
-              mobile && isActive && "bg-primary/10 text-primary",
+                ? 'text-foreground'
+                : 'text-muted-foreground hover:text-foreground',
+              mobile && isActive && 'bg-primary/10 text-primary',
             )}
           >
             {item.label}
             {!mobile && isActive && (
-              <span className="absolute -bottom-3.5 left-0 right-0 h-0.5 rounded-full bg-primary" />
+              <span className="bg-primary absolute right-0 -bottom-3.5 left-0 h-0.5 rounded-full" />
             )}
           </Link>
         );
@@ -83,11 +83,11 @@ function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="h-8 w-8 text-muted-foreground"
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className="text-muted-foreground h-8 w-8"
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
-      <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
+      <Sun className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
+      <Moon className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
@@ -97,7 +97,7 @@ function CreditsBadge() {
   const [credits, setCredits] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/credits")
+    fetch('/api/credits')
       .then((r) => r.json())
       .then((data) => setCredits(data.total))
       .catch(() => {});
@@ -111,7 +111,7 @@ export function Header() {
   const { data: session, status } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+    <header className="border-border/50 bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
         <Link href="/" className="group mr-8 flex items-center gap-2.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-[#0E7490] to-[#0D9488] shadow-sm transition-shadow group-hover:shadow-[0_0_16px_rgba(13,148,136,0.35)]">
@@ -127,18 +127,18 @@ export function Header() {
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
 
-          {status === "loading" ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+          {status === 'loading' ? (
+            <div className="bg-muted h-8 w-8 animate-pulse rounded-full" />
           ) : session?.user ? (
             <Link
               href="/pricing"
-              className="hidden items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground sm:flex"
+              className="border-border/60 text-muted-foreground hover:border-primary/30 hover:text-foreground hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors sm:flex"
             >
               <Coins className="h-3.5 w-3.5" />
               <CreditsBadge />
             </Link>
           ) : null}
-          {status === "loading" ? null : session?.user ? (
+          {status === 'loading' ? null : session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -148,13 +148,13 @@ export function Header() {
                   />
                 }
               >
-                <Avatar className="h-8 w-8 ring-2 ring-border">
+                <Avatar className="ring-border h-8 w-8 ring-2">
                   <AvatarImage
-                    src={session.user.image ?? ""}
-                    alt={session.user.name ?? ""}
+                    src={session.user.image ?? ''}
+                    alt={session.user.name ?? ''}
                   />
-                  <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                    {session.user.name?.charAt(0).toUpperCase() ?? "U"}
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                    {session.user.name?.charAt(0).toUpperCase() ?? 'U'}
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
@@ -162,7 +162,7 @@ export function Header() {
                 <div className="flex items-center gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
                     <p className="font-medium">{session.user.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       {session.user.email}
                     </p>
                   </div>
@@ -207,7 +207,13 @@ export function Header() {
 
           <Sheet>
             <SheetTrigger
-              render={<Button variant="ghost" size="icon" className="h-8 w-8 md:hidden" />}
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 md:hidden"
+                />
+              }
             >
               <Menu className="h-4 w-4" />
             </SheetTrigger>

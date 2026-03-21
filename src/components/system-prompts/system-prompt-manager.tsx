@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Plus, Pencil, Trash2, Copy, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import { Plus, Pencil, Trash2, Copy, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,14 +28,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/alert-dialog';
+import { Label } from '@/components/ui/label';
 import {
   createSystemPrompt,
   updateSystemPrompt,
   deleteSystemPrompt,
-} from "@/lib/actions/system-prompts";
-import { toast } from "sonner";
+} from '@/lib/actions/system-prompts';
+import { toast } from 'sonner';
 
 interface SystemPrompt {
   id: string;
@@ -52,15 +52,15 @@ export function SystemPromptManager({ initialPrompts }: Props) {
   const [items, setItems] = useState<SystemPrompt[]>(initialPrompts);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
+  const [name, setName] = useState('');
+  const [content, setContent] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const resetForm = () => {
     setEditingId(null);
-    setName("");
-    setContent("");
+    setName('');
+    setContent('');
   };
 
   const openCreate = () => {
@@ -84,16 +84,16 @@ export function SystemPromptManager({ initialPrompts }: Props) {
         setItems((prev) =>
           prev.map((p) => (p.id === editingId ? { ...p, ...updated } : p)),
         );
-        toast.success("System prompt updated");
+        toast.success('System prompt updated');
       } else {
         const created = await createSystemPrompt(name, content);
         setItems((prev) => [created, ...prev]);
-        toast.success("System prompt created");
+        toast.success('System prompt created');
       }
       setDialogOpen(false);
       resetForm();
     } catch {
-      toast.error("Failed to save system prompt");
+      toast.error('Failed to save system prompt');
     }
   };
 
@@ -102,9 +102,9 @@ export function SystemPromptManager({ initialPrompts }: Props) {
     try {
       await deleteSystemPrompt(deleteId);
       setItems((prev) => prev.filter((p) => p.id !== deleteId));
-      toast.success("System prompt deleted");
+      toast.success('System prompt deleted');
     } catch {
-      toast.error("Failed to delete");
+      toast.error('Failed to delete');
     }
     setDeleteId(null);
   };
@@ -113,7 +113,7 @@ export function SystemPromptManager({ initialPrompts }: Props) {
     await navigator.clipboard.writeText(item.content);
     setCopiedId(item.id);
     setTimeout(() => setCopiedId(null), 2000);
-    toast.success("Copied to clipboard");
+    toast.success('Copied to clipboard');
   };
 
   return (
@@ -128,10 +128,8 @@ export function SystemPromptManager({ initialPrompts }: Props) {
       {items.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="mb-2 text-muted-foreground">
-              No system prompts yet.
-            </p>
-            <p className="mb-4 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mb-2">No system prompts yet.</p>
+            <p className="text-muted-foreground mb-4 text-sm">
               Create reusable fragments like personas, formatting rules, or
               domain context.
             </p>
@@ -172,7 +170,7 @@ export function SystemPromptManager({ initialPrompts }: Props) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-destructive"
+                      className="text-destructive h-7 w-7"
                       onClick={() => setDeleteId(item.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -180,12 +178,11 @@ export function SystemPromptManager({ initialPrompts }: Props) {
                   </div>
                 </div>
                 <CardDescription className="text-xs">
-                  Updated{" "}
-                  {new Date(item.updatedAt).toLocaleDateString()}
+                  Updated {new Date(item.updatedAt).toLocaleDateString()}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <pre className="line-clamp-4 whitespace-pre-wrap font-mono text-xs text-muted-foreground">
+                <pre className="text-muted-foreground line-clamp-4 font-mono text-xs whitespace-pre-wrap">
                   {item.content}
                 </pre>
               </CardContent>
@@ -198,7 +195,7 @@ export function SystemPromptManager({ initialPrompts }: Props) {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingId ? "Edit System Prompt" : "New System Prompt"}
+              {editingId ? 'Edit System Prompt' : 'New System Prompt'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -227,8 +224,11 @@ export function SystemPromptManager({ initialPrompts }: Props) {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={!name.trim() || !content.trim()}>
-              {editingId ? "Update" : "Create"}
+            <Button
+              onClick={handleSave}
+              disabled={!name.trim() || !content.trim()}
+            >
+              {editingId ? 'Update' : 'Create'}
             </Button>
           </DialogFooter>
         </DialogContent>

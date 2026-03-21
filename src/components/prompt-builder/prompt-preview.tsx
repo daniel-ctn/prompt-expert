@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCompletion } from "@ai-sdk/react";
-import { Copy, Sparkles, Check, Play, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { assemblePrompt } from "@/lib/ai";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
-import { useUpgradeModal } from "@/stores/upgrade-modal";
-import { ModelComparison } from "./model-comparison";
-import { PromptAnalysis } from "./prompt-analysis";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCompletion } from '@ai-sdk/react';
+import { Copy, Sparkles, Check, Play, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { assemblePrompt } from '@/lib/ai';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { useUpgradeModal } from '@/stores/upgrade-modal';
+import { ModelComparison } from './model-comparison';
+import { PromptAnalysis } from './prompt-analysis';
 import {
   VariableFiller,
   extractVariables,
   resolveVariables,
-} from "./variable-filler";
+} from './variable-filler';
 
 export function PromptPreview() {
   const {
@@ -34,9 +34,9 @@ export function PromptPreview() {
 
   const upgradeModal = useUpgradeModal();
   const [copied, setCopied] = useState<
-    "assembled" | "optimized" | "test" | null
+    'assembled' | 'optimized' | 'test' | null
   >(null);
-  const [activeTab, setActiveTab] = useState("assembled");
+  const [activeTab, setActiveTab] = useState('assembled');
   const [variableValues, setVariableValues] = useState<Record<string, string>>(
     {},
   );
@@ -53,21 +53,21 @@ export function PromptPreview() {
             outputFormat: settings.outputFormat,
             includeExamples: settings.includeExamples,
           })
-        : "",
+        : '',
     [role, context, task, constraints, settings],
   );
 
   const { complete: completeOptimize, isLoading: isOptimizeLoading } =
     useCompletion({
-      api: "/api/ai/optimize",
-      id: "optimize",
+      api: '/api/ai/optimize',
+      id: 'optimize',
       onFinish: (_prompt, completion) => {
         setOptimizedPrompt(completion);
         setIsOptimizing(false);
       },
       onError: (error) => {
         setIsOptimizing(false);
-        if (error.message.includes("insufficient_credits")) {
+        if (error.message.includes('insufficient_credits')) {
           upgradeModal.open();
         }
       },
@@ -78,10 +78,10 @@ export function PromptPreview() {
     complete: completeTest,
     isLoading: isTesting,
   } = useCompletion({
-    api: "/api/ai/test",
-    id: "test",
+    api: '/api/ai/test',
+    id: 'test',
     onError: (error) => {
-      if (error.message.includes("insufficient_credits")) {
+      if (error.message.includes('insufficient_credits')) {
         upgradeModal.open();
       }
     },
@@ -90,7 +90,7 @@ export function PromptPreview() {
   const handleOptimize = useCallback(() => {
     if (!assembledPrompt.trim()) return;
     setIsOptimizing(true);
-    setOptimizedPrompt("");
+    setOptimizedPrompt('');
     completeOptimize(assembledPrompt, {
       body: { prompt: assembledPrompt, model: settings.model },
     });
@@ -117,7 +117,7 @@ export function PromptPreview() {
 
   const handleTest = useCallback(() => {
     if (!resolvedPrompt.trim()) return;
-    setActiveTab("test");
+    setActiveTab('test');
     completeTest(resolvedPrompt, {
       body: {
         prompt: resolvedPrompt,
@@ -128,7 +128,7 @@ export function PromptPreview() {
   }, [resolvedPrompt, settings.model, settings.temperature, completeTest]);
 
   const handleCopy = useCallback(
-    async (text: string, type: "assembled" | "optimized" | "test") => {
+    async (text: string, type: 'assembled' | 'optimized' | 'test') => {
       await navigator.clipboard.writeText(text);
       setCopied(type);
       setTimeout(() => setCopied(null), 2000);
@@ -140,20 +140,20 @@ export function PromptPreview() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
         e.preventDefault();
         if (hasContent && !isOptimizeLoading && !isOptimizing) {
           handleOptimize();
         }
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize]);
 
   return (
-    <Card className="relative flex h-full flex-col overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent" />
+    <Card className="border-border/50 bg-card/80 relative flex h-full flex-col overflow-hidden backdrop-blur-sm">
+      <div className="via-primary/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-display text-lg">Prompt Preview</CardTitle>
@@ -171,18 +171,18 @@ export function PromptPreview() {
               ) : (
                 <Play className="mr-1.5 h-4 w-4" />
               )}
-              {isTesting ? "Running..." : "Test"}
+              {isTesting ? 'Running...' : 'Test'}
             </Button>
             <Button
               size="sm"
               onClick={handleOptimize}
               disabled={!hasContent || isOptimizeLoading || isOptimizing}
-              className="gap-1.5 bg-primary shadow-sm transition-all hover:glow-sm"
+              className="bg-primary hover:glow-sm gap-1.5 shadow-sm transition-all"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              {isOptimizeLoading ? "Optimizing..." : "Optimize"}
+              {isOptimizeLoading ? 'Optimizing...' : 'Optimize'}
               {!isOptimizeLoading && (
-                <kbd className="ml-1 hidden rounded border border-primary-foreground/20 bg-primary-foreground/10 px-1 py-0.5 font-mono text-[10px] text-primary-foreground/70 sm:inline-block">
+                <kbd className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground/70 ml-1 hidden rounded border px-1 py-0.5 font-mono text-[10px] sm:inline-block">
                   ⌘↵
                 </kbd>
               )}
@@ -193,7 +193,7 @@ export function PromptPreview() {
       <Separator className="opacity-50" />
       <CardContent className="flex-1 pt-4">
         {!hasContent ? (
-          <div className="flex h-full items-center justify-center text-muted-foreground">
+          <div className="text-muted-foreground flex h-full items-center justify-center">
             <div className="text-center">
               <Sparkles className="mx-auto mb-3 h-8 w-8 opacity-20" />
               <p className="text-sm">
@@ -207,18 +207,18 @@ export function PromptPreview() {
               <TabsContent value="assembled" className="flex-1">
                 <div className="relative">
                   <ScrollArea className="h-[400px] rounded-md border p-4">
-                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {assembledPrompt}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute right-2 top-2">
+                  <div className="absolute top-2 right-2">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleCopy(assembledPrompt, "assembled")}
+                      onClick={() => handleCopy(assembledPrompt, 'assembled')}
                     >
-                      {copied === "assembled" ? (
+                      {copied === 'assembled' ? (
                         <Check className="h-4 w-4 text-green-500" />
                       ) : (
                         <Copy className="h-4 w-4" />
@@ -230,18 +230,18 @@ export function PromptPreview() {
               <TabsContent value="optimized" className="flex-1">
                 <div className="relative">
                   <ScrollArea className="h-[400px] rounded-md border p-4">
-                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {optimizedPrompt}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute right-2 top-2">
+                  <div className="absolute top-2 right-2">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleCopy(optimizedPrompt, "optimized")}
+                      onClick={() => handleCopy(optimizedPrompt, 'optimized')}
                     >
-                      {copied === "optimized" ? (
+                      {copied === 'optimized' ? (
                         <Check className="h-4 w-4 text-green-500" />
                       ) : (
                         <Copy className="h-4 w-4" />
@@ -254,24 +254,24 @@ export function PromptPreview() {
                 <div className="relative">
                   <ScrollArea className="h-[400px] rounded-md border p-4">
                     {isTesting && !testOutput && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="text-muted-foreground flex items-center gap-2 text-sm">
                         <Loader2 className="h-4 w-4 animate-spin" />
                         Generating response...
                       </div>
                     )}
-                    <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {testOutput}
                     </pre>
                   </ScrollArea>
                   {testOutput && (
-                    <div className="absolute right-2 top-2">
+                    <div className="absolute top-2 right-2">
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() => handleCopy(testOutput, "test")}
+                        onClick={() => handleCopy(testOutput, 'test')}
                       >
-                        {copied === "test" ? (
+                        {copied === 'test' ? (
                           <Check className="h-4 w-4 text-green-500" />
                         ) : (
                           <Copy className="h-4 w-4" />

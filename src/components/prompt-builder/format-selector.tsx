@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,11 +6,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { OUTPUT_FORMATS } from "@/config/constants";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
-import type { OutputFormat } from "@/types";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { OUTPUT_FORMATS } from '@/config/constants';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import type { OutputFormat } from '@/types';
 
 export function FormatSelector() {
   const { settings, updateSettings } = usePromptBuilderStore();

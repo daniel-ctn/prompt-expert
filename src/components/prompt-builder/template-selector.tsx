@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { LayoutTemplate } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LayoutTemplate } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { PROMPT_TEMPLATES } from "@/config/constants";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
-import { toast } from "sonner";
+} from '@/components/ui/dropdown-menu';
+import { PROMPT_TEMPLATES } from '@/config/constants';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { toast } from 'sonner';
 
 export function TemplateSelector() {
   const { setRole, setContext, setTask, updateSettings, reset } =
@@ -40,9 +40,7 @@ export function TemplateSelector() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        render={<Button variant="outline" size="sm" />}
-      >
+      <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
         <LayoutTemplate className="mr-1.5 h-4 w-4" />
         Templates
       </DropdownMenuTrigger>

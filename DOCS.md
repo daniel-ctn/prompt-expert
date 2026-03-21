@@ -48,25 +48,25 @@ A comprehensive guide for developers joining the project. Covers setup, architec
 
 ## 2. Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| Framework | Next.js (App Router) | 16.1.7 |
-| UI Library | React | 19.2.3 |
-| Language | TypeScript | 5.x |
-| Styling | Tailwind CSS | 4.x |
-| Component Library | shadcn/ui (base-nova style) | 4.0.8 |
-| State Management | Zustand | 5.0.12 |
-| Database | PostgreSQL (Neon serverless) | — |
-| ORM | Drizzle ORM | 0.45.x |
-| Authentication | Auth.js (NextAuth v5) | 5.0.0-beta.30 |
-| AI SDK | Vercel AI SDK | 6.0.x |
-| AI Providers | OpenAI, Anthropic, Google | via `@ai-sdk/*` |
-| Validation | Zod | 4.3.6 |
-| Testing | Vitest + Testing Library | 4.1.0 |
-| Package Manager | pnpm | 10.26.0 |
-| Payments | Stripe | 20.4.x |
-| Analytics | Vercel Analytics | 2.x |
-| Compiler | React Compiler (babel plugin) | 1.0.0 |
+| Layer             | Technology                    | Version         |
+| ----------------- | ----------------------------- | --------------- |
+| Framework         | Next.js (App Router)          | 16.1.7          |
+| UI Library        | React                         | 19.2.3          |
+| Language          | TypeScript                    | 5.x             |
+| Styling           | Tailwind CSS                  | 4.x             |
+| Component Library | shadcn/ui (base-nova style)   | 4.0.8           |
+| State Management  | Zustand                       | 5.0.12          |
+| Database          | PostgreSQL (Neon serverless)  | —               |
+| ORM               | Drizzle ORM                   | 0.45.x          |
+| Authentication    | Auth.js (NextAuth v5)         | 5.0.0-beta.30   |
+| AI SDK            | Vercel AI SDK                 | 6.0.x           |
+| AI Providers      | OpenAI, Anthropic, Google     | via `@ai-sdk/*` |
+| Validation        | Zod                           | 4.3.6           |
+| Testing           | Vitest + Testing Library      | 4.1.0           |
+| Package Manager   | pnpm                          | 10.26.0         |
+| Payments          | Stripe                        | 20.4.x          |
+| Analytics         | Vercel Analytics              | 2.x             |
+| Compiler          | React Compiler (babel plugin) | 1.0.0           |
 
 ---
 
@@ -139,18 +139,18 @@ NEXT_PUBLIC_APP_URL="https://your-domain.com"
 
 ### NPM Scripts
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Production build |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm test` | Run Vitest tests |
-| `pnpm test:watch` | Run tests in watch mode |
+| Command            | Description                                  |
+| ------------------ | -------------------------------------------- |
+| `pnpm dev`         | Start development server                     |
+| `pnpm build`       | Production build                             |
+| `pnpm start`       | Start production server                      |
+| `pnpm lint`        | Run ESLint                                   |
+| `pnpm test`        | Run Vitest tests                             |
+| `pnpm test:watch`  | Run tests in watch mode                      |
 | `pnpm db:generate` | Generate a new migration from schema changes |
-| `pnpm db:migrate` | Apply pending migrations |
-| `pnpm db:push` | Push schema directly (skip migration files) |
-| `pnpm db:studio` | Open Drizzle Studio (database GUI) |
+| `pnpm db:migrate`  | Apply pending migrations                     |
+| `pnpm db:push`     | Push schema directly (skip migration files)  |
+| `pnpm db:studio`   | Open Drizzle Studio (database GUI)           |
 
 ---
 
@@ -280,36 +280,36 @@ All tables are defined in `src/lib/db/schema.ts`. Here's the full entity map:
 
 #### Auth Tables (managed by Auth.js)
 
-| Table | Purpose |
-|---|---|
-| `users` | User accounts (id, name, email, image) |
-| `accounts` | OAuth provider accounts linked to users |
-| `sessions` | Active sessions |
-| `verification_tokens` | Email verification tokens |
+| Table                 | Purpose                                 |
+| --------------------- | --------------------------------------- |
+| `users`               | User accounts (id, name, email, image)  |
+| `accounts`            | OAuth provider accounts linked to users |
+| `sessions`            | Active sessions                         |
+| `verification_tokens` | Email verification tokens               |
 
 #### Application Tables
 
-| Table | Purpose |
-|---|---|
-| `prompts` | User's saved prompts (title, content, category, settings, tags, isPublic) |
-| `prompt_versions` | Version history for each prompt |
-| `collections` | User-created folders/collections |
-| `collection_prompts` | Many-to-many join: which prompts are in which collections |
-| `favorites` | User favorites on prompts |
-| `prompt_events` | Analytics events (copy, fork, share, test, optimize) |
-| `prompt_history` | Logged prompt test/optimize runs with full input/output |
-| `system_prompts` | User's custom reusable system prompt fragments |
-| `user_api_keys` | Encrypted user-provided API keys (AES-256-GCM) |
-| `api_tokens` | Personal access tokens for the REST API (SHA-256 hashed) |
-| `api_usage` | Per-user AI API call tracking |
+| Table                | Purpose                                                                   |
+| -------------------- | ------------------------------------------------------------------------- |
+| `prompts`            | User's saved prompts (title, content, category, settings, tags, isPublic) |
+| `prompt_versions`    | Version history for each prompt                                           |
+| `collections`        | User-created folders/collections                                          |
+| `collection_prompts` | Many-to-many join: which prompts are in which collections                 |
+| `favorites`          | User favorites on prompts                                                 |
+| `prompt_events`      | Analytics events (copy, fork, share, test, optimize)                      |
+| `prompt_history`     | Logged prompt test/optimize runs with full input/output                   |
+| `system_prompts`     | User's custom reusable system prompt fragments                            |
+| `user_api_keys`      | Encrypted user-provided API keys (AES-256-GCM)                            |
+| `api_tokens`         | Personal access tokens for the REST API (SHA-256 hashed)                  |
+| `api_usage`          | Per-user AI API call tracking                                             |
 
 #### Payment Tables
 
-| Table | Purpose |
-|---|---|
-| `subscriptions` | Stripe subscription state (plan, status, period dates, stripe IDs) |
-| `credit_balances` | Per-user credit balance (monthly + bonus credits, reset date) |
-| `credit_transactions` | Credit ledger (deductions, monthly resets, top-ups) |
+| Table                 | Purpose                                                            |
+| --------------------- | ------------------------------------------------------------------ |
+| `subscriptions`       | Stripe subscription state (plan, status, period dates, stripe IDs) |
+| `credit_balances`     | Per-user credit balance (monthly + bonus credits, reset date)      |
+| `credit_transactions` | Credit ledger (deductions, monthly resets, top-ups)                |
 
 ### Working with Migrations
 
@@ -371,15 +371,17 @@ Auth.js (NextAuth v5) is configured in `src/lib/auth/index.ts` with:
    Unauthenticated users are redirected to `/login?callbackUrl=<original-path>`.
 
 3. **Server-side auth check** — In server components and server actions:
+
    ```typescript
-   import { auth } from "@/lib/auth";
+   import { auth } from '@/lib/auth';
    const session = await auth();
    // session.user.id is available
    ```
 
 4. **Client-side auth** — In client components:
+
    ```typescript
-   import { useSession, signIn, signOut } from "next-auth/react";
+   import { useSession, signIn, signOut } from 'next-auth/react';
    const { data: session, status } = useSession();
    ```
 
@@ -391,29 +393,29 @@ Auth.js (NextAuth v5) is configured in `src/lib/auth/index.ts` with:
 
 ### Page Map
 
-| Route | Auth | Type | Description |
-|---|---|---|---|
-| `/` | Public | Server | Landing page with hero + features |
-| `/login` | Public | Client | OAuth sign-in (Google + GitHub) |
-| `/builder` | Public | Client | Prompt builder (dynamic import) |
-| `/chain` | Public | Client | Multi-step prompt chaining (dynamic import) |
-| `/pricing` | Public | Server | Pricing plans + credit purchase |
-| `/gallery` | Public | Server | Public prompt gallery with search/filters |
-| `/share/[id]` | Public | Server | Read-only view of a shared public prompt |
-| `/prompts` | Protected | Server | User's saved prompts with filters + pagination |
-| `/prompts/[id]` | Protected | Server | Edit prompt detail + version history |
-| `/system-prompts` | Protected | Server | Manage custom system prompt fragments |
-| `/settings` | Protected | Server | API key + token + billing management |
-| `/history` | Protected | Server | Prompt test/optimize history log |
+| Route             | Auth      | Type   | Description                                    |
+| ----------------- | --------- | ------ | ---------------------------------------------- |
+| `/`               | Public    | Server | Landing page with hero + features              |
+| `/login`          | Public    | Client | OAuth sign-in (Google + GitHub)                |
+| `/builder`        | Public    | Client | Prompt builder (dynamic import)                |
+| `/chain`          | Public    | Client | Multi-step prompt chaining (dynamic import)    |
+| `/pricing`        | Public    | Server | Pricing plans + credit purchase                |
+| `/gallery`        | Public    | Server | Public prompt gallery with search/filters      |
+| `/share/[id]`     | Public    | Server | Read-only view of a shared public prompt       |
+| `/prompts`        | Protected | Server | User's saved prompts with filters + pagination |
+| `/prompts/[id]`   | Protected | Server | Edit prompt detail + version history           |
+| `/system-prompts` | Protected | Server | Manage custom system prompt fragments          |
+| `/settings`       | Protected | Server | API key + token + billing management           |
+| `/history`        | Protected | Server | Prompt test/optimize history log               |
 
 ### Special Files
 
-| File | Purpose |
-|---|---|
-| `layout.tsx` | Root layout: fonts, metadata, providers, header/footer |
-| `error.tsx` | Global error boundary (also per-route in `/builder`, `/prompts`) |
-| `not-found.tsx` | Custom 404 page |
-| `loading.tsx` | Skeleton loaders (per-route) |
+| File            | Purpose                                                          |
+| --------------- | ---------------------------------------------------------------- |
+| `layout.tsx`    | Root layout: fonts, metadata, providers, header/footer           |
+| `error.tsx`     | Global error boundary (also per-route in `/builder`, `/prompts`) |
+| `not-found.tsx` | Custom 404 page                                                  |
+| `loading.tsx`   | Skeleton loaders (per-route)                                     |
 
 ### SEO
 
@@ -427,13 +429,14 @@ The root layout defines a metadata `title.template` of `"%s | Prompt Expert"`. E
 
 All three AI routes share the same pattern: auth check → rate limit → parse body → resolve user API keys → call AI SDK → stream response.
 
-| Endpoint | Method | Purpose | Response |
-|---|---|---|---|
-| `/api/ai/optimize` | POST | Optimize a prompt using AI | Streaming text |
-| `/api/ai/test` | POST | Test a prompt directly against a model | Streaming text |
-| `/api/ai/analyze` | POST | Analyze prompt quality and get scores | JSON |
+| Endpoint           | Method | Purpose                                | Response       |
+| ------------------ | ------ | -------------------------------------- | -------------- |
+| `/api/ai/optimize` | POST   | Optimize a prompt using AI             | Streaming text |
+| `/api/ai/test`     | POST   | Test a prompt directly against a model | Streaming text |
+| `/api/ai/analyze`  | POST   | Analyze prompt quality and get scores  | JSON           |
 
 **Request body format (optimize/test):**
+
 ```json
 {
   "prompt": "Your prompt text...",
@@ -443,6 +446,7 @@ All three AI routes share the same pattern: auth check → rate limit → parse 
 ```
 
 **Security layers on every AI route:**
+
 1. `auth()` — 401 if not logged in
 2. `rateLimit()` — 429 if over 20 requests/minute
 3. `hasCredits()` — 403 with `insufficient_credits` error if out of credits
@@ -453,13 +457,14 @@ All three AI routes share the same pattern: auth check → rate limit → parse 
 
 ### Stripe Endpoints
 
-| Endpoint | Method | Purpose | Response |
-|---|---|---|---|
-| `/api/stripe/checkout` | POST | Create Stripe checkout session for Pro subscription or credit pack | `{ url }` |
-| `/api/stripe/portal` | POST | Create Stripe billing portal session for managing subscription | `{ url }` |
-| `/api/stripe/webhook` | POST | Handle Stripe webhook events (signature-verified) | 200 |
+| Endpoint               | Method | Purpose                                                            | Response  |
+| ---------------------- | ------ | ------------------------------------------------------------------ | --------- |
+| `/api/stripe/checkout` | POST   | Create Stripe checkout session for Pro subscription or credit pack | `{ url }` |
+| `/api/stripe/portal`   | POST   | Create Stripe billing portal session for managing subscription     | `{ url }` |
+| `/api/stripe/webhook`  | POST   | Handle Stripe webhook events (signature-verified)                  | 200       |
 
 **Webhook events handled:**
+
 - `checkout.session.completed` — Upgrades plan to Pro or adds bonus credits for credit pack purchase
 - `invoice.paid` — Resets monthly credits on subscription renewal
 - `customer.subscription.updated` — Syncs subscription status changes
@@ -467,17 +472,18 @@ All three AI routes share the same pattern: auth check → rate limit → parse 
 
 ### Credits Endpoint
 
-| Endpoint | Method | Auth | Purpose |
-|---|---|---|---|
-| `/api/credits` | GET | Session | Returns user's credit balance (monthly, bonus, total, plan) |
+| Endpoint       | Method | Auth    | Purpose                                                     |
+| -------------- | ------ | ------- | ----------------------------------------------------------- |
+| `/api/credits` | GET    | Session | Returns user's credit balance (monthly, bonus, total, plan) |
 
 ### REST API
 
-| Endpoint | Method | Auth | Purpose |
-|---|---|---|---|
-| `/api/v1/prompts` | GET | Bearer token | Fetch all user's prompts as JSON |
+| Endpoint          | Method | Auth         | Purpose                          |
+| ----------------- | ------ | ------------ | -------------------------------- |
+| `/api/v1/prompts` | GET    | Bearer token | Fetch all user's prompts as JSON |
 
 **Usage:**
+
 ```bash
 curl -H "Authorization: Bearer pe_abc123..." https://your-app.com/api/v1/prompts
 ```
@@ -496,62 +502,62 @@ Server actions are in `src/lib/actions/`. They run on the server and can be call
 
 ### `prompt.ts` — Core prompt operations
 
-| Action | Description |
-|---|---|
-| `createPrompt(input)` | Create a new prompt + version 1 |
-| `updatePrompt(input)` | Update prompt + create new version |
-| `deletePrompt(id)` | Delete a prompt and all versions |
-| `duplicatePrompt(id)` | Clone a prompt with "(copy)" suffix |
-| `getUserPrompts(filters)` | Paginated list with search/category/tag filters |
-| `getPublicPrompts(filters)` | Cached public gallery query (60s TTL) |
-| `getPromptById(id)` | Get single prompt (owner only) |
-| `getPublicPromptById(id)` | Get single public prompt with author info |
-| `getPromptVersions(promptId)` | Get all versions for a prompt |
-| `forkPrompt(id)` | Clone a public prompt into user's library |
-| `toggleFavorite(promptId)` | Add/remove from favorites |
-| `getUserFavoriteIds()` | Get set of favorite prompt IDs |
-| `getFavoriteCount(promptId)` | Count total favorites for a prompt |
-| `createCollection(name)` | Create a collection/folder |
-| `getUserCollections()` | List user's collections |
-| `addPromptToCollection(...)` | Add prompt to collection |
-| `removePromptFromCollection(...)` | Remove prompt from collection |
-| `deleteCollection(id)` | Delete a collection |
-| `getPromptAnalytics(promptId)` | Get event counts (copies, forks, shares, etc.) |
+| Action                            | Description                                     |
+| --------------------------------- | ----------------------------------------------- |
+| `createPrompt(input)`             | Create a new prompt + version 1                 |
+| `updatePrompt(input)`             | Update prompt + create new version              |
+| `deletePrompt(id)`                | Delete a prompt and all versions                |
+| `duplicatePrompt(id)`             | Clone a prompt with "(copy)" suffix             |
+| `getUserPrompts(filters)`         | Paginated list with search/category/tag filters |
+| `getPublicPrompts(filters)`       | Cached public gallery query (60s TTL)           |
+| `getPromptById(id)`               | Get single prompt (owner only)                  |
+| `getPublicPromptById(id)`         | Get single public prompt with author info       |
+| `getPromptVersions(promptId)`     | Get all versions for a prompt                   |
+| `forkPrompt(id)`                  | Clone a public prompt into user's library       |
+| `toggleFavorite(promptId)`        | Add/remove from favorites                       |
+| `getUserFavoriteIds()`            | Get set of favorite prompt IDs                  |
+| `getFavoriteCount(promptId)`      | Count total favorites for a prompt              |
+| `createCollection(name)`          | Create a collection/folder                      |
+| `getUserCollections()`            | List user's collections                         |
+| `addPromptToCollection(...)`      | Add prompt to collection                        |
+| `removePromptFromCollection(...)` | Remove prompt from collection                   |
+| `deleteCollection(id)`            | Delete a collection                             |
+| `getPromptAnalytics(promptId)`    | Get event counts (copies, forks, shares, etc.)  |
 
 ### `system-prompts.ts`
 
-| Action | Description |
-|---|---|
+| Action                              | Description                            |
+| ----------------------------------- | -------------------------------------- |
 | `createSystemPrompt(name, content)` | Create reusable system prompt fragment |
-| `getUserSystemPrompts()` | List all user's system prompts |
-| `updateSystemPrompt(id, data)` | Update name/content |
-| `deleteSystemPrompt(id)` | Delete a system prompt |
+| `getUserSystemPrompts()`            | List all user's system prompts         |
+| `updateSystemPrompt(id, data)`      | Update name/content                    |
+| `deleteSystemPrompt(id)`            | Delete a system prompt                 |
 
 ### `api-keys.ts`
 
-| Action | Description |
-|---|---|
-| `saveApiKey(provider, key)` | Encrypt and store user's API key |
-| `deleteApiKey(provider)` | Remove stored API key |
-| `getUserApiKeyProviders()` | List which providers have keys configured |
-| `getUserApiKey(userId, provider)` | Decrypt and return key (internal use) |
+| Action                            | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `saveApiKey(provider, key)`       | Encrypt and store user's API key          |
+| `deleteApiKey(provider)`          | Remove stored API key                     |
+| `getUserApiKeyProviders()`        | List which providers have keys configured |
+| `getUserApiKey(userId, provider)` | Decrypt and return key (internal use)     |
 
 ### `api-tokens.ts`
 
-| Action | Description |
-|---|---|
-| `createApiToken(name)` | Generate a `pe_...` token, store hash |
-| `getUserApiTokens()` | List tokens (without the raw value) |
-| `deleteApiToken(id)` | Delete a token |
+| Action                    | Description                               |
+| ------------------------- | ----------------------------------------- |
+| `createApiToken(name)`    | Generate a `pe_...` token, store hash     |
+| `getUserApiTokens()`      | List tokens (without the raw value)       |
+| `deleteApiToken(id)`      | Delete a token                            |
 | `validateApiToken(token)` | Hash and look up — returns userId or null |
 
 ### `prompt-history.ts`
 
-| Action | Description |
-|---|---|
+| Action                            | Description                    |
+| --------------------------------- | ------------------------------ |
 | `savePromptHistory(userId, data)` | Log a prompt test/optimize run |
-| `getUserPromptHistory(limit)` | Get recent history entries |
-| `clearPromptHistory()` | Delete all history for user |
+| `getUserPromptHistory(limit)`     | Get recent history entries     |
+| `clearPromptHistory()`            | Delete all history for user    |
 
 ---
 
@@ -582,6 +588,7 @@ interface PromptBuilderStore {
 ```
 
 **Usage in components:**
+
 ```typescript
 const { role, setRole } = usePromptBuilderStore();
 // or select specific slices to avoid re-renders:
@@ -604,29 +611,31 @@ For everything else (forms, dialogs, loading states), components use regular `us
 
 Components are organized by feature:
 
-| Directory | Contents |
-|---|---|
-| `ui/` | shadcn/ui primitives — **do not edit manually**, use `npx shadcn add <name>` |
-| `layout/` | Header (nav + auth dropdown) and Footer |
-| `prompt-builder/` | All builder controls: inputs, selectors, preview, analysis, comparison |
-| `prompt-chain/` | Chain builder for multi-step workflows |
-| `prompts/` | Prompt CRUD: cards, list, detail, filters, export/import, share view |
-| `gallery/` | Public gallery: cards, filters, list |
-| `history/` | History list with expandable entries |
-| `settings/` | API key manager + API token manager + billing section |
-| `system-prompts/` | System prompt CRUD manager |
+| Directory         | Contents                                                                     |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `ui/`             | shadcn/ui primitives — **do not edit manually**, use `npx shadcn add <name>` |
+| `layout/`         | Header (nav + auth dropdown) and Footer                                      |
+| `prompt-builder/` | All builder controls: inputs, selectors, preview, analysis, comparison       |
+| `prompt-chain/`   | Chain builder for multi-step workflows                                       |
+| `prompts/`        | Prompt CRUD: cards, list, detail, filters, export/import, share view         |
+| `gallery/`        | Public gallery: cards, filters, list                                         |
+| `history/`        | History list with expandable entries                                         |
+| `settings/`       | API key manager + API token manager + billing section                        |
+| `system-prompts/` | System prompt CRUD manager                                                   |
 
 ### Key Components
 
 #### Prompt Builder (`prompt-builder/index.tsx`)
 
 Two-column layout:
+
 - **Left:** Controls card with ModelSelector, CategorySelector, ToneSelector, FormatSelector, RoleInput, ContextInput, TaskInput, ConstraintsInput, AdvancedSettings, TemplateSelector, SavePromptDialog
 - **Right:** PromptPreview (sticky, shows assembled/optimized/test tabs)
 
 #### Prompt Preview (`prompt-builder/prompt-preview.tsx`)
 
 The main output panel. Key features:
+
 - Assembles prompt in real-time from builder state
 - "Optimize" button streams optimized version from AI
 - "Test" button runs the prompt against the selected model
@@ -638,6 +647,7 @@ The main output panel. Key features:
 #### Prompt Card (`prompts/prompt-card.tsx`)
 
 Displays a saved prompt with:
+
 - Title, description, category badge, tags
 - Public/private indicator
 - Dropdown menu: Copy, Duplicate, Share Link, Edit, Delete (with confirmation)
@@ -658,14 +668,14 @@ Models are defined in three places that must stay in sync:
 
 ### Currently Supported Models
 
-| Model | Provider |
-|---|---|
-| `gpt-4.1` | OpenAI |
-| `gpt-4.1-mini` | OpenAI |
-| `claude-opus-4-6` | Anthropic |
+| Model               | Provider  |
+| ------------------- | --------- |
+| `gpt-4.1`           | OpenAI    |
+| `gpt-4.1-mini`      | OpenAI    |
+| `claude-opus-4-6`   | Anthropic |
 | `claude-sonnet-4-6` | Anthropic |
-| `gemini-2.5-pro` | Google |
-| `gemini-2.5-flash` | Google |
+| `gemini-2.5-pro`    | Google    |
+| `gemini-2.5-flash`  | Google    |
 
 ### How AI Calls Work
 
@@ -713,10 +723,10 @@ Users can also create their own reusable system prompt fragments via the System 
 
 Defined in `src/config/plans.ts`:
 
-| Plan | Credits/Month | Price | Key Limits |
-|---|---|---|---|
-| Free | 50 | $0 | Save up to 10 prompts, no REST API access |
-| Pro | 1,000 | $15/mo | Unlimited prompts, REST API access, buy credit packs |
+| Plan | Credits/Month | Price  | Key Limits                                           |
+| ---- | ------------- | ------ | ---------------------------------------------------- |
+| Free | 50            | $0     | Save up to 10 prompts, no REST API access            |
+| Pro  | 1,000         | $15/mo | Unlimited prompts, REST API access, buy credit packs |
 
 **Credit pack:** 200 additional credits for $5 (Pro plan only).
 
@@ -734,44 +744,48 @@ Payment processing uses **Stripe** (`src/lib/stripe.ts`):
 
 Credit logic lives in `src/lib/credits.ts`:
 
-| Function | Purpose |
-|---|---|
-| `getUserCredits(userId)` | Returns `{ monthly, bonus, total, plan }` |
-| `hasCredits(userId, cost)` | Boolean check for sufficient balance |
-| `deductCredit(userId, cost, description)` | Deducts from monthly first, then bonus; logs transaction |
-| `resetMonthlyCredits(userId, plan)` | Resets monthly credits to plan amount on renewal |
-| `addBonusCredits(userId, amount, description)` | Adds bonus credits from credit pack purchases |
-| `ensureCreditBalance(userId)` | Initializes credit balance row for new users |
+| Function                                       | Purpose                                                  |
+| ---------------------------------------------- | -------------------------------------------------------- |
+| `getUserCredits(userId)`                       | Returns `{ monthly, bonus, total, plan }`                |
+| `hasCredits(userId, cost)`                     | Boolean check for sufficient balance                     |
+| `deductCredit(userId, cost, description)`      | Deducts from monthly first, then bonus; logs transaction |
+| `resetMonthlyCredits(userId, plan)`            | Resets monthly credits to plan amount on renewal         |
+| `addBonusCredits(userId, amount, description)` | Adds bonus credits from credit pack purchases            |
+| `ensureCreditBalance(userId)`                  | Initializes credit balance row for new users             |
 
 ### Payment Flows
 
 **Pro subscription:**
+
 1. User clicks "Upgrade to Pro" → `POST /api/stripe/checkout` with `type: "pro"`
 2. Redirected to Stripe Checkout → completes payment
 3. Stripe fires `checkout.session.completed` webhook
 4. Webhook updates subscription to Pro, resets credits to 1,000
 
 **Credit pack purchase (Pro only):**
+
 1. User clicks "Buy 200 Credits" → `POST /api/stripe/checkout` with `type: "credit_pack"`
 2. One-time Stripe Checkout → completes payment
 3. Webhook fires → `addBonusCredits(userId, 200)` adds bonus credits
 
 **Monthly renewal:**
+
 1. Stripe fires `invoice.paid` on subscription renewal
 2. Webhook calls `resetMonthlyCredits()` → monthly credits reset to 1,000
 
 **Downgrade/cancellation:**
+
 1. Stripe fires `customer.subscription.deleted`
 2. Webhook sets plan to Free, resets credits to 50
 
 ### UI Components
 
-| Component | Location | Purpose |
-|---|---|---|
-| `PricingCards` | `src/app/pricing/pricing-cards.tsx` | Plan comparison cards with upgrade/manage buttons |
-| `BillingSection` | `src/components/settings/billing-section.tsx` | Plan + credits display on Settings page |
-| `UpgradeModal` | `src/components/upgrade-modal.tsx` | Dialog shown when user runs out of credits |
-| `CreditsBadge` | `src/components/layout/header.tsx` | Credits count in the header nav |
+| Component        | Location                                      | Purpose                                           |
+| ---------------- | --------------------------------------------- | ------------------------------------------------- |
+| `PricingCards`   | `src/app/pricing/pricing-cards.tsx`           | Plan comparison cards with upgrade/manage buttons |
+| `BillingSection` | `src/components/settings/billing-section.tsx` | Plan + credits display on Settings page           |
+| `UpgradeModal`   | `src/components/upgrade-modal.tsx`            | Dialog shown when user runs out of credits        |
+| `CreditsBadge`   | `src/components/layout/header.tsx`            | Credits count in the header nav                   |
 
 The upgrade modal is managed by a Zustand store (`src/stores/upgrade-modal.ts`) and opens automatically when any AI endpoint returns `insufficient_credits`.
 
@@ -823,14 +837,15 @@ The project uses Tailwind v4 with CSS-based configuration (no `tailwind.config.j
 ```javascript
 // postcss.config.mjs
 const config = {
-  plugins: { "@tailwindcss/postcss": {} },
+  plugins: { '@tailwindcss/postcss': {} },
 };
 ```
 
 Global CSS is in `src/app/globals.css` which imports:
+
 ```css
-@import "tailwindcss";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'shadcn/tailwind.css';
 ```
 
 ### shadcn/ui
@@ -842,6 +857,7 @@ Components are in `src/components/ui/`. Configuration is in `components.json`:
 - Icons: `lucide-react`
 
 **To add a new shadcn component:**
+
 ```bash
 npx shadcn@latest add <component-name>
 ```
@@ -851,9 +867,9 @@ npx shadcn@latest add <component-name>
 ### Utility Function
 
 ```typescript
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 // Combines clsx + tailwind-merge for conditional + conflict-free class names
-cn("px-4 py-2", isActive && "bg-primary", className)
+cn('px-4 py-2', isActive && 'bg-primary', className);
 ```
 
 ### Responsive Design
@@ -888,28 +904,29 @@ pnpm test:watch    # Watch mode
 
 ### Existing Tests
 
-| File | Tests | What's Covered |
-|---|---|---|
-| `rate-limit.test.ts` | 4 | Rate limiter: allows, blocks, resets, key isolation |
-| `variables.test.ts` | 5 | Variable extraction + resolution from prompt text |
-| `assemble-prompt.test.ts` | 4 | Prompt assembly with different parameters |
+| File                      | Tests | What's Covered                                      |
+| ------------------------- | ----- | --------------------------------------------------- |
+| `rate-limit.test.ts`      | 4     | Rate limiter: allows, blocks, resets, key isolation |
+| `variables.test.ts`       | 5     | Variable extraction + resolution from prompt text   |
+| `assemble-prompt.test.ts` | 4     | Prompt assembly with different parameters           |
 
 ### Writing New Tests
 
 ```typescript
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from 'vitest';
 
-describe("myFunction", () => {
-  it("does the expected thing", () => {
-    const result = myFunction("input");
-    expect(result).toBe("output");
+describe('myFunction', () => {
+  it('does the expected thing', () => {
+    const result = myFunction('input');
+    expect(result).toBe('output');
   });
 });
 ```
 
 For testing server actions that use the database, you'll need to mock `getDb()`:
+
 ```typescript
-vi.mock("@/lib/db", () => ({
+vi.mock('@/lib/db', () => ({
   getDb: () => mockDb,
 }));
 ```
@@ -929,6 +946,7 @@ vi.mock("@/lib/db", () => ({
 Use [Neon](https://neon.tech) for serverless PostgreSQL. The connection string goes in `DATABASE_URL`.
 
 After deploying, run migrations:
+
 ```bash
 pnpm db:migrate
 ```
@@ -943,6 +961,7 @@ Or use `pnpm db:push` for initial setup.
 4. Set `STRIPE_WEBHOOK_SECRET` to the webhook signing secret
 
 For local development, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhooks:
+
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
@@ -993,19 +1012,19 @@ This auto-installs the component to `src/components/ui/`.
 3. Export async functions that call `getAuthenticatedUserId()` and interact with the database
 
 ```typescript
-"use server";
+'use server';
 
-import { getDb } from "@/lib/db";
-import { myTable } from "@/lib/db/schema";
-import { auth } from "@/lib/auth";
+import { getDb } from '@/lib/db';
+import { myTable } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
 
 export async function myAction(input: string) {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
 
   const db = getDb();
   // ... do database work
-  revalidatePath("/my-page");
+  revalidatePath('/my-page');
 }
 ```
 
@@ -1049,14 +1068,15 @@ curl -H "Authorization: Bearer pe_your_token_here" \
 ### Imports
 
 Use the `@/` path alias for all imports:
+
 ```typescript
-import { Button } from "@/components/ui/button";
-import { getDb } from "@/lib/db";
+import { Button } from '@/components/ui/button';
+import { getDb } from '@/lib/db';
 ```
 
 ### Comments
 
-Only add comments that explain *why*, not *what*. The code should be self-documenting.
+Only add comments that explain _why_, not _what_. The code should be self-documenting.
 
 ### Error Handling
 
@@ -1085,6 +1105,7 @@ The rate limiter allows 20 AI requests per minute. Wait 60 seconds and try again
 ### Drizzle migration errors
 
 If you get "relation does not exist" errors, your database schema is out of date:
+
 ```bash
 pnpm db:push    # Quick fix: push current schema
 # or
@@ -1094,6 +1115,7 @@ pnpm db:migrate # Apply pending migrations
 ### shadcn/ui component errors
 
 If a component import fails after a shadcn update:
+
 ```bash
 npx shadcn@latest add <component-name> --overwrite
 ```
@@ -1121,4 +1143,4 @@ pnpm build      # Full production build
 
 ---
 
-*Last updated: March 2026*
+_Last updated: March 2026_

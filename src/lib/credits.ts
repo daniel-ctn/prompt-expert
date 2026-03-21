@@ -1,9 +1,13 @@
-"use server";
+'use server';
 
-import { getDb } from "@/lib/db";
-import { creditBalances, creditTransactions, subscriptions } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
-import { PLANS, type PlanId } from "@/config/plans";
+import { getDb } from '@/lib/db';
+import {
+  creditBalances,
+  creditTransactions,
+  subscriptions,
+} from '@/lib/db/schema';
+import { eq, sql } from 'drizzle-orm';
+import { PLANS, type PlanId } from '@/config/plans';
 
 export interface CreditInfo {
   monthly: number;
@@ -43,7 +47,7 @@ export async function getUserCredits(userId: string): Promise<CreditInfo> {
     where: eq(subscriptions.userId, userId),
   });
 
-  const plan: PlanId = (sub?.plan as PlanId) || "free";
+  const plan: PlanId = (sub?.plan as PlanId) || 'free';
   const monthly = balance?.monthlyCredits ?? PLANS[plan].credits;
   const bonus = balance?.bonusCredits ?? 0;
 
@@ -55,7 +59,10 @@ export async function getUserCredits(userId: string): Promise<CreditInfo> {
   };
 }
 
-export async function hasCredits(userId: string, cost: number): Promise<boolean> {
+export async function hasCredits(
+  userId: string,
+  cost: number,
+): Promise<boolean> {
   const credits = await getUserCredits(userId);
   return credits.total >= cost;
 }
@@ -77,8 +84,8 @@ export async function deductCredit(
   const total = balance.monthlyCredits + balance.bonusCredits;
   if (total < cost) return false;
 
-  let monthlyDeduction = Math.min(balance.monthlyCredits, cost);
-  let bonusDeduction = cost - monthlyDeduction;
+  const monthlyDeduction = Math.min(balance.monthlyCredits, cost);
+  const bonusDeduction = cost - monthlyDeduction;
 
   await db
     .update(creditBalances)
@@ -92,7 +99,7 @@ export async function deductCredit(
   await db.insert(creditTransactions).values({
     userId,
     amount: -cost,
-    type: "deduction",
+    type: 'deduction',
     description,
   });
 
@@ -131,7 +138,7 @@ export async function resetMonthlyCredits(
   await db.insert(creditTransactions).values({
     userId,
     amount: credits,
-    type: "monthly_reset",
+    type: 'monthly_reset',
     description: `Monthly credit reset (${plan} plan)`,
   });
 }
@@ -155,7 +162,7 @@ export async function addBonusCredits(
   await db.insert(creditTransactions).values({
     userId,
     amount,
-    type: "top_up",
+    type: 'top_up',
     description,
   });
 }

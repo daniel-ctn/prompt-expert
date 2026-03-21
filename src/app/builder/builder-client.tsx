@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 const PromptBuilder = dynamic(
-  () => import("@/components/prompt-builder").then((m) => m.PromptBuilder),
+  () => import('@/components/prompt-builder').then((m) => m.PromptBuilder),
   { ssr: false },
 );
 

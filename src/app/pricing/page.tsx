@@ -1,20 +1,25 @@
-import { auth } from "@/lib/auth";
-import { getUserCredits } from "@/lib/credits";
-import { PricingCards } from "./pricing-cards";
-import type { Metadata } from "next";
+import { auth } from '@/lib/auth';
+import { getUserCredits } from '@/lib/credits';
+import { PricingCards } from './pricing-cards';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Pricing — Prompt Expert",
-  description: "Choose a plan that fits your prompt engineering needs.",
+  title: 'Pricing — Prompt Expert',
+  description: 'Choose a plan that fits your prompt engineering needs.',
 };
 
 export default async function PricingPage() {
   const session = await auth();
-  let currentPlan: "free" | "pro" = "free";
-  let credits: Awaited<ReturnType<typeof getUserCredits>> = { monthly: 0, bonus: 0, total: 0, plan: "free" };
+  let currentPlan: 'free' | 'pro' = 'free';
+  let credits: Awaited<ReturnType<typeof getUserCredits>> = {
+    monthly: 0,
+    bonus: 0,
+    total: 0,
+    plan: 'free',
+  };
 
   if (session?.user?.id) {
-    currentPlan = session.user.plan || "free";
+    currentPlan = session.user.plan || 'free';
     credits = await getUserCredits(session.user.id);
   }
 
@@ -25,8 +30,9 @@ export default async function PricingPage() {
           Simple, transparent
           <span className="text-gradient"> pricing</span>
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Start free with 50 AI credits per month. Upgrade when you need more power.
+        <p className="text-muted-foreground mx-auto mt-4 max-w-xl">
+          Start free with 50 AI credits per month. Upgrade when you need more
+          power.
         </p>
       </div>
 

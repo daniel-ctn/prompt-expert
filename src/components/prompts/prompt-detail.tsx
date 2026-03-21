@@ -1,37 +1,32 @@
-"use client";
+'use client';
 
-import { useState, useMemo, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { updatePrompt } from "@/lib/actions/prompt";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { updatePrompt } from '@/lib/actions/prompt';
+import { toast } from 'sonner';
 
 function computeDiff(oldText: string, newText: string) {
-  const oldLines = oldText.split("\n");
-  const newLines = newText.split("\n");
-  const result: { type: "same" | "added" | "removed"; text: string }[] = [];
+  const oldLines = oldText.split('\n');
+  const newLines = newText.split('\n');
+  const result: { type: 'same' | 'added' | 'removed'; text: string }[] = [];
 
   const maxLen = Math.max(oldLines.length, newLines.length);
   let oi = 0;
@@ -40,22 +35,22 @@ function computeDiff(oldText: string, newText: string) {
   while (oi < oldLines.length || ni < newLines.length) {
     if (oi < oldLines.length && ni < newLines.length) {
       if (oldLines[oi] === newLines[ni]) {
-        result.push({ type: "same", text: oldLines[oi] });
+        result.push({ type: 'same', text: oldLines[oi] });
         oi++;
         ni++;
       } else {
-        result.push({ type: "removed", text: oldLines[oi] });
+        result.push({ type: 'removed', text: oldLines[oi] });
         oi++;
         if (ni < newLines.length) {
-          result.push({ type: "added", text: newLines[ni] });
+          result.push({ type: 'added', text: newLines[ni] });
           ni++;
         }
       }
     } else if (oi < oldLines.length) {
-      result.push({ type: "removed", text: oldLines[oi] });
+      result.push({ type: 'removed', text: oldLines[oi] });
       oi++;
     } else {
-      result.push({ type: "added", text: newLines[ni] });
+      result.push({ type: 'added', text: newLines[ni] });
       ni++;
     }
   }
@@ -87,7 +82,7 @@ interface PromptDetailProps {
 export function PromptDetail({ prompt, versions }: PromptDetailProps) {
   const router = useRouter();
   const [title, setTitle] = useState(prompt.title);
-  const [description, setDescription] = useState(prompt.description ?? "");
+  const [description, setDescription] = useState(prompt.description ?? '');
   const [content, setContent] = useState(prompt.content);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -111,10 +106,10 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
         description,
         content,
       });
-      toast.success("Prompt updated");
+      toast.success('Prompt updated');
       router.refresh();
     } catch {
-      toast.error("Failed to update prompt");
+      toast.error('Failed to update prompt');
     } finally {
       setSaving(false);
     }
@@ -122,13 +117,13 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         if (!saving) handleSave();
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [saving, handleSave]);
 
   const handleCopy = async () => {
@@ -161,11 +156,11 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
             ) : (
               <Copy className="mr-1.5 h-4 w-4" />
             )}
-            {copied ? "Copied" : "Copy"}
+            {copied ? 'Copied' : 'Copy'}
           </Button>
           <Button size="sm" onClick={handleSave} disabled={saving}>
             <Save className="mr-1.5 h-4 w-4" />
-            {saving ? "Saving..." : "Save"}
+            {saving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
@@ -218,7 +213,7 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
             </CardHeader>
             <CardContent>
               {versions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   No versions recorded yet.
                 </p>
               ) : (
@@ -229,12 +224,12 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                         <span className="text-sm font-medium">
                           Version {version.versionNumber}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           {version.createdAt.toLocaleDateString()}
                         </span>
                       </div>
                       <ScrollArea className="mt-2 h-32 rounded-md border p-3">
-                        <pre className="whitespace-pre-wrap font-mono text-xs">
+                        <pre className="font-mono text-xs whitespace-pre-wrap">
                           {version.content}
                         </pre>
                       </ScrollArea>
@@ -296,7 +291,7 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                   </div>
                 </div>
                 {diffLeft && diffRight && diffLeft === diffRight && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Select two different versions to compare.
                   </p>
                 )}
@@ -307,21 +302,21 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                         <div
                           key={i}
                           className={
-                            line.type === "added"
-                              ? "bg-green-500/15 text-green-700 dark:text-green-400"
-                              : line.type === "removed"
-                                ? "bg-red-500/15 text-red-700 dark:text-red-400"
-                                : "text-muted-foreground"
+                            line.type === 'added'
+                              ? 'bg-green-500/15 text-green-700 dark:text-green-400'
+                              : line.type === 'removed'
+                                ? 'bg-red-500/15 text-red-700 dark:text-red-400'
+                                : 'text-muted-foreground'
                           }
                         >
-                          <span className="mr-2 inline-block w-4 select-none text-right opacity-60">
-                            {line.type === "added"
-                              ? "+"
-                              : line.type === "removed"
-                                ? "-"
-                                : " "}
+                          <span className="mr-2 inline-block w-4 text-right opacity-60 select-none">
+                            {line.type === 'added'
+                              ? '+'
+                              : line.type === 'removed'
+                                ? '-'
+                                : ' '}
                           </span>
-                          {line.text || "\u00A0"}
+                          {line.text || '\u00A0'}
                         </div>
                       ))}
                     </div>

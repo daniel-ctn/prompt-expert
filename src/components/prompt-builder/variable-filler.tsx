@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import { Variable } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { useMemo } from 'react';
+import { Variable } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
 const VARIABLE_REGEX = /\{\{([^}]+)\}\}/g;
 
@@ -43,7 +43,7 @@ export function VariableFiller({
   return (
     <div className="space-y-3 rounded-lg border p-4">
       <div className="flex items-center gap-2">
-        <Variable className="h-4 w-4 text-muted-foreground" />
+        <Variable className="text-muted-foreground h-4 w-4" />
         <span className="text-sm font-medium">Variables</span>
         <Badge variant="secondary" className="text-xs">
           {variables.length}
@@ -52,12 +52,10 @@ export function VariableFiller({
       <div className="grid gap-3 sm:grid-cols-2">
         {variables.map((name) => (
           <div key={name} className="space-y-1">
-            <Label className="text-xs font-mono">{`{{${name}}}`}</Label>
+            <Label className="font-mono text-xs">{`{{${name}}}`}</Label>
             <Input
-              value={values[name] ?? ""}
-              onChange={(e) =>
-                onChange({ ...values, [name]: e.target.value })
-              }
+              value={values[name] ?? ''}
+              onChange={(e) => onChange({ ...values, [name]: e.target.value })}
               placeholder={`Enter ${name}...`}
               className="h-8 text-sm"
             />

@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { and, desc, eq, ilike, sql } from "drizzle-orm";
-import { revalidatePath, unstable_cache } from "next/cache";
-import { getDb } from "@/lib/db";
+import { and, desc, eq, ilike, sql } from 'drizzle-orm';
+import { revalidatePath, unstable_cache } from 'next/cache';
+import { getDb } from '@/lib/db';
 import {
   prompts,
   promptVersions,
@@ -11,22 +11,22 @@ import {
   favorites,
   collections,
   collectionPrompts,
-} from "@/lib/db/schema";
-import { trackPromptEvent } from "@/lib/track-event";
-import { auth } from "@/lib/auth";
+} from '@/lib/db/schema';
+import { trackPromptEvent } from '@/lib/track-event';
+import { auth } from '@/lib/auth';
 import {
   createPromptSchema,
   updatePromptSchema,
-} from "@/lib/validators/prompt";
+} from '@/lib/validators/prompt';
 import type {
   CreatePromptInput,
   UpdatePromptInput,
-} from "@/lib/validators/prompt";
+} from '@/lib/validators/prompt';
 
 async function getAuthenticatedUserId(): Promise<string> {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
   return session.user.id;
 }
@@ -52,7 +52,7 @@ export async function createPrompt(input: CreatePromptInput) {
     versionNumber: 1,
   });
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
   return prompt;
 }
 
@@ -67,7 +67,7 @@ export async function updatePrompt(input: UpdatePromptInput) {
   });
 
   if (!existing) {
-    throw new Error("Prompt not found");
+    throw new Error('Prompt not found');
   }
 
   const [updated] = await db
@@ -90,7 +90,7 @@ export async function updatePrompt(input: UpdatePromptInput) {
     });
   }
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
   return updated;
 }
 
@@ -102,7 +102,7 @@ export async function deletePrompt(id: string) {
     .delete(prompts)
     .where(and(eq(prompts.id, id), eq(prompts.userId, userId)));
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
 }
 
 export async function duplicatePrompt(id: string) {
@@ -114,7 +114,7 @@ export async function duplicatePrompt(id: string) {
   });
 
   if (!original) {
-    throw new Error("Prompt not found");
+    throw new Error('Prompt not found');
   }
 
   const [duplicated] = await db
@@ -131,7 +131,7 @@ export async function duplicatePrompt(id: string) {
     })
     .returning();
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
   return duplicated;
 }
 
@@ -246,8 +246,8 @@ async function fetchPublicPrompts(
 }
 
 export async function getPublicPrompts({
-  search = "",
-  category = "",
+  search = '',
+  category = '',
   page = 1,
   pageSize = 12,
 }: {
@@ -258,7 +258,7 @@ export async function getPublicPrompts({
 } = {}) {
   const cached = unstable_cache(
     () => fetchPublicPrompts(search, category, page, pageSize),
-    ["public-prompts", search, category, String(page)],
+    ['public-prompts', search, category, String(page)],
     { revalidate: 60 },
   );
   return cached();
@@ -273,7 +273,7 @@ export async function forkPrompt(id: string) {
   });
 
   if (!original) {
-    throw new Error("Public prompt not found");
+    throw new Error('Public prompt not found');
   }
 
   const [forked] = await db
@@ -290,8 +290,8 @@ export async function forkPrompt(id: string) {
     })
     .returning();
 
-  trackPromptEvent(id, "fork");
-  revalidatePath("/prompts");
+  trackPromptEvent(id, 'fork');
+  revalidatePath('/prompts');
   return forked;
 }
 
@@ -339,7 +339,7 @@ export async function getPromptVersions(promptId: string) {
   });
 
   if (!prompt) {
-    throw new Error("Prompt not found");
+    throw new Error('Prompt not found');
   }
 
   return db.query.promptVersions.findMany({
@@ -394,7 +394,7 @@ export async function getFavoriteCount(promptId: string): Promise<number> {
   return Number(result[0].count);
 }
 
-export async function createCollection(name: string, description = "") {
+export async function createCollection(name: string, description = '') {
   const userId = await getAuthenticatedUserId();
   const db = getDb();
 
@@ -403,7 +403,7 @@ export async function createCollection(name: string, description = "") {
     .values({ userId, name, description })
     .returning();
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
   return collection;
 }
 
@@ -426,16 +426,19 @@ export async function addPromptToCollection(
   const db = getDb();
 
   const collection = await db.query.collections.findFirst({
-    where: and(eq(collections.id, collectionId), eq(collections.userId, userId)),
+    where: and(
+      eq(collections.id, collectionId),
+      eq(collections.userId, userId),
+    ),
   });
-  if (!collection) throw new Error("Collection not found");
+  if (!collection) throw new Error('Collection not found');
 
   await db
     .insert(collectionPrompts)
     .values({ collectionId, promptId })
     .onConflictDoNothing();
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
 }
 
 export async function removePromptFromCollection(
@@ -446,9 +449,12 @@ export async function removePromptFromCollection(
   const db = getDb();
 
   const collection = await db.query.collections.findFirst({
-    where: and(eq(collections.id, collectionId), eq(collections.userId, userId)),
+    where: and(
+      eq(collections.id, collectionId),
+      eq(collections.userId, userId),
+    ),
   });
-  if (!collection) throw new Error("Collection not found");
+  if (!collection) throw new Error('Collection not found');
 
   await db
     .delete(collectionPrompts)
@@ -459,7 +465,7 @@ export async function removePromptFromCollection(
       ),
     );
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
 }
 
 export async function deleteCollection(id: string) {
@@ -470,7 +476,7 @@ export async function deleteCollection(id: string) {
     .delete(collections)
     .where(and(eq(collections.id, id), eq(collections.userId, userId)));
 
-  revalidatePath("/prompts");
+  revalidatePath('/prompts');
 }
 
 export async function getPromptAnalytics(promptId: string) {
@@ -480,7 +486,7 @@ export async function getPromptAnalytics(promptId: string) {
   const prompt = await db.query.prompts.findFirst({
     where: and(eq(prompts.id, promptId), eq(prompts.userId, userId)),
   });
-  if (!prompt) throw new Error("Prompt not found");
+  if (!prompt) throw new Error('Prompt not found');
 
   const events = await db
     .select({

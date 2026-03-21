@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { PROMPT_CATEGORIES } from "@/config/constants";
+} from '@/components/ui/select';
+import { PROMPT_CATEGORIES } from '@/config/constants';
 
 export function PromptFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchValue, setSearchValue] = useState(
-    searchParams.get("search") ?? "",
+    searchParams.get('search') ?? '',
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const updateParam = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (value && value !== "all") {
+      if (value && value !== 'all') {
         params.set(key, value);
       } else {
         params.delete(key);
       }
-      params.delete("page");
+      params.delete('page');
       router.push(`/prompts?${params.toString()}`);
     },
     [router, searchParams],
@@ -38,7 +38,7 @@ export function PromptFilters() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      updateParam("search", searchValue);
+      updateParam('search', searchValue);
     }, 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -48,7 +48,7 @@ export function PromptFilters() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <Input
           placeholder="Search prompts..."
           className="pl-9"
@@ -57,8 +57,8 @@ export function PromptFilters() {
         />
       </div>
       <Select
-        defaultValue={searchParams.get("category") ?? "all"}
-        onValueChange={(value) => updateParam("category", value ?? "all")}
+        defaultValue={searchParams.get('category') ?? 'all'}
+        onValueChange={(value) => updateParam('category', value ?? 'all')}
       >
         <SelectTrigger className="w-full sm:w-44">
           <SelectValue placeholder="All categories" />

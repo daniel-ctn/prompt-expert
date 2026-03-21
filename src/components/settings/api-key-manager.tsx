@@ -1,39 +1,39 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check, Eye, EyeOff, Key, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react';
+import { Check, Eye, EyeOff, Key, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { saveApiKey, deleteApiKey } from "@/lib/actions/api-keys";
-import { toast } from "sonner";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { saveApiKey, deleteApiKey } from '@/lib/actions/api-keys';
+import { toast } from 'sonner';
 
 const PROVIDERS = [
   {
-    id: "openai",
-    name: "OpenAI",
-    placeholder: "sk-...",
-    description: "GPT-4.1, GPT-4.1 Mini",
+    id: 'openai',
+    name: 'OpenAI',
+    placeholder: 'sk-...',
+    description: 'GPT-4.1, GPT-4.1 Mini',
   },
   {
-    id: "anthropic",
-    name: "Anthropic",
-    placeholder: "sk-ant-...",
-    description: "Claude Opus 4-6, Claude Sonnet 4-6",
+    id: 'anthropic',
+    name: 'Anthropic',
+    placeholder: 'sk-ant-...',
+    description: 'Claude Opus 4-6, Claude Sonnet 4-6',
   },
   {
-    id: "google",
-    name: "Google AI",
-    placeholder: "AIza...",
-    description: "Gemini 2.5 Pro, Gemini 2.5 Flash",
+    id: 'google',
+    name: 'Google AI',
+    placeholder: 'AIza...',
+    description: 'Gemini 2.5 Pro, Gemini 2.5 Flash',
   },
 ] as const;
 
@@ -55,10 +55,12 @@ export function ApiKeyManager({ savedProviders }: Props) {
     try {
       await saveApiKey(providerId, key.trim());
       setSaved((prev) => new Set([...prev, providerId]));
-      setValues((prev) => ({ ...prev, [providerId]: "" }));
-      toast.success(`${PROVIDERS.find((p) => p.id === providerId)?.name} key saved`);
+      setValues((prev) => ({ ...prev, [providerId]: '' }));
+      toast.success(
+        `${PROVIDERS.find((p) => p.id === providerId)?.name} key saved`,
+      );
     } catch {
-      toast.error("Failed to save API key");
+      toast.error('Failed to save API key');
     }
     setSaving(null);
   };
@@ -71,9 +73,9 @@ export function ApiKeyManager({ savedProviders }: Props) {
         next.delete(providerId);
         return next;
       });
-      toast.success("API key removed");
+      toast.success('API key removed');
     } catch {
-      toast.error("Failed to remove API key");
+      toast.error('Failed to remove API key');
     }
   };
 
@@ -93,9 +95,12 @@ export function ApiKeyManager({ savedProviders }: Props) {
         {PROVIDERS.map((provider) => (
           <div key={provider.id} className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor={`key-${provider.id}`} className="text-sm font-medium">
+              <Label
+                htmlFor={`key-${provider.id}`}
+                className="text-sm font-medium"
+              >
                 {provider.name}
-                <span className="ml-2 text-xs font-normal text-muted-foreground">
+                <span className="text-muted-foreground ml-2 text-xs font-normal">
                   {provider.description}
                 </span>
               </Label>
@@ -110,8 +115,8 @@ export function ApiKeyManager({ savedProviders }: Props) {
               <div className="relative flex-1">
                 <Input
                   id={`key-${provider.id}`}
-                  type={visible.has(provider.id) ? "text" : "password"}
-                  value={values[provider.id] ?? ""}
+                  type={visible.has(provider.id) ? 'text' : 'password'}
+                  value={values[provider.id] ?? ''}
                   onChange={(e) =>
                     setValues((prev) => ({
                       ...prev,
@@ -120,7 +125,7 @@ export function ApiKeyManager({ savedProviders }: Props) {
                   }
                   placeholder={
                     saved.has(provider.id)
-                      ? "••••••••  (replace existing)"
+                      ? '••••••••  (replace existing)'
                       : provider.placeholder
                   }
                   className="pr-10 font-mono text-sm"
@@ -128,7 +133,7 @@ export function ApiKeyManager({ savedProviders }: Props) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-0 h-full w-10"
+                  className="absolute top-0 right-0 h-full w-10"
                   onClick={() =>
                     setVisible((prev) => {
                       const next = new Set(prev);
@@ -148,10 +153,12 @@ export function ApiKeyManager({ savedProviders }: Props) {
               </div>
               <Button
                 onClick={() => handleSave(provider.id)}
-                disabled={!values[provider.id]?.trim() || saving === provider.id}
+                disabled={
+                  !values[provider.id]?.trim() || saving === provider.id
+                }
                 size="sm"
               >
-                {saving === provider.id ? "Saving..." : "Save"}
+                {saving === provider.id ? 'Saving...' : 'Save'}
               </Button>
               {saved.has(provider.id) && (
                 <Button

@@ -1,9 +1,9 @@
-"use server";
+'use server';
 
-import { desc, eq } from "drizzle-orm";
-import { getDb } from "@/lib/db";
-import { promptHistory } from "@/lib/db/schema";
-import { auth } from "@/lib/auth";
+import { desc, eq } from 'drizzle-orm';
+import { getDb } from '@/lib/db';
+import { promptHistory } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
 
 export async function savePromptHistory(
   userId: string,
@@ -24,7 +24,7 @@ export async function savePromptHistory(
 
 export async function getUserPromptHistory(limit = 50) {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
 
   const db = getDb();
   return db
@@ -44,7 +44,7 @@ export async function getUserPromptHistory(limit = 50) {
 
 export async function clearPromptHistory() {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
 
   const db = getDb();
   await db

@@ -1,28 +1,28 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { useCompletion } from "@ai-sdk/react";
-import { Play, Loader2, Copy, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useCallback } from 'react';
+import { useCompletion } from '@ai-sdk/react';
+import { Play, Loader2, Copy, Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { AI_MODELS } from "@/config/constants";
-import { useUpgradeModal } from "@/stores/upgrade-modal";
-import type { AIModel } from "@/types";
+} from '@/components/ui/select';
+import { AI_MODELS } from '@/config/constants';
+import { useUpgradeModal } from '@/stores/upgrade-modal';
+import type { AIModel } from '@/types';
 
 interface ModelComparisonProps {
   prompt: string;
@@ -45,10 +45,10 @@ function ComparisonSlot({
   const [copied, setCopied] = useState(false);
   const upgradeModal = useUpgradeModal();
   const { completion, complete, isLoading } = useCompletion({
-    api: "/api/ai/test",
+    api: '/api/ai/test',
     id: `compare-${id}`,
     onError: (error) => {
-      if (error.message.includes("insufficient_credits")) {
+      if (error.message.includes('insufficient_credits')) {
         upgradeModal.open();
       }
     },
@@ -105,18 +105,18 @@ function ComparisonSlot({
       </div>
       <ScrollArea className="h-64 p-3">
         {isLoading && !completion && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-2 text-sm">
             <Loader2 className="h-4 w-4 animate-spin" />
             Generating...
           </div>
         )}
         {completion ? (
-          <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed">
+          <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap">
             {completion}
           </pre>
         ) : (
           !isLoading && (
-            <p className="text-center text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-center text-xs">
               Click play to run
             </p>
           )
@@ -129,8 +129,8 @@ function ComparisonSlot({
 export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<[AIModel, AIModel]>([
-    "gpt-4.1-mini",
-    "claude-sonnet-4-6",
+    'gpt-4.1-mini',
+    'claude-sonnet-4-6',
   ]);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -182,7 +182,7 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
               />
             ))}
           </div>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-center text-xs">
             Each model receives the same prompt. Click play on each panel to
             generate, or select different models to compare.
           </p>

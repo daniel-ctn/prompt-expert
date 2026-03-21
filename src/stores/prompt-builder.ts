@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { DEFAULT_PROMPT_SETTINGS } from "@/config/constants";
-import type { PromptSettings } from "@/types";
+import { create } from 'zustand';
+import { DEFAULT_PROMPT_SETTINGS } from '@/config/constants';
+import type { PromptSettings } from '@/types';
 
 interface PromptBuilderStore {
   role: string;
@@ -26,13 +26,13 @@ interface PromptBuilderStore {
 }
 
 const initialState = {
-  role: "",
-  context: "",
-  task: "",
+  role: '',
+  context: '',
+  task: '',
   constraints: [] as string[],
   settings: { ...DEFAULT_PROMPT_SETTINGS },
-  generatedPrompt: "",
-  optimizedPrompt: "",
+  generatedPrompt: '',
+  optimizedPrompt: '',
   isOptimizing: false,
 };
 

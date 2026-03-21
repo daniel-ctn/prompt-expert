@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { ChevronLeft, ChevronRight, Search, Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { GalleryCard } from "./gallery-card";
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, Search, Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { GalleryCard } from './gallery-card';
 
 interface GalleryListProps {
   prompts: {
@@ -33,9 +33,9 @@ export function GalleryList({
     if (hasFilters) {
       return (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <Search className="mb-4 h-10 w-10 text-muted-foreground/50" />
+          <Search className="text-muted-foreground/50 mb-4 h-10 w-10" />
           <h3 className="mb-2 text-lg font-semibold">No matching prompts</h3>
-          <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+          <p className="text-muted-foreground mb-4 max-w-sm text-sm">
             Try adjusting your search terms or clearing the filters.
           </p>
           <Button variant="outline" render={<Link href="/gallery" />}>
@@ -47,9 +47,9 @@ export function GalleryList({
 
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <Globe className="mb-4 h-10 w-10 text-muted-foreground/50" />
+        <Globe className="text-muted-foreground/50 mb-4 h-10 w-10" />
         <h3 className="mb-2 text-lg font-semibold">No public prompts yet</h3>
-        <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+        <p className="text-muted-foreground mb-4 max-w-sm text-sm">
           Be the first to share a prompt! Make any of your prompts public from
           the builder.
         </p>
@@ -60,8 +60,8 @@ export function GalleryList({
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        {total} public prompt{total !== 1 ? "s" : ""}
+      <p className="text-muted-foreground text-sm">
+        {total} public prompt{total !== 1 ? 's' : ''}
       </p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {prompts.map((prompt) => (
@@ -88,7 +88,7 @@ export function GalleryList({
             <ChevronLeft className="mr-1 h-4 w-4" />
             Previous
           </Button>
-          <span className="px-3 text-sm text-muted-foreground">
+          <span className="text-muted-foreground px-3 text-sm">
             Page {page} of {totalPages}
           </span>
           <Button
@@ -96,10 +96,7 @@ export function GalleryList({
             size="sm"
             disabled={page >= totalPages}
             render={
-              <Link
-                href={`/gallery?page=${page + 1}`}
-                aria-label="Next page"
-              />
+              <Link href={`/gallery?page=${page + 1}`} aria-label="Next page" />
             }
           >
             Next

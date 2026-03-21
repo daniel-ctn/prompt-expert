@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { and, desc, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/db";
-import { systemPrompts } from "@/lib/db/schema";
-import { auth } from "@/lib/auth";
+import { and, desc, eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { getDb } from '@/lib/db';
+import { systemPrompts } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
 
 async function getAuthenticatedUserId(): Promise<string> {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
   return session.user.id;
 }
 
@@ -21,7 +21,7 @@ export async function createSystemPrompt(name: string, content: string) {
     .values({ userId, name, content })
     .returning();
 
-  revalidatePath("/system-prompts");
+  revalidatePath('/system-prompts');
   return created;
 }
 
@@ -49,7 +49,7 @@ export async function updateSystemPrompt(
     .where(and(eq(systemPrompts.id, id), eq(systemPrompts.userId, userId)))
     .returning();
 
-  revalidatePath("/system-prompts");
+  revalidatePath('/system-prompts');
   return updated;
 }
 
@@ -61,5 +61,5 @@ export async function deleteSystemPrompt(id: string) {
     .delete(systemPrompts)
     .where(and(eq(systemPrompts.id, id), eq(systemPrompts.userId, userId)));
 
-  revalidatePath("/system-prompts");
+  revalidatePath('/system-prompts');
 }

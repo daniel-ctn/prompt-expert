@@ -1,15 +1,15 @@
-"use server";
+'use server';
 
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/db";
-import { userApiKeys } from "@/lib/db/schema";
-import { auth } from "@/lib/auth";
-import { encrypt, decrypt } from "@/lib/crypto";
+import { and, eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { getDb } from '@/lib/db';
+import { userApiKeys } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
+import { encrypt, decrypt } from '@/lib/crypto';
 
 async function getAuthenticatedUserId(): Promise<string> {
   const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  if (!session?.user?.id) throw new Error('Unauthorized');
   return session.user.id;
 }
 
@@ -37,7 +37,7 @@ export async function saveApiKey(provider: string, key: string) {
     await db.insert(userApiKeys).values({ userId, provider, encryptedKey });
   }
 
-  revalidatePath("/settings");
+  revalidatePath('/settings');
 }
 
 export async function deleteApiKey(provider: string) {
@@ -50,7 +50,7 @@ export async function deleteApiKey(provider: string) {
       and(eq(userApiKeys.userId, userId), eq(userApiKeys.provider, provider)),
     );
 
-  revalidatePath("/settings");
+  revalidatePath('/settings');
 }
 
 export async function getUserApiKeyProviders(): Promise<string[]> {

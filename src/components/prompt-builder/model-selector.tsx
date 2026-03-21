@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,14 +6,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Lightbulb } from "lucide-react";
-import { AI_MODELS, MODEL_RECOMMENDATIONS } from "@/config/constants";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
-import type { AIModel } from "@/types";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Lightbulb } from 'lucide-react';
+import { AI_MODELS, MODEL_RECOMMENDATIONS } from '@/config/constants';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import type { AIModel } from '@/types';
 
 export function ModelSelector() {
   const { settings, updateSettings } = usePromptBuilderStore();
@@ -36,12 +36,15 @@ export function ModelSelector() {
           {AI_MODELS.map((model) => (
             <SelectItem key={model.value} value={model.value}>
               <span className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground uppercase">
+                <span className="text-muted-foreground text-xs uppercase">
                   {model.provider}
                 </span>
                 <span>{model.label}</span>
                 {model.value === recommendation?.model && (
-                  <Badge variant="outline" className="ml-1 px-1 py-0 text-[10px]">
+                  <Badge
+                    variant="outline"
+                    className="ml-1 px-1 py-0 text-[10px]"
+                  >
                     Recommended
                   </Badge>
                 )}
@@ -58,11 +61,11 @@ export function ModelSelector() {
           onClick={() => updateSettings({ model: recommendation.model })}
         >
           <Lightbulb className="h-3 w-3 shrink-0 text-yellow-500" />
-          <span className="text-xs text-muted-foreground">
+          <span className="text-muted-foreground text-xs">
             {recommendation.reason}
-            {" — "}
-            <span className="font-medium text-foreground">
-              Use{" "}
+            {' — '}
+            <span className="text-foreground font-medium">
+              Use{' '}
               {AI_MODELS.find((m) => m.value === recommendation.model)?.label}
             </span>
           </span>

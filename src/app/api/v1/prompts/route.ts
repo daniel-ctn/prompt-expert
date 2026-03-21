@@ -1,22 +1,22 @@
-import { eq, desc } from "drizzle-orm";
-import { getDb } from "@/lib/db";
-import { prompts } from "@/lib/db/schema";
-import { validateApiToken } from "@/lib/actions/api-tokens";
+import { eq, desc } from 'drizzle-orm';
+import { getDb } from '@/lib/db';
+import { prompts } from '@/lib/db/schema';
+import { validateApiToken } from '@/lib/actions/api-tokens';
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
-  const token = authHeader?.replace("Bearer ", "");
+  const authHeader = req.headers.get('authorization');
+  const token = authHeader?.replace('Bearer ', '');
 
   if (!token) {
     return Response.json(
-      { error: "Missing Authorization header. Use: Bearer pe_..." },
+      { error: 'Missing Authorization header. Use: Bearer pe_...' },
       { status: 401 },
     );
   }
 
   const userId = await validateApiToken(token);
   if (!userId) {
-    return Response.json({ error: "Invalid API token" }, { status: 401 });
+    return Response.json({ error: 'Invalid API token' }, { status: 401 });
   }
 
   const db = getDb();

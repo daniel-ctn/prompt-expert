@@ -1,36 +1,36 @@
 export type PromptCategory =
-  | "instruction"
-  | "creative"
-  | "code"
-  | "analysis"
-  | "qa"
-  | "conversation";
+  | 'instruction'
+  | 'creative'
+  | 'code'
+  | 'analysis'
+  | 'qa'
+  | 'conversation';
 
 export type ToneStyle =
-  | "formal"
-  | "casual"
-  | "technical"
-  | "creative"
-  | "concise"
-  | "detailed";
+  | 'formal'
+  | 'casual'
+  | 'technical'
+  | 'creative'
+  | 'concise'
+  | 'detailed';
 
 export type OutputFormat =
-  | "text"
-  | "json"
-  | "markdown"
-  | "list"
-  | "code"
-  | "table";
+  | 'text'
+  | 'json'
+  | 'markdown'
+  | 'list'
+  | 'code'
+  | 'table';
 
 export type AIModel =
-  | "gpt-4.1"
-  | "gpt-4.1-mini"
-  | "claude-opus-4-6"
-  | "claude-sonnet-4-6"
-  | "gemini-2.5-pro"
-  | "gemini-2.5-flash";
+  | 'gpt-4.1'
+  | 'gpt-4.1-mini'
+  | 'claude-opus-4-6'
+  | 'claude-sonnet-4-6'
+  | 'gemini-2.5-pro'
+  | 'gemini-2.5-flash';
 
-export type AIProvider = "openai" | "anthropic" | "google";
+export type AIProvider = 'openai' | 'anthropic' | 'google';
 
 export interface PromptSettings {
   model: AIModel;

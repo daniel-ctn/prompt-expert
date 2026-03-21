@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Copy, Check, GitFork, Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Copy, Check, GitFork, Share2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { forkPrompt } from "@/lib/actions/prompt";
-import { trackPromptEvent } from "@/lib/track-event";
-import { toast } from "sonner";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { forkPrompt } from '@/lib/actions/prompt';
+import { trackPromptEvent } from '@/lib/track-event';
+import { toast } from 'sonner';
 
 interface SharedPromptViewProps {
   prompt: {
@@ -39,26 +39,26 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, "copy");
+    trackPromptEvent(prompt.id, 'copy');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShareLink = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    trackPromptEvent(prompt.id, "share");
+    trackPromptEvent(prompt.id, 'share');
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 2000);
-    toast.success("Link copied to clipboard");
+    toast.success('Link copied to clipboard');
   };
 
   const handleFork = async () => {
     setForking(true);
     try {
       await forkPrompt(prompt.id);
-      toast.success("Prompt forked to your library");
+      toast.success('Prompt forked to your library');
     } catch {
-      toast.error("Sign in to fork prompts");
+      toast.error('Sign in to fork prompts');
     } finally {
       setForking(false);
     }
@@ -86,13 +86,13 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
-              <AvatarImage src={prompt.authorImage ?? ""} />
+              <AvatarImage src={prompt.authorImage ?? ''} />
               <AvatarFallback className="text-xs">
-                {prompt.authorName?.charAt(0).toUpperCase() ?? "?"}
+                {prompt.authorName?.charAt(0).toUpperCase() ?? '?'}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm text-muted-foreground">
-              {prompt.authorName ?? "Anonymous"}
+            <span className="text-muted-foreground text-sm">
+              {prompt.authorName ?? 'Anonymous'}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
               ) : (
                 <Share2 className="mr-1.5 h-4 w-4" />
               )}
-              {linkCopied ? "Copied" : "Share"}
+              {linkCopied ? 'Copied' : 'Share'}
             </Button>
             <Button variant="outline" size="sm" onClick={handleCopy}>
               {copied ? (
@@ -110,11 +110,11 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
               ) : (
                 <Copy className="mr-1.5 h-4 w-4" />
               )}
-              {copied ? "Copied" : "Copy"}
+              {copied ? 'Copied' : 'Copy'}
             </Button>
             <Button size="sm" onClick={handleFork} disabled={forking}>
               <GitFork className="mr-1.5 h-4 w-4" />
-              {forking ? "Forking..." : "Fork"}
+              {forking ? 'Forking...' : 'Fork'}
             </Button>
           </div>
         </div>
@@ -122,7 +122,7 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
       <Separator />
       <CardContent className="pt-4">
         <ScrollArea className="max-h-[500px] rounded-md border p-4">
-          <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+          <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
             {prompt.content}
           </pre>
         </ScrollArea>

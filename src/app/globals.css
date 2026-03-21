@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -125,17 +125,27 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans scroll-smooth;
+    @apply scroll-smooth font-sans;
   }
 }
 
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, oklch(0.55 0.27 264), oklch(0.5 0.28 290), oklch(0.65 0.2 310));
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.55 0.27 264),
+      oklch(0.5 0.28 290),
+      oklch(0.65 0.2 310)
+    );
   }
   .dark .text-gradient {
-    background-image: linear-gradient(135deg, oklch(0.72 0.22 264), oklch(0.65 0.25 290), oklch(0.75 0.18 310));
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.72 0.22 264),
+      oklch(0.65 0.25 290),
+      oklch(0.75 0.18 310)
+    );
   }
   .glass {
     @apply bg-background/80 backdrop-blur-xl;
@@ -152,41 +162,68 @@
     box-shadow: 0 0 20px oklch(0.637 0.237 264 / 20%);
   }
   .glow-md {
-    box-shadow: 0 0 40px oklch(0.457 0.243 264 / 20%), 0 0 80px oklch(0.5 0.28 290 / 10%);
+    box-shadow:
+      0 0 40px oklch(0.457 0.243 264 / 20%),
+      0 0 80px oklch(0.5 0.28 290 / 10%);
   }
   .dark .glow-md {
-    box-shadow: 0 0 40px oklch(0.637 0.237 264 / 25%), 0 0 80px oklch(0.65 0.25 290 / 12%);
+    box-shadow:
+      0 0 40px oklch(0.637 0.237 264 / 25%),
+      0 0 80px oklch(0.65 0.25 290 / 12%);
   }
   .gradient-border {
     position: relative;
   }
   .gradient-border::after {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, oklch(0.55 0.27 264 / 40%), oklch(0.5 0.28 290 / 20%), transparent);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: linear-gradient(
+      135deg,
+      oklch(0.55 0.27 264 / 40%),
+      oklch(0.5 0.28 290 / 20%),
+      transparent
+    );
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
     pointer-events: none;
   }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes fade-in-up {
@@ -200,15 +237,31 @@
   }
 }
 
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
 .animate-gradient-shift {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
 }
-.animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
-.animate-delay-500 { animation-delay: 500ms; }
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+.animate-delay-200 {
+  animation-delay: 200ms;
+}
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+.animate-delay-400 {
+  animation-delay: 400ms;
+}
+.animate-delay-500 {
+  animation-delay: 500ms;
+}

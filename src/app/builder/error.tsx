@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { AlertCircle } from 'lucide-react';
 
 export default function BuilderError({
   error,
@@ -18,9 +18,9 @@ export default function BuilderError({
   return (
     <div className="container mx-auto max-w-6xl px-4 py-12">
       <div className="flex flex-col items-center justify-center gap-4 text-center">
-        <AlertCircle className="h-12 w-12 text-destructive" />
+        <AlertCircle className="text-destructive h-12 w-12" />
         <h2 className="text-2xl font-bold">Builder error</h2>
-        <p className="max-w-md text-muted-foreground">
+        <p className="text-muted-foreground max-w-md">
           Something went wrong loading the prompt builder. Please try again.
         </p>
         <Button onClick={reset}>Try again</Button>

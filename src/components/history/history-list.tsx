@@ -1,17 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Copy, Check, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Copy, Check, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,9 +16,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { clearPromptHistory } from "@/lib/actions/prompt-history";
-import { toast } from "sonner";
+} from '@/components/ui/alert-dialog';
+import { clearPromptHistory } from '@/lib/actions/prompt-history';
+import { toast } from 'sonner';
 
 interface HistoryEntry {
   id: string;
@@ -54,9 +49,9 @@ export function HistoryList({ initialHistory }: Props) {
     try {
       await clearPromptHistory();
       setEntries([]);
-      toast.success("History cleared");
+      toast.success('History cleared');
     } catch {
-      toast.error("Failed to clear history");
+      toast.error('Failed to clear history');
     }
     setShowClearDialog(false);
   };
@@ -65,8 +60,8 @@ export function HistoryList({ initialHistory }: Props) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <p className="mb-2 text-muted-foreground">No history yet.</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground mb-2">No history yet.</p>
+          <p className="text-muted-foreground text-sm">
             Test or optimize prompts to see your history here.
           </p>
         </CardContent>
@@ -95,34 +90,32 @@ export function HistoryList({ initialHistory }: Props) {
             <Card key={entry.id}>
               <CardHeader
                 className="cursor-pointer pb-3"
-                onClick={() =>
-                  setExpandedId(isExpanded ? null : entry.id)
-                }
+                onClick={() => setExpandedId(isExpanded ? null : entry.id)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CardTitle className="text-sm font-medium">
-                      {entry.endpoint === "test"
-                        ? "Prompt Test"
-                        : "Optimization"}
+                      {entry.endpoint === 'test'
+                        ? 'Prompt Test'
+                        : 'Optimization'}
                     </CardTitle>
                     <Badge variant="secondary" className="text-xs">
                       {entry.model}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {new Date(entry.createdAt).toLocaleString()}
                     </span>
                     {isExpanded ? (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      <ChevronUp className="text-muted-foreground h-4 w-4" />
                     ) : (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="text-muted-foreground h-4 w-4" />
                     )}
                   </div>
                 </div>
                 {!isExpanded && (
-                  <p className="line-clamp-1 font-mono text-xs text-muted-foreground">
+                  <p className="text-muted-foreground line-clamp-1 font-mono text-xs">
                     {entry.promptContent}
                   </p>
                 )}
@@ -149,7 +142,7 @@ export function HistoryList({ initialHistory }: Props) {
                       </Button>
                     </div>
                     <ScrollArea className="max-h-40 rounded-md border p-3">
-                      <pre className="whitespace-pre-wrap font-mono text-xs">
+                      <pre className="font-mono text-xs whitespace-pre-wrap">
                         {entry.promptContent}
                       </pre>
                     </ScrollArea>
@@ -175,7 +168,7 @@ export function HistoryList({ initialHistory }: Props) {
                       </Button>
                     </div>
                     <ScrollArea className="max-h-60 rounded-md border p-3">
-                      <pre className="whitespace-pre-wrap font-mono text-xs">
+                      <pre className="font-mono text-xs whitespace-pre-wrap">
                         {entry.output}
                       </pre>
                     </ScrollArea>

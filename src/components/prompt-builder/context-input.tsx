@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
 
 export function ContextInput() {
   const { context, setContext } = usePromptBuilderStore();
@@ -18,7 +18,7 @@ export function ContextInput() {
         rows={3}
         className="resize-y"
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="text-muted-foreground text-xs">
         {context.length}/2000 characters
       </p>
     </div>

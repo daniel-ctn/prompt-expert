@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Copy, GitFork, Check, Heart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Copy, GitFork, Check, Heart } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { forkPrompt, toggleFavorite } from "@/lib/actions/prompt";
-import { trackPromptEvent } from "@/lib/track-event";
-import { toast } from "sonner";
+} from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { forkPrompt, toggleFavorite } from '@/lib/actions/prompt';
+import { trackPromptEvent } from '@/lib/track-event';
+import { toast } from 'sonner';
 
 interface GalleryCardProps {
   prompt: {
@@ -37,19 +37,19 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, "copy");
+    trackPromptEvent(prompt.id, 'copy');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    toast.success("Prompt copied to clipboard");
+    toast.success('Prompt copied to clipboard');
   };
 
   const handleFork = async () => {
     setForking(true);
     try {
       await forkPrompt(prompt.id);
-      toast.success("Prompt forked to your library");
+      toast.success('Prompt forked to your library');
     } catch {
-      toast.error("Sign in to fork prompts");
+      toast.error('Sign in to fork prompts');
     } finally {
       setForking(false);
     }
@@ -70,7 +70,7 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="mb-3 line-clamp-3 font-mono text-xs text-muted-foreground">
+        <p className="text-muted-foreground mb-3 line-clamp-3 font-mono text-xs">
           {prompt.content}
         </p>
         <div className="mb-3 flex flex-wrap items-center gap-1.5">
@@ -83,7 +83,7 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
             </Badge>
           ))}
           {prompt.tags.length > 2 && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               +{prompt.tags.length - 2}
             </span>
           )}
@@ -91,13 +91,13 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="h-5 w-5">
-              <AvatarImage src={prompt.authorImage ?? ""} />
+              <AvatarImage src={prompt.authorImage ?? ''} />
               <AvatarFallback className="text-[10px]">
-                {prompt.authorName?.charAt(0).toUpperCase() ?? "?"}
+                {prompt.authorName?.charAt(0).toUpperCase() ?? '?'}
               </AvatarFallback>
             </Avatar>
-            <span className="text-xs text-muted-foreground">
-              {prompt.authorName ?? "Anonymous"}
+            <span className="text-muted-foreground text-xs">
+              {prompt.authorName ?? 'Anonymous'}
             </span>
           </div>
           <div className="flex items-center gap-1">
@@ -110,15 +110,20 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
                   const result = await toggleFavorite(prompt.id);
                   setFavorited(result.favorited);
                 } catch {
-                  toast.error("Sign in to favorite prompts");
+                  toast.error('Sign in to favorite prompts');
                 }
               }}
             >
               <Heart
-                className={`h-3.5 w-3.5 ${favorited ? "fill-red-500 text-red-500" : ""}`}
+                className={`h-3.5 w-3.5 ${favorited ? 'fill-red-500 text-red-500' : ''}`}
               />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCopy}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={handleCopy}
+            >
               {copied ? (
                 <Check className="h-3.5 w-3.5 text-green-500" />
               ) : (

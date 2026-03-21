@@ -1,24 +1,32 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { Copy, MoreVertical, Pencil, Trash2, Globe, Lock, Share2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import Link from 'next/link';
+import {
+  Copy,
+  MoreVertical,
+  Pencil,
+  Trash2,
+  Globe,
+  Lock,
+  Share2,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,10 +36,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { deletePrompt, duplicatePrompt } from "@/lib/actions/prompt";
-import { trackPromptEvent } from "@/lib/track-event";
-import { toast } from "sonner";
+} from '@/components/ui/alert-dialog';
+import { deletePrompt, duplicatePrompt } from '@/lib/actions/prompt';
+import { trackPromptEvent } from '@/lib/track-event';
+import { toast } from 'sonner';
 
 interface PromptCardProps {
   prompt: {
@@ -52,16 +60,16 @@ export function PromptCard({ prompt }: PromptCardProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, "copy");
-    toast.success("Prompt copied to clipboard");
+    trackPromptEvent(prompt.id, 'copy');
+    toast.success('Prompt copied to clipboard');
   };
 
   const handleDuplicate = async () => {
     try {
       await duplicatePrompt(prompt.id);
-      toast.success("Prompt duplicated");
+      toast.success('Prompt duplicated');
     } catch {
-      toast.error("Failed to duplicate prompt");
+      toast.error('Failed to duplicate prompt');
     }
   };
 
@@ -69,15 +77,15 @@ export function PromptCard({ prompt }: PromptCardProps) {
     setIsDeleting(true);
     try {
       await deletePrompt(prompt.id);
-      toast.success("Prompt deleted");
+      toast.success('Prompt deleted');
     } catch {
-      toast.error("Failed to delete prompt");
+      toast.error('Failed to delete prompt');
       setIsDeleting(false);
     }
   };
 
   return (
-    <Card className={isDeleting ? "opacity-50" : ""}>
+    <Card className={isDeleting ? 'opacity-50' : ''}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="space-y-1 pr-2">
@@ -92,7 +100,13 @@ export function PromptCard({ prompt }: PromptCardProps) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" />}
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
+                />
+              }
             >
               <MoreVertical className="h-4 w-4" />
             </DropdownMenuTrigger>
@@ -111,15 +125,17 @@ export function PromptCard({ prompt }: PromptCardProps) {
                     await navigator.clipboard.writeText(
                       `${window.location.origin}/share/${prompt.id}`,
                     );
-                    trackPromptEvent(prompt.id, "share");
-                    toast.success("Share link copied");
+                    trackPromptEvent(prompt.id, 'share');
+                    toast.success('Share link copied');
                   }}
                 >
                   <Share2 className="mr-2 h-4 w-4" />
                   Copy share link
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem render={<Link href={`/prompts/${prompt.id}`} />}>
+              <DropdownMenuItem
+                render={<Link href={`/prompts/${prompt.id}`} />}
+              >
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
@@ -134,7 +150,10 @@ export function PromptCard({ prompt }: PromptCardProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialog
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+          >
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete prompt</AlertDialogTitle>
@@ -158,7 +177,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="mb-3 line-clamp-3 font-mono text-xs text-muted-foreground">
+        <p className="text-muted-foreground mb-3 line-clamp-3 font-mono text-xs">
           {prompt.content}
         </p>
         <div className="flex items-center justify-between">
@@ -172,12 +191,12 @@ export function PromptCard({ prompt }: PromptCardProps) {
               </Badge>
             ))}
             {prompt.tags.length > 2 && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground text-xs">
                 +{prompt.tags.length - 2}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-1">
             {prompt.isPublic ? (
               <Globe className="h-3.5 w-3.5" />
             ) : (

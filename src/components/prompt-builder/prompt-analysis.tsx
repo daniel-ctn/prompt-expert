@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { BarChart3, Loader2, ChevronUp, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { useUpgradeModal } from "@/stores/upgrade-modal";
+import { useState, useCallback } from 'react';
+import { BarChart3, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { useUpgradeModal } from '@/stores/upgrade-modal';
 
 interface AnalysisResult {
   scores: {
@@ -22,11 +22,7 @@ interface AnalysisResult {
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
   const color =
-    score >= 8
-      ? "bg-green-500"
-      : score >= 5
-        ? "bg-yellow-500"
-        : "bg-red-500";
+    score >= 8 ? 'bg-green-500' : score >= 5 ? 'bg-yellow-500' : 'bg-red-500';
 
   return (
     <div className="space-y-1">
@@ -34,7 +30,7 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
         <span className="text-xs capitalize">{label}</span>
         <span className="text-xs font-medium">{score}/10</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+      <div className="bg-muted h-1.5 overflow-hidden rounded-full">
         <div
           className={`h-full rounded-full transition-all duration-500 ${color}`}
           style={{ width: `${score * 10}%` }}
@@ -59,24 +55,24 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
     if (!prompt.trim()) return;
     setIsAnalyzing(true);
     try {
-      const res = await fetch("/api/ai/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/ai/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        if (data.error === "insufficient_credits") {
+        if (data.error === 'insufficient_credits') {
           upgradeModal.open();
           return;
         }
-        throw new Error("Analysis failed");
+        throw new Error('Analysis failed');
       }
       const data = await res.json();
       setAnalysis(data);
       setExpanded(true);
     } catch {
-      toast.error("Failed to analyze prompt");
+      toast.error('Failed to analyze prompt');
     } finally {
       setIsAnalyzing(false);
     }
@@ -96,7 +92,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
           ) : (
             <BarChart3 className="mr-1.5 h-4 w-4" />
           )}
-          {isAnalyzing ? "Analyzing..." : "Analyze Quality"}
+          {isAnalyzing ? 'Analyzing...' : 'Analyze Quality'}
         </Button>
         {analysis && (
           <Button
@@ -118,7 +114,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Overall Score</span>
             <Badge
-              variant={analysis.overall >= 7 ? "default" : "secondary"}
+              variant={analysis.overall >= 7 ? 'default' : 'secondary'}
               className="text-sm"
             >
               {analysis.overall}/10
@@ -138,7 +134,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
               </span>
               <ul className="space-y-1">
                 {analysis.strengths.map((s, i) => (
-                  <li key={i} className="text-xs text-muted-foreground">
+                  <li key={i} className="text-muted-foreground text-xs">
                     + {s}
                   </li>
                 ))}
@@ -153,7 +149,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
               </span>
               <ul className="space-y-1">
                 {analysis.improvements.map((s, i) => (
-                  <li key={i} className="text-xs text-muted-foreground">
+                  <li key={i} className="text-muted-foreground text-xs">
                     - {s}
                   </li>
                 ))}

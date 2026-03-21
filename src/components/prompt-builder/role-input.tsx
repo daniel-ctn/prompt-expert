@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
 
 export function RoleInput() {
   const { role, setRole } = usePromptBuilderStore();
@@ -16,7 +16,7 @@ export function RoleInput() {
         value={role}
         onChange={(e) => setRole(e.target.value)}
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="text-muted-foreground text-xs">
         Define who the AI should act as
       </p>
     </div>

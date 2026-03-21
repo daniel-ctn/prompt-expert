@@ -1,13 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { CreditCard, Coins, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PLANS, CREDIT_PACK } from "@/config/plans";
-import type { PlanId } from "@/config/plans";
-import type { CreditInfo } from "@/lib/credits";
+import { useState } from 'react';
+import Link from 'next/link';
+import { CreditCard, Coins, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
+import { PLANS, CREDIT_PACK } from '@/config/plans';
+import type { PlanId } from '@/config/plans';
+import type { CreditInfo } from '@/lib/credits';
 
 interface BillingSectionProps {
   plan: PlanId;
@@ -19,9 +25,9 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
   const planInfo = PLANS[plan];
 
   async function handlePortal() {
-    setLoading("portal");
+    setLoading('portal');
     try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
     } catch {
@@ -30,12 +36,12 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
   }
 
   async function handleBuyCredits() {
-    setLoading("credits");
+    setLoading('credits');
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "credit_pack" }),
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'credit_pack' }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
@@ -56,21 +62,21 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+        <div className="border-border/50 flex items-center justify-between rounded-lg border p-4">
           <div>
             <p className="text-sm font-medium">Current Plan</p>
             <p className="text-2xl font-bold">
               {planInfo.name}
-              <span className="ml-1.5 text-sm font-normal text-muted-foreground">
-                {plan === "free" ? "— Free" : `— $${planInfo.price}/mo`}
+              <span className="text-muted-foreground ml-1.5 text-sm font-normal">
+                {plan === 'free' ? '— Free' : `— $${planInfo.price}/mo`}
               </span>
             </p>
           </div>
-          {plan === "free" ? (
+          {plan === 'free' ? (
             <Button
               render={<Link href="/pricing" />}
               size="sm"
-              className="gap-1.5 bg-primary"
+              className="bg-primary gap-1.5"
             >
               Upgrade
               <ArrowRight className="h-3.5 w-3.5" />
@@ -80,32 +86,33 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
               variant="outline"
               size="sm"
               onClick={handlePortal}
-              disabled={loading === "portal"}
+              disabled={loading === 'portal'}
             >
-              {loading === "portal" ? "Loading..." : "Manage Subscription"}
+              {loading === 'portal' ? 'Loading...' : 'Manage Subscription'}
             </Button>
           )}
         </div>
 
-        <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+        <div className="border-border/50 flex items-center justify-between rounded-lg border p-4">
           <div className="flex items-center gap-3">
-            <Coins className="h-5 w-5 text-primary" />
+            <Coins className="text-primary h-5 w-5" />
             <div>
               <p className="text-sm font-medium">Credits Remaining</p>
-              <p className="text-sm text-muted-foreground">
-                {credits.monthly} monthly + {credits.bonus} bonus = {credits.total} total
+              <p className="text-muted-foreground text-sm">
+                {credits.monthly} monthly + {credits.bonus} bonus ={' '}
+                {credits.total} total
               </p>
             </div>
           </div>
-          {plan === "pro" && (
+          {plan === 'pro' && (
             <Button
               variant="outline"
               size="sm"
               onClick={handleBuyCredits}
-              disabled={loading === "credits"}
+              disabled={loading === 'credits'}
             >
-              {loading === "credits"
-                ? "Loading..."
+              {loading === 'credits'
+                ? 'Loading...'
                 : `+${CREDIT_PACK.credits} for $${CREDIT_PACK.price}`}
             </Button>
           )}

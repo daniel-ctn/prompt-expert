@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getUserPrompts } from "@/lib/actions/prompt";
-import { PromptFilters } from "@/components/prompts/prompt-filters";
-import { PromptList } from "@/components/prompts/prompt-list";
-import { ExportImport } from "@/components/prompts/export-import";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { getUserPrompts } from '@/lib/actions/prompt';
+import { PromptFilters } from '@/components/prompts/prompt-filters';
+import { PromptList } from '@/components/prompts/prompt-list';
+import { ExportImport } from '@/components/prompts/export-import';
 
 export const metadata: Metadata = {
-  title: "My Prompts",
-  description: "Manage your saved prompts, collections, and prompt versions.",
+  title: 'My Prompts',
+  description: 'Manage your saved prompts, collections, and prompt versions.',
 };
 
 export default async function PromptsPage({
@@ -29,8 +29,10 @@ export default async function PromptsPage({
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight">My Prompts</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="font-display text-3xl font-bold tracking-tight">
+            My Prompts
+          </h1>
+          <p className="text-muted-foreground mt-1">
             Manage and organize your saved prompts.
           </p>
         </div>

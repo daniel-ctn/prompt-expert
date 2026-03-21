@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
-import { getPublicPromptById } from "@/lib/actions/prompt";
-import { SharedPromptView } from "@/components/prompts/shared-prompt-view";
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { getPublicPromptById } from '@/lib/actions/prompt';
+import { SharedPromptView } from '@/components/prompts/shared-prompt-view';
 
 export async function generateMetadata({
   params,
@@ -10,7 +10,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const prompt = await getPublicPromptById(id);
-  if (!prompt) return { title: "Prompt Not Found" };
+  if (!prompt) return { title: 'Prompt Not Found' };
 
   return {
     title: `${prompt.title} - Prompt Expert`,

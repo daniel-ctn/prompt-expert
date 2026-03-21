@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { usePromptBuilderStore } from "@/stores/prompt-builder";
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { usePromptBuilderStore } from '@/stores/prompt-builder';
 
 export function TaskInput() {
   const { task, setTask } = usePromptBuilderStore();
@@ -20,7 +20,7 @@ export function TaskInput() {
         rows={4}
         className="resize-y"
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="text-muted-foreground text-xs">
         {task.length}/2000 characters
       </p>
     </div>
