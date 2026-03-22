@@ -17,12 +17,6 @@ export const AI_MODELS: {
 }[] = [
   { value: 'gpt-4.1', label: 'GPT-4.1', provider: 'openai' },
   { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', provider: 'openai' },
-  { value: 'claude-opus-4-6', label: 'Claude Opus 4.6', provider: 'anthropic' },
-  {
-    value: 'claude-sonnet-4-6',
-    label: 'Claude Sonnet 4.6',
-    provider: 'anthropic',
-  },
   { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', provider: 'google' },
   { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', provider: 'google' },
 ];
@@ -91,11 +85,11 @@ export const MODEL_RECOMMENDATIONS: Record<
     reason: 'Fast and precise for step-by-step instructions',
   },
   creative: {
-    model: 'claude-sonnet-4-6',
+    model: 'gemini-2.5-pro',
     reason: 'Excellent at creative writing and nuanced language',
   },
   code: {
-    model: 'claude-sonnet-4-6',
+    model: 'gpt-4.1',
     reason: 'Top-tier code generation and understanding',
   },
   analysis: {
@@ -107,7 +101,7 @@ export const MODEL_RECOMMENDATIONS: Record<
     reason: 'Fast, accurate responses for Q&A tasks',
   },
   conversation: {
-    model: 'claude-sonnet-4-6',
+    model: 'gemini-2.5-pro',
     reason: 'Natural, empathetic conversational tone',
   },
 };

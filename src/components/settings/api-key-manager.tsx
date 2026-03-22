@@ -24,12 +24,6 @@ const PROVIDERS = [
     description: 'GPT-4.1, GPT-4.1 Mini',
   },
   {
-    id: 'anthropic',
-    name: 'Anthropic',
-    placeholder: 'sk-ant-...',
-    description: 'Claude Opus 4-6, Claude Sonnet 4-6',
-  },
-  {
     id: 'google',
     name: 'Google AI',
     placeholder: 'AIza...',

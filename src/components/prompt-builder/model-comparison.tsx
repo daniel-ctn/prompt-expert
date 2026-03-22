@@ -130,7 +130,7 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<[AIModel, AIModel]>([
     'gpt-4.1-mini',
-    'claude-sonnet-4-6',
+    'gemini-2.5-flash',
   ]);
   const [isRunning, setIsRunning] = useState(false);
 

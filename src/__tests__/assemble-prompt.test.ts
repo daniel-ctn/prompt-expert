@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 vi.mock('@ai-sdk/openai', () => ({ createOpenAI: () => () => ({}) }));
-vi.mock('@ai-sdk/anthropic', () => ({ createAnthropic: () => () => ({}) }));
 vi.mock('@ai-sdk/google', () => ({
   createGoogleGenerativeAI: () => () => ({}),
 }));

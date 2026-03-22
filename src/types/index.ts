@@ -25,12 +25,10 @@ export type OutputFormat =
 export type AIModel =
   | 'gpt-4.1'
   | 'gpt-4.1-mini'
-  | 'claude-opus-4-6'
-  | 'claude-sonnet-4-6'
   | 'gemini-2.5-pro'
   | 'gemini-2.5-flash';
 
-export type AIProvider = 'openai' | 'anthropic' | 'google';
+export type AIProvider = 'openai' | 'google';
 
 export interface PromptSettings {
   model: AIModel;
