@@ -67,7 +67,7 @@ function NavLinks({
           >
             {item.label}
             {!mobile && isActive && (
-              <span className="bg-primary absolute right-0 -bottom-3.5 left-0 h-0.5 rounded-full" />
+              <span className="bg-foreground absolute right-0 -bottom-3.5 left-0 h-0.5 rounded-full" />
             )}
           </Link>
         );
@@ -114,8 +114,8 @@ export function Header() {
     <header className="border-border/50 bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
         <Link href="/" className="group mr-8 flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-[#0E7490] to-[#0D9488] shadow-sm transition-shadow group-hover:shadow-[0_0_16px_rgba(13,148,136,0.35)]">
-            <Sparkles className="h-3.5 w-3.5 text-white" />
+          <div className="bg-primary group-hover:glow-sm flex h-7 w-7 items-center justify-center rounded-lg shadow-sm transition-shadow">
+            <Sparkles className="text-primary-foreground h-3.5 w-3.5" />
           </div>
           <span className="font-display text-base font-semibold tracking-tight">
             {APP_NAME}
@@ -132,7 +132,7 @@ export function Header() {
           ) : session?.user ? (
             <Link
               href="/pricing"
-              className="border-border/60 text-muted-foreground hover:border-primary/30 hover:text-foreground hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors sm:flex"
+              className="border-border/60 text-muted-foreground hover:border-primary/40 hover:text-foreground hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors sm:flex"
             >
               <Coins className="h-3.5 w-3.5" />
               <CreditsBadge />
@@ -197,9 +197,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <Button
+              variant="outline"
               size="sm"
               onClick={() => signIn()}
-              className="bg-primary px-4 shadow-sm"
+              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-4"
             >
               Sign in
             </Button>

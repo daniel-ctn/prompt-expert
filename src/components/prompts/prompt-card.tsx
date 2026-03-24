@@ -85,7 +85,9 @@ export function PromptCard({ prompt }: PromptCardProps) {
   };
 
   return (
-    <Card className={isDeleting ? 'opacity-50' : ''}>
+    <Card
+      className={`hover:ring-border/80 transition-all ${isDeleting ? 'opacity-50' : ''}`}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="space-y-1 pr-2">

@@ -56,7 +56,7 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
   };
 
   return (
-    <Card>
+    <Card className="hover:ring-border/80 transition-all">
       <CardHeader className="pb-3">
         <div className="space-y-1">
           <CardTitle className="line-clamp-1 text-base">

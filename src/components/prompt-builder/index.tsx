@@ -25,7 +25,7 @@ export function PromptBuilder() {
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Left panel: Controls */}
       <div className="space-y-6">
-        <Card className="border-border/50 bg-card/80 relative overflow-hidden backdrop-blur-sm">
+        <Card className="bg-card/80 relative overflow-hidden backdrop-blur-sm">
           <div className="via-primary/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
