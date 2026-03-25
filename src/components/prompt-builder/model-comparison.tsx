@@ -129,8 +129,8 @@ function ComparisonSlot({
 export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<[AIModel, AIModel]>([
-    'gpt-4.1-mini',
-    'gemini-2.5-flash',
+    'gpt-5.2-mini',
+    'gemini-3.0-flash',
   ]);
   const [isRunning, setIsRunning] = useState(false);
 

@@ -27,12 +27,7 @@ const outputFormats = [
   'table',
 ] as const;
 
-const aiModels = [
-  'gpt-4.1',
-  'gpt-4.1-mini',
-  'gemini-2.5-pro',
-  'gemini-2.5-flash',
-] as const;
+const aiModels = ['gpt-5.4-mini', 'gpt-5.2-mini', 'gemini-3.0-flash'] as const;
 
 export const promptSettingsSchema = z.object({
   model: z.enum(aiModels),

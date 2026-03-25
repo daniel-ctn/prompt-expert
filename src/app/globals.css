@@ -126,12 +126,38 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(
+        in oklch,
+        var(--primary) 58%,
+        var(--muted-foreground) 42%
+      )
+      var(--muted);
   }
   body {
     @apply bg-background text-foreground font-sans;
   }
   html {
     @apply scroll-smooth font-sans;
+  }
+  *::-webkit-scrollbar {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  *::-webkit-scrollbar-track {
+    background: var(--muted);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(
+      in oklch,
+      var(--primary) 58%,
+      var(--muted-foreground) 42%
+    );
+    border: 3px solid var(--muted);
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--primary) 72%, var(--foreground) 28%);
   }
 }
 

@@ -15,10 +15,9 @@ export const AI_MODELS: {
   label: string;
   provider: AIProvider;
 }[] = [
-  { value: 'gpt-4.1', label: 'GPT-4.1', provider: 'openai' },
-  { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', provider: 'openai' },
-  { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', provider: 'google' },
-  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', provider: 'google' },
+  { value: 'gpt-5.4-mini', label: 'GPT-5.4 Mini', provider: 'openai' },
+  { value: 'gpt-5.2-mini', label: 'GPT-5.2 Mini', provider: 'openai' },
+  { value: 'gemini-3.0-flash', label: 'Gemini 3 Flash', provider: 'google' },
 ];
 
 export const PROMPT_CATEGORIES: {
@@ -81,33 +80,33 @@ export const MODEL_RECOMMENDATIONS: Record<
   { model: AIModel; reason: string }
 > = {
   instruction: {
-    model: 'gpt-4.1-mini',
+    model: 'gpt-5.2-mini',
     reason: 'Fast and precise for step-by-step instructions',
   },
   creative: {
-    model: 'gemini-2.5-pro',
+    model: 'gemini-3.0-flash',
     reason: 'Excellent at creative writing and nuanced language',
   },
   code: {
-    model: 'gpt-4.1',
+    model: 'gpt-5.4-mini',
     reason: 'Top-tier code generation and understanding',
   },
   analysis: {
-    model: 'gemini-2.5-pro',
+    model: 'gemini-3.0-flash',
     reason: 'Strong analytical reasoning with large context',
   },
   qa: {
-    model: 'gpt-4.1-mini',
+    model: 'gpt-5.2-mini',
     reason: 'Fast, accurate responses for Q&A tasks',
   },
   conversation: {
-    model: 'gemini-2.5-pro',
+    model: 'gemini-3.0-flash',
     reason: 'Natural, empathetic conversational tone',
   },
 };
 
 export const DEFAULT_PROMPT_SETTINGS = {
-  model: 'gpt-4.1-mini' as AIModel,
+  model: 'gpt-5.2-mini' as AIModel,
   category: 'instruction' as PromptCategory,
   tone: 'formal' as ToneStyle,
   outputFormat: 'text' as OutputFormat,

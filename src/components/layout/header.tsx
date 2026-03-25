@@ -112,8 +112,8 @@ export function Header() {
 
   return (
     <header className="border-border/50 bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
-        <Link href="/" className="group mr-8 flex items-center gap-2.5">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="group flex items-center gap-2.5">
           <div className="bg-primary group-hover:glow-sm flex h-7 w-7 items-center justify-center rounded-lg shadow-sm transition-shadow">
             <Sparkles className="text-primary-foreground h-3.5 w-3.5" />
           </div>
@@ -124,7 +124,7 @@ export function Header() {
 
         <NavLinks className="hidden items-center gap-5 md:flex" />
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
 
           {status === 'loading' ? (

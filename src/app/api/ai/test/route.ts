@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
   const {
     prompt,
-    model = 'gpt-4.1-mini',
+    model = 'gpt-5.2-mini',
     temperature = 0.7,
   }: {
     prompt: string;

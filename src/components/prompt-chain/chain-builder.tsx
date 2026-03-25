@@ -47,7 +47,7 @@ const DEFAULT_STEP: () => ChainStep = () => ({
   id: makeId(),
   label: '',
   prompt: '',
-  model: 'gpt-4.1-mini',
+  model: 'gpt-5.2-mini',
   output: '',
   isRunning: false,
 });

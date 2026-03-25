@@ -51,12 +51,12 @@ export async function POST(req: Request) {
   await deductCredit(
     session.user.id,
     CREDIT_COSTS.analyze,
-    'Analyze prompt (gpt-4.1-mini)',
+    'Analyze prompt (gpt-5.2-mini)',
   );
-  trackUsage(session.user.id, 'analyze', 'gpt-4.1-mini');
+  trackUsage(session.user.id, 'analyze', 'gpt-5.2-mini');
 
   const { text } = await generateText({
-    model: getModel('gpt-4.1-mini', userKeys),
+    model: getModel('gpt-5.2-mini', userKeys),
     system: SYSTEM_PROMPT_ANALYZER,
     prompt: `Analyze this prompt:\n\n${prompt}`,
     temperature: 0.3,

@@ -69,7 +69,7 @@ export function BuilderSnapshot() {
                         Model
                       </span>
                       <div className="border-input bg-background flex h-8 items-center justify-between rounded-lg border px-2.5 text-xs">
-                        <span>GPT-4.1</span>
+                        <span>GPT-5.4 Mini</span>
                         <ChevronDown className="text-muted-foreground h-3 w-3" />
                       </div>
                     </div>

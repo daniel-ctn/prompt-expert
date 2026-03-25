@@ -88,7 +88,7 @@ export function ExportImport({ prompts }: ExportImportProps) {
           category: item.category ?? 'instruction',
           content: item.content,
           settings: item.settings ?? {
-            model: 'gpt-4.1-mini',
+            model: 'gpt-5.2-mini',
             category: item.category ?? 'instruction',
             tone: 'formal',
             outputFormat: 'text',

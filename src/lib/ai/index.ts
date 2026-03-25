@@ -3,10 +3,9 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import type { AIModel, AIProvider } from '@/types';
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
-  'gpt-4.1': { provider: 'openai', modelId: 'gpt-4.1' },
-  'gpt-4.1-mini': { provider: 'openai', modelId: 'gpt-4.1-mini' },
-  'gemini-2.5-pro': { provider: 'google', modelId: 'gemini-2.5-pro' },
-  'gemini-2.5-flash': { provider: 'google', modelId: 'gemini-2.5-flash' },
+  'gpt-5.4-mini': { provider: 'openai', modelId: 'gpt-5.4-mini' },
+  'gpt-5.2-mini': { provider: 'openai', modelId: 'gpt-5.2-mini' },
+  'gemini-3.0-flash': { provider: 'google', modelId: 'gemini-3.0-flash' },
 };
 
 function getProviderInstance(
