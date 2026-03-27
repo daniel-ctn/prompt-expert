@@ -203,7 +203,16 @@ export function PromptPreview() {
           </div>
         ) : (
           <>
-            <>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="flex flex-1 flex-col"
+            >
+              <TabsList>
+                <TabsTrigger value="assembled">Assembled</TabsTrigger>
+                <TabsTrigger value="optimized">Optimized</TabsTrigger>
+                <TabsTrigger value="test">Test</TabsTrigger>
+              </TabsList>
               <TabsContent value="assembled" className="flex-1">
                 <div className="relative">
                   <ScrollArea className="h-[400px] rounded-md border p-4">
@@ -281,7 +290,7 @@ export function PromptPreview() {
                   )}
                 </div>
               </TabsContent>
-            </>
+            </Tabs>
             {variables.length > 0 && (
               <>
                 <Separator className="my-4" />

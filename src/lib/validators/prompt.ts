@@ -39,26 +39,27 @@ export const promptSettingsSchema = z.object({
   temperature: z.number().min(0).max(2).optional(),
 });
 
-export const createPromptSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().max(500).optional(),
-  category: z.enum(promptCategories),
-  content: z.string().min(1, 'Prompt content is required').max(10000),
-  settings: promptSettingsSchema,
-  tags: z.array(z.string().max(50)).max(10).default([]),
-  isPublic: z.boolean().default(false),
-});
-
-export const updatePromptSchema = createPromptSchema.partial().extend({
-  id: z.string().uuid(),
-});
-
 export const promptBuilderSchema = z.object({
   role: z.string().max(500).default(''),
   context: z.string().max(2000).default(''),
   task: z.string().min(1, 'Task description is required').max(2000),
   constraints: z.array(z.string().max(200)).max(10).default([]),
   settings: promptSettingsSchema,
+});
+
+export const createPromptSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  description: z.string().max(500).optional(),
+  category: z.enum(promptCategories),
+  content: z.string().min(1, 'Prompt content is required').max(10000),
+  settings: promptSettingsSchema,
+  builderState: promptBuilderSchema.optional(),
+  tags: z.array(z.string().max(50)).max(10).default([]),
+  isPublic: z.boolean().default(false),
+});
+
+export const updatePromptSchema = createPromptSchema.partial().extend({
+  id: z.string().uuid(),
 });
 
 export type CreatePromptInput = z.infer<typeof createPromptSchema>;

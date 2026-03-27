@@ -1,0 +1,1 @@
+ALTER TABLE "prompts" ADD COLUMN "builder_state" jsonb;

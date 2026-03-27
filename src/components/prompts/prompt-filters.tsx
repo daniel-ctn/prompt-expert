@@ -20,6 +20,7 @@ export function PromptFilters() {
     searchParams.get('search') ?? '',
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const isInitialMount = useRef(true);
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -36,14 +37,24 @@ export function PromptFilters() {
   );
 
   useEffect(() => {
+    // Skip the initial mount to avoid triggering on first render
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      updateParam('search', searchValue);
+      const currentSearch = searchParams.get('search') ?? '';
+      // Only push if the value actually changed from what's in the URL
+      if (searchValue !== currentSearch) {
+        updateParam('search', searchValue);
+      }
     }, 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [searchValue, updateParam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row">

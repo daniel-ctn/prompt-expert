@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { DEFAULT_PROMPT_SETTINGS } from '@/config/constants';
 import type { PromptSettings } from '@/types';
+import type { PromptBuilderInput } from '@/lib/validators/prompt';
 
 interface PromptBuilderStore {
   role: string;
@@ -22,6 +23,7 @@ interface PromptBuilderStore {
   setGeneratedPrompt: (prompt: string) => void;
   setOptimizedPrompt: (prompt: string) => void;
   setIsOptimizing: (value: boolean) => void;
+  loadPreset: (preset: PromptBuilderInput) => void;
   reset: () => void;
 }
 
@@ -66,6 +68,15 @@ export const usePromptBuilderStore = create<PromptBuilderStore>((set) => ({
   setGeneratedPrompt: (generatedPrompt) => set({ generatedPrompt }),
   setOptimizedPrompt: (optimizedPrompt) => set({ optimizedPrompt }),
   setIsOptimizing: (isOptimizing) => set({ isOptimizing }),
+  loadPreset: (preset) =>
+    set({
+      ...initialState,
+      role: preset.role,
+      context: preset.context,
+      task: preset.task,
+      constraints: [...preset.constraints],
+      settings: { ...DEFAULT_PROMPT_SETTINGS, ...preset.settings },
+    }),
 
   reset: () => set(initialState),
 }));

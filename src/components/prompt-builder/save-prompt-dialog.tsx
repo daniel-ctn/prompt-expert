@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +25,7 @@ import { toast } from 'sonner';
 export function SavePromptDialog() {
   const { role, context, task, constraints, settings, optimizedPrompt } =
     usePromptBuilderStore();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -59,11 +61,19 @@ export function SavePromptDialog() {
         category: settings.category,
         content,
         settings,
+        builderState: {
+          role,
+          context,
+          task,
+          constraints,
+          settings,
+        },
         tags,
         isPublic,
       });
 
       toast.success('Prompt saved successfully');
+      router.refresh();
       setOpen(false);
       setTitle('');
       setDescription('');
@@ -88,7 +98,8 @@ export function SavePromptDialog() {
         <DialogHeader>
           <DialogTitle>Save Prompt</DialogTitle>
           <DialogDescription>
-            Save this prompt to your collection for later use.
+            Save this prompt to your collection so you can reuse it as a preset
+            later.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">

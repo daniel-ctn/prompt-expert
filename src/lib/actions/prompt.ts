@@ -1,6 +1,6 @@
 'use server';
 
-import { and, desc, eq, ilike, sql } from 'drizzle-orm';
+import { and, desc, eq, ilike, isNotNull, sql } from 'drizzle-orm';
 import { revalidatePath, unstable_cache } from 'next/cache';
 import { getDb } from '@/lib/db';
 import {
@@ -16,12 +16,14 @@ import { trackPromptEvent } from '@/lib/track-event';
 import { auth } from '@/lib/auth';
 import {
   createPromptSchema,
+  promptBuilderSchema,
   updatePromptSchema,
 } from '@/lib/validators/prompt';
 import type {
   CreatePromptInput,
   UpdatePromptInput,
 } from '@/lib/validators/prompt';
+import type { SavedPromptPreset } from '@/types';
 
 async function getAuthenticatedUserId(): Promise<string> {
   const session = await auth();
@@ -42,6 +44,7 @@ export async function createPrompt(input: CreatePromptInput) {
       ...validated,
       userId,
       settings: validated.settings,
+      builderState: validated.builderState,
     })
     .returning();
 
@@ -53,6 +56,7 @@ export async function createPrompt(input: CreatePromptInput) {
   });
 
   revalidatePath('/prompts');
+  revalidatePath('/builder');
   return prompt;
 }
 
@@ -126,6 +130,7 @@ export async function duplicatePrompt(id: string) {
       category: original.category,
       content: original.content,
       settings: original.settings,
+      builderState: original.builderState,
       tags: original.tags,
       isPublic: false,
     })
@@ -187,6 +192,43 @@ export async function getUserPrompts({
     pageSize,
     totalPages: Math.ceil(Number(countResult[0].count) / pageSize),
   };
+}
+
+export async function getUserPromptPresets(
+  limit = 12,
+): Promise<SavedPromptPreset[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const db = getDb();
+  const results = await db.query.prompts.findMany({
+    where: and(
+      eq(prompts.userId, session.user.id),
+      isNotNull(prompts.builderState),
+    ),
+    orderBy: desc(prompts.updatedAt),
+    limit,
+    columns: {
+      id: true,
+      title: true,
+      description: true,
+      builderState: true,
+    },
+  });
+
+  return results.flatMap((prompt) => {
+    const parsed = promptBuilderSchema.safeParse(prompt.builderState);
+    if (!parsed.success) return [];
+
+    return [
+      {
+        id: prompt.id,
+        title: prompt.title,
+        description: prompt.description,
+        builderState: parsed.data,
+      },
+    ];
+  });
 }
 
 async function fetchPublicPrompts(
@@ -285,6 +327,7 @@ export async function forkPrompt(id: string) {
       category: original.category,
       content: original.content,
       settings: original.settings,
+      builderState: original.builderState,
       tags: original.tags,
       isPublic: false,
     })

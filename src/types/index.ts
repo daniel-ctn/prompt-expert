@@ -1,3 +1,5 @@
+import type { PromptBuilderInput } from '@/lib/validators/prompt';
+
 export type PromptCategory =
   | 'instruction'
   | 'creative'
@@ -53,10 +55,18 @@ export interface SavedPrompt {
   category: PromptCategory;
   content: string;
   settings: PromptSettings;
+  builderState?: PromptBuilderInput | null;
   tags: string[];
   isPublic: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface SavedPromptPreset {
+  id: string;
+  title: string;
+  description: string | null;
+  builderState: PromptBuilderInput;
 }
 
 export interface PromptVersion {

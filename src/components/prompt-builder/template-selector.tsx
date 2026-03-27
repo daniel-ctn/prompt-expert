@@ -5,37 +5,47 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PROMPT_TEMPLATES } from '@/config/constants';
+import { DEFAULT_PROMPT_SETTINGS, PROMPT_TEMPLATES } from '@/config/constants';
 import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import type { SavedPromptPreset } from '@/types';
 import { toast } from 'sonner';
 
-export function TemplateSelector() {
-  const { setRole, setContext, setTask, updateSettings, reset } =
-    usePromptBuilderStore();
+export function TemplateSelector({
+  savedPresets = [],
+}: {
+  savedPresets?: SavedPromptPreset[];
+}) {
+  const loadPreset = usePromptBuilderStore((s) => s.loadPreset);
 
   const applyTemplate = (templateId: string) => {
     const template = PROMPT_TEMPLATES.find((t) => t.id === templateId);
     if (!template) return;
 
-    reset();
-
-    setRole(template.role);
-    setContext(template.context);
-    setTask(template.task);
-
-    const store = usePromptBuilderStore.getState();
-    template.constraints.forEach((c) => store.addConstraint(c));
-
-    updateSettings({
-      category: template.category,
-      tone: template.tone,
-      outputFormat: template.outputFormat,
+    loadPreset({
+      role: template.role,
+      context: template.context,
+      task: template.task,
+      constraints: template.constraints,
+      settings: {
+        ...DEFAULT_PROMPT_SETTINGS,
+        category: template.category,
+        tone: template.tone,
+        outputFormat: template.outputFormat,
+      },
     });
 
     toast.success(`Template "${template.label}" applied`);
+  };
+
+  const applySavedPreset = (preset: SavedPromptPreset) => {
+    loadPreset(preset.builderState);
+    toast.success(`Preset "${preset.title}" loaded`);
   };
 
   return (
@@ -45,14 +55,33 @@ export function TemplateSelector() {
         Templates
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        {PROMPT_TEMPLATES.map((template) => (
-          <DropdownMenuItem
-            key={template.id}
-            onClick={() => applyTemplate(template.id)}
-          >
-            {template.label}
-          </DropdownMenuItem>
-        ))}
+        {savedPresets.length > 0 && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>My presets</DropdownMenuLabel>
+              {savedPresets.map((preset) => (
+                <DropdownMenuItem
+                  key={preset.id}
+                  onClick={() => applySavedPreset(preset)}
+                >
+                  {preset.title}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Built-in templates</DropdownMenuLabel>
+          {PROMPT_TEMPLATES.map((template) => (
+            <DropdownMenuItem
+              key={template.id}
+              onClick={() => applyTemplate(template.id)}
+            >
+              {template.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

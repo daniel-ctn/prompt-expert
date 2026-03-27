@@ -52,17 +52,6 @@ export default function HomePage() {
         />
 
         <div className="relative z-10 mx-auto max-w-3xl space-y-8">
-          {/* Pill badge */}
-          <div className="animate-fade-in-up border-border/60 bg-card/80 inline-flex items-center gap-2.5 rounded-full border px-4 py-1.5 font-mono text-sm backdrop-blur-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-              <span className="bg-primary relative inline-flex h-2 w-2 rounded-full" />
-            </span>
-            <span className="text-muted-foreground font-medium">
-              AI Prompt Engineering Tool
-            </span>
-          </div>
-
           {/* Headline */}
           <h1 className="animate-fade-in-up animate-delay-100 font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             Craft precise prompts.
@@ -91,7 +80,7 @@ export default function HomePage() {
       </section>
 
       {/* Builder Snapshot */}
-      <section className="px-4 py-16 sm:px-6 lg:py-24">
+      <section className="px-4 py-16 sm:px-6 lg:py-20">
         <BuilderSnapshot />
       </section>
 

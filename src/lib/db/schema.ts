@@ -77,6 +77,7 @@ export const prompts = pgTable('prompts', {
   category: text('category').notNull().default('instruction'),
   content: text('content').notNull(),
   settings: jsonb('settings').notNull().default({}),
+  builderState: jsonb('builder_state'),
   tags: text('tags').array().notNull().default([]),
   isPublic: boolean('is_public').notNull().default(false),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),

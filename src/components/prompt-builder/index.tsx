@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import type { SavedPromptPreset } from '@/types';
 import { ModelSelector } from './model-selector';
 import { CategorySelector } from './category-selector';
 import { ToneSelector } from './tone-selector';
@@ -18,7 +19,11 @@ import { PromptPreview } from './prompt-preview';
 import { SavePromptDialog } from './save-prompt-dialog';
 import { TemplateSelector } from './template-selector';
 
-export function PromptBuilder() {
+export function PromptBuilder({
+  savedPresets = [],
+}: {
+  savedPresets?: SavedPromptPreset[];
+}) {
   const reset = usePromptBuilderStore((s) => s.reset);
 
   return (
@@ -33,7 +38,7 @@ export function PromptBuilder() {
                 Configure Your Prompt
               </CardTitle>
               <div className="flex items-center gap-2">
-                <TemplateSelector />
+                <TemplateSelector savedPresets={savedPresets} />
                 <Button
                   variant="ghost"
                   size="sm"
