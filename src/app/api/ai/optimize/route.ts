@@ -61,11 +61,13 @@ export async function POST(req: Request) {
   )
   trackUsage(userId, 'optimize', model)
 
+  const isClaudeModel = model.startsWith('claude-')
+
   const result = streamText({
     model: getModel(model, userKeys),
     system: SYSTEM_PROMPT_OPTIMIZER,
     prompt: `Optimize this prompt:\n\n${prompt}`,
-    temperature: 0.7,
+    ...(isClaudeModel ? {} : { temperature: 0.7 }),
     onFinish: ({ text }) => {
       savePromptHistory(userId, {
         promptContent: prompt,

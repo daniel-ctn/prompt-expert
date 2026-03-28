@@ -61,10 +61,12 @@ export async function POST(req: Request) {
   await deductCredit(userId, CREDIT_COSTS.test, `Test prompt (${model})`)
   trackUsage(userId, 'test', model)
 
+  const isClaudeModel = model.startsWith('claude-')
+
   const result = streamText({
     model: getModel(model, userKeys),
     prompt,
-    temperature,
+    ...(isClaudeModel ? {} : { temperature }),
     onFinish: ({ text }) => {
       savePromptHistory(userId, {
         promptContent: prompt,

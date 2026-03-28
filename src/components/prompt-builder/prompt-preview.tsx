@@ -128,11 +128,12 @@ export function PromptPreview() {
     if (!validate()) return
     if (!resolvedPrompt.trim()) return
     setActiveTab('test')
+    const isClaudeModel = settings.model.startsWith('claude-')
     completeTest(resolvedPrompt, {
       body: {
         prompt: resolvedPrompt,
         model: settings.model,
-        temperature: settings.temperature,
+        ...(isClaudeModel ? {} : { temperature: settings.temperature }),
       },
     })
   }, [

@@ -8,6 +8,8 @@ import { usePromptBuilderStore } from '@/stores/prompt-builder'
 export function AdvancedSettings() {
   const { settings, updateSettings } = usePromptBuilderStore()
 
+  const isClaudeModel = settings.model.startsWith('claude-')
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -28,9 +30,13 @@ export function AdvancedSettings() {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label>Temperature</Label>
+          <Label className={isClaudeModel ? 'text-muted-foreground' : ''}>
+            Temperature
+          </Label>
           <span className="text-muted-foreground text-sm">
-            {settings.temperature?.toFixed(1) ?? '0.7'}
+            {isClaudeModel
+              ? 'N/A'
+              : (settings.temperature?.toFixed(1) ?? '0.7')}
           </span>
         </div>
         <Slider
@@ -44,6 +50,7 @@ export function AdvancedSettings() {
           max={2}
           step={0.1}
           className="w-full"
+          disabled={isClaudeModel}
         />
         <div className="text-muted-foreground flex justify-between text-xs">
           <span>Precise</span>

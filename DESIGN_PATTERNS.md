@@ -255,6 +255,17 @@ Best targets:
 
 - `src/lib/actions/prompt.ts`
 - `src/lib/actions/system-prompts.ts`
+- `src/lib/repositories/collection-repository.ts`
+- `src/lib/repositories/favorite-repository.ts`
+
+Why this helps:
+
+- Separates persistence from use-case logic.
+- Makes query reuse easier.
+- Gives tests a cleaner seam than the current action files.
+
+### 3. Template Method / Pipeline Pattern for AI Route Handlers
+
 - `src/lib/actions/api-keys.ts`
 - `src/lib/actions/api-tokens.ts`
 
@@ -268,17 +279,7 @@ Recommended pattern:
 
 Example split:
 
-- `src/lib/repositories/prompt-repository.ts`
-- `src/lib/repositories/collection-repository.ts`
-- `src/lib/repositories/favorite-repository.ts`
-
-Why this helps:
-
-- Separates persistence from use-case logic.
-- Makes query reuse easier.
-- Gives tests a cleaner seam than the current action files.
-
-### 3. Template Method / Pipeline Pattern for AI Route Handlers
+-
 
 Priority: High
 
