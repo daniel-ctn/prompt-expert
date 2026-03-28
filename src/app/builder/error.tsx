@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
+import { useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { AlertCircle } from 'lucide-react'
 
 export default function BuilderError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }
+  reset: () => void
 }) {
   useEffect(() => {
-    console.error(error);
-  }, [error]);
+    console.error(error)
+  }, [error])
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-12">
@@ -26,5 +26,5 @@ export default function BuilderError({
         <Button onClick={reset}>Try again</Button>
       </div>
     </div>
-  );
+  )
 }

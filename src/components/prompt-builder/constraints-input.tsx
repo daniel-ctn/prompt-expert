@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Plus, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { useState } from 'react'
+import { Plus, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function ConstraintsInput() {
   const { constraints, addConstraint, removeConstraint, updateConstraint } =
-    usePromptBuilderStore();
-  const [newConstraint, setNewConstraint] = useState('');
+    usePromptBuilderStore()
+  const [newConstraint, setNewConstraint] = useState('')
 
   const handleAdd = () => {
-    const trimmed = newConstraint.trim();
+    const trimmed = newConstraint.trim()
     if (trimmed && constraints.length < 10) {
-      addConstraint(trimmed);
-      setNewConstraint('');
+      addConstraint(trimmed)
+      setNewConstraint('')
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAdd();
+      e.preventDefault()
+      handleAdd()
     }
-  };
+  }
 
   return (
     <div className="space-y-2">
@@ -75,5 +75,5 @@ export function ConstraintsInput() {
         {constraints.length}/10 constraints
       </p>
     </div>
-  );
+  )
 }

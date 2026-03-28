@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, Copy, Check, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { useState } from 'react'
+import { ChevronDown, ChevronUp, Copy, Check, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,45 +16,45 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { clearPromptHistory } from '@/lib/actions/prompt-history';
-import { toast } from 'sonner';
+} from '@/components/ui/alert-dialog'
+import { clearPromptHistory } from '@/lib/actions/prompt-history'
+import { toast } from 'sonner'
 
 interface HistoryEntry {
-  id: string;
-  promptContent: string;
-  output: string;
-  model: string;
-  endpoint: string;
-  createdAt: Date;
+  id: string
+  promptContent: string
+  output: string
+  model: string
+  endpoint: string
+  createdAt: Date
 }
 
 interface Props {
-  initialHistory: HistoryEntry[];
+  initialHistory: HistoryEntry[]
 }
 
 export function HistoryList({ initialHistory }: Props) {
-  const [entries, setEntries] = useState<HistoryEntry[]>(initialHistory);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [showClearDialog, setShowClearDialog] = useState(false);
+  const [entries, setEntries] = useState<HistoryEntry[]>(initialHistory)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showClearDialog, setShowClearDialog] = useState(false)
 
   const handleCopy = async (text: string, id: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
+    await navigator.clipboard.writeText(text)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
 
   const handleClear = async () => {
     try {
-      await clearPromptHistory();
-      setEntries([]);
-      toast.success('History cleared');
+      await clearPromptHistory()
+      setEntries([])
+      toast.success('History cleared')
     } catch {
-      toast.error('Failed to clear history');
+      toast.error('Failed to clear history')
     }
-    setShowClearDialog(false);
-  };
+    setShowClearDialog(false)
+  }
 
   if (entries.length === 0) {
     return (
@@ -66,7 +66,7 @@ export function HistoryList({ initialHistory }: Props) {
           </p>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
@@ -85,7 +85,7 @@ export function HistoryList({ initialHistory }: Props) {
 
       <div className="space-y-3">
         {entries.map((entry) => {
-          const isExpanded = expandedId === entry.id;
+          const isExpanded = expandedId === entry.id
           return (
             <Card key={entry.id}>
               <CardHeader
@@ -130,8 +130,8 @@ export function HistoryList({ initialHistory }: Props) {
                         size="icon"
                         className="h-6 w-6"
                         onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopy(entry.promptContent, `p-${entry.id}`);
+                          e.stopPropagation()
+                          handleCopy(entry.promptContent, `p-${entry.id}`)
                         }}
                       >
                         {copiedId === `p-${entry.id}` ? (
@@ -156,8 +156,8 @@ export function HistoryList({ initialHistory }: Props) {
                         size="icon"
                         className="h-6 w-6"
                         onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopy(entry.output, `o-${entry.id}`);
+                          e.stopPropagation()
+                          handleCopy(entry.output, `o-${entry.id}`)
                         }}
                       >
                         {copiedId === `o-${entry.id}` ? (
@@ -176,7 +176,7 @@ export function HistoryList({ initialHistory }: Props) {
                 </CardContent>
               )}
             </Card>
-          );
+          )
         })}
       </div>
 
@@ -201,5 +201,5 @@ export function HistoryList({ initialHistory }: Props) {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
+  )
 }

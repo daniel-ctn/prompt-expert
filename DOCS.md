@@ -335,14 +335,14 @@ Drizzle ORM supports two query styles:
 // 1. Query API (simpler, for basic queries)
 const prompt = await db.query.prompts.findFirst({
   where: eq(prompts.id, id),
-});
+})
 
 // 2. Select API (for joins, aggregates, complex queries)
 const results = await db
   .select({ id: prompts.id, authorName: users.name })
   .from(prompts)
   .leftJoin(users, eq(prompts.userId, users.id))
-  .where(eq(prompts.isPublic, true));
+  .where(eq(prompts.isPublic, true))
 ```
 
 ---
@@ -373,16 +373,16 @@ Auth.js (NextAuth v5) is configured in `src/lib/auth/index.ts` with:
 3. **Server-side auth check** — In server components and server actions:
 
    ```typescript
-   import { auth } from '@/lib/auth';
-   const session = await auth();
+   import { auth } from '@/lib/auth'
+   const session = await auth()
    // session.user.id is available
    ```
 
 4. **Client-side auth** — In client components:
 
    ```typescript
-   import { useSession, signIn, signOut } from 'next-auth/react';
-   const { data: session, status } = useSession();
+   import { useSession, signIn, signOut } from 'next-auth/react'
+   const { data: session, status } = useSession()
    ```
 
 5. **API route auth** — Each `/api/ai/*` route manually calls `auth()` and returns 401 if unauthorized. The middleware does NOT protect API routes (they need JSON responses, not redirects).
@@ -590,9 +590,9 @@ interface PromptBuilderStore {
 **Usage in components:**
 
 ```typescript
-const { role, setRole } = usePromptBuilderStore();
+const { role, setRole } = usePromptBuilderStore()
 // or select specific slices to avoid re-renders:
-const task = usePromptBuilderStore((s) => s.task);
+const task = usePromptBuilderStore((s) => s.task)
 ```
 
 ### Why Zustand?
@@ -838,7 +838,7 @@ The project uses Tailwind v4 with CSS-based configuration (no `tailwind.config.j
 // postcss.config.mjs
 const config = {
   plugins: { '@tailwindcss/postcss': {} },
-};
+}
 ```
 
 Global CSS is in `src/app/globals.css` which imports:
@@ -867,9 +867,9 @@ npx shadcn@latest add <component-name>
 ### Utility Function
 
 ```typescript
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 // Combines clsx + tailwind-merge for conditional + conflict-free class names
-cn('px-4 py-2', isActive && 'bg-primary', className);
+cn('px-4 py-2', isActive && 'bg-primary', className)
 ```
 
 ### Responsive Design
@@ -913,14 +913,14 @@ pnpm test:watch    # Watch mode
 ### Writing New Tests
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
 
 describe('myFunction', () => {
   it('does the expected thing', () => {
-    const result = myFunction('input');
-    expect(result).toBe('output');
-  });
-});
+    const result = myFunction('input')
+    expect(result).toBe('output')
+  })
+})
 ```
 
 For testing server actions that use the database, you'll need to mock `getDb()`:
@@ -928,7 +928,7 @@ For testing server actions that use the database, you'll need to mock `getDb()`:
 ```typescript
 vi.mock('@/lib/db', () => ({
   getDb: () => mockDb,
-}));
+}))
 ```
 
 ---
@@ -1012,19 +1012,19 @@ This auto-installs the component to `src/components/ui/`.
 3. Export async functions that call `getAuthenticatedUserId()` and interact with the database
 
 ```typescript
-'use server';
+'use server'
 
-import { getDb } from '@/lib/db';
-import { myTable } from '@/lib/db/schema';
-import { auth } from '@/lib/auth';
+import { getDb } from '@/lib/db'
+import { myTable } from '@/lib/db/schema'
+import { auth } from '@/lib/auth'
 
 export async function myAction(input: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('Unauthorized');
+  const session = await auth()
+  if (!session?.user?.id) throw new Error('Unauthorized')
 
-  const db = getDb();
+  const db = getDb()
   // ... do database work
-  revalidatePath('/my-page');
+  revalidatePath('/my-page')
 }
 ```
 
@@ -1070,8 +1070,8 @@ curl -H "Authorization: Bearer pe_your_token_here" \
 Use the `@/` path alias for all imports:
 
 ```typescript
-import { Button } from '@/components/ui/button';
-import { getDb } from '@/lib/db';
+import { Button } from '@/components/ui/button'
+import { getDb } from '@/lib/db'
 ```
 
 ### Comments

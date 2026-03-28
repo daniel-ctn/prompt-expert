@@ -1,10 +1,9 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import { useTheme } from 'next-themes'
 import {
   Sparkles,
   LogOut,
@@ -17,19 +16,20 @@ import {
   Sun,
   Coins,
   CreditCard,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from 'lucide-react'
+import { AppLink } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { APP_NAME } from '@/config/constants';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { APP_NAME } from '@/config/constants'
+import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/builder', label: 'Builder' },
@@ -37,23 +37,23 @@ const navItems = [
   { href: '/gallery', label: 'Gallery' },
   { href: '/prompts', label: 'My Prompts' },
   { href: '/pricing', label: 'Pricing' },
-];
+]
 
 function NavLinks({
   className,
   mobile,
 }: {
-  className?: string;
-  mobile?: boolean;
+  className?: string
+  mobile?: boolean
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <nav className={className}>
       {navItems.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive = pathname === item.href
         return (
-          <Link
+          <AppLink
             key={item.href}
             href={item.href}
             className={cn(
@@ -69,15 +69,15 @@ function NavLinks({
             {!mobile && isActive && (
               <span className="bg-foreground absolute right-0 -bottom-3.5 left-0 h-0.5 rounded-full" />
             )}
-          </Link>
-        );
+          </AppLink>
+        )
       })}
     </nav>
-  );
+  )
 }
 
 function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme()
 
   return (
     <Button
@@ -90,37 +90,37 @@ function ThemeToggle() {
       <Moon className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
       <span className="sr-only">Toggle theme</span>
     </Button>
-  );
+  )
 }
 
 function CreditsBadge() {
-  const [credits, setCredits] = useState<number | null>(null);
+  const [credits, setCredits] = useState<number | null>(null)
 
   useEffect(() => {
     fetch('/api/credits')
       .then((r) => r.json())
       .then((data) => setCredits(data.total))
-      .catch(() => {});
-  }, []);
+      .catch(() => {})
+  }, [])
 
-  if (credits === null) return <span>...</span>;
-  return <span>{credits} credits</span>;
+  if (credits === null) return <span>...</span>
+  return <span>{credits} credits</span>
 }
 
 export function Header() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   return (
     <header className="border-border/50 bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="group flex items-center gap-2.5">
+        <AppLink href="/" className="group flex items-center gap-2.5">
           <div className="bg-primary group-hover:glow-sm flex h-7 w-7 items-center justify-center rounded-lg shadow-sm transition-shadow">
             <Sparkles className="h-3.5 w-3.5 text-white" />
           </div>
           <span className="font-display text-base font-semibold tracking-tight">
             {APP_NAME}
           </span>
-        </Link>
+        </AppLink>
 
         <NavLinks className="hidden items-center gap-5 md:flex" />
 
@@ -130,13 +130,13 @@ export function Header() {
           {status === 'loading' ? (
             <div className="bg-muted h-8 w-8 animate-pulse rounded-full" />
           ) : session?.user ? (
-            <Link
+            <AppLink
               href="/pricing"
               className="border-border/60 text-muted-foreground hover:border-primary/40 hover:text-foreground hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors sm:flex"
             >
               <Coins className="h-3.5 w-3.5" />
               <CreditsBadge />
-            </Link>
+            </AppLink>
           ) : null}
           {status === 'loading' ? null : session?.user ? (
             <DropdownMenu>
@@ -168,23 +168,23 @@ export function Header() {
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem render={<Link href="/prompts" />}>
+                <DropdownMenuItem render={<AppLink href="/prompts" />}>
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   My Prompts
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/system-prompts" />}>
+                <DropdownMenuItem render={<AppLink href="/system-prompts" />}>
                   <FileText className="mr-2 h-4 w-4" />
                   System Prompts
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/history" />}>
+                <DropdownMenuItem render={<AppLink href="/history" />}>
                   <History className="mr-2 h-4 w-4" />
                   History
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/settings" />}>
+                <DropdownMenuItem render={<AppLink href="/settings" />}>
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/pricing" />}>
+                <DropdownMenuItem render={<AppLink href="/pricing" />}>
                   <CreditCard className="mr-2 h-4 w-4" />
                   Pricing & Credits
                 </DropdownMenuItem>
@@ -225,5 +225,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }

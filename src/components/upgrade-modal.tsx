@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Sparkles, Coins, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Sparkles, Coins, ArrowRight } from 'lucide-react'
+import { AppLink } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,12 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { useUpgradeModal } from '@/stores/upgrade-modal';
-import { PLANS } from '@/config/plans';
+} from '@/components/ui/dialog'
+import { useUpgradeModal } from '@/stores/upgrade-modal'
+import { PLANS } from '@/config/plans'
 
 export function UpgradeModal() {
-  const { isOpen, close } = useUpgradeModal();
+  const { isOpen, close } = useUpgradeModal()
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
@@ -52,7 +52,7 @@ export function UpgradeModal() {
 
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <Button
-            render={<Link href="/pricing" />}
+            render={<AppLink href="/pricing" />}
             className="bg-primary w-full gap-2"
             onClick={close}
           >
@@ -65,5 +65,5 @@ export function UpgradeModal() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

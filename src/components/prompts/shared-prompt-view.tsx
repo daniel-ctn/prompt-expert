@@ -1,68 +1,68 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Copy, Check, GitFork, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { Copy, Check, GitFork, Share2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { forkPrompt } from '@/lib/actions/prompt';
-import { trackPromptEvent } from '@/lib/track-event';
-import { toast } from 'sonner';
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { forkPrompt } from '@/lib/actions/prompt'
+import { trackPromptEvent } from '@/lib/track-event'
+import { toast } from 'sonner'
 
 interface SharedPromptViewProps {
   prompt: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    tags: string[];
-    createdAt: Date;
-    authorName: string | null;
-    authorImage: string | null;
-  };
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    tags: string[]
+    createdAt: Date
+    authorName: string | null
+    authorImage: string | null
+  }
 }
 
 export function SharedPromptView({ prompt }: SharedPromptViewProps) {
-  const [copied, setCopied] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
-  const [forking, setForking] = useState(false);
+  const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+  const [forking, setForking] = useState(false)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, 'copy');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    await navigator.clipboard.writeText(prompt.content)
+    trackPromptEvent(prompt.id, 'copy')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const handleShareLink = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    trackPromptEvent(prompt.id, 'share');
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 2000);
-    toast.success('Link copied to clipboard');
-  };
+    await navigator.clipboard.writeText(window.location.href)
+    trackPromptEvent(prompt.id, 'share')
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+    toast.success('Link copied to clipboard')
+  }
 
   const handleFork = async () => {
-    setForking(true);
+    setForking(true)
     try {
-      await forkPrompt(prompt.id);
-      toast.success('Prompt forked to your library');
+      await forkPrompt(prompt.id)
+      toast.success('Prompt forked to your library')
     } catch {
-      toast.error('Sign in to fork prompts');
+      toast.error('Sign in to fork prompts')
     } finally {
-      setForking(false);
+      setForking(false)
     }
-  };
+  }
 
   return (
     <Card>
@@ -128,5 +128,5 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
         </ScrollArea>
       </CardContent>
     </Card>
-  );
+  )
 }

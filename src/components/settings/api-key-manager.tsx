@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Check, Eye, EyeOff, Key, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react'
+import { Check, Eye, EyeOff, Key, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { saveApiKey, deleteApiKey } from '@/lib/actions/api-keys';
-import { toast } from 'sonner';
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { saveApiKey, deleteApiKey } from '@/lib/actions/api-keys'
+import { toast } from 'sonner'
 
 const PROVIDERS = [
   {
@@ -29,49 +29,49 @@ const PROVIDERS = [
     placeholder: 'AIza...',
     description: 'Gemini 3.0 Flash',
   },
-] as const;
+] as const
 
 interface Props {
-  savedProviders: string[];
+  savedProviders: string[]
 }
 
 export function ApiKeyManager({ savedProviders }: Props) {
-  const [saved, setSaved] = useState<Set<string>>(new Set(savedProviders));
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [visible, setVisible] = useState<Set<string>>(new Set());
-  const [saving, setSaving] = useState<string | null>(null);
+  const [saved, setSaved] = useState<Set<string>>(new Set(savedProviders))
+  const [values, setValues] = useState<Record<string, string>>({})
+  const [visible, setVisible] = useState<Set<string>>(new Set())
+  const [saving, setSaving] = useState<string | null>(null)
 
   const handleSave = async (providerId: string) => {
-    const key = values[providerId];
-    if (!key?.trim()) return;
+    const key = values[providerId]
+    if (!key?.trim()) return
 
-    setSaving(providerId);
+    setSaving(providerId)
     try {
-      await saveApiKey(providerId, key.trim());
-      setSaved((prev) => new Set([...prev, providerId]));
-      setValues((prev) => ({ ...prev, [providerId]: '' }));
+      await saveApiKey(providerId, key.trim())
+      setSaved((prev) => new Set([...prev, providerId]))
+      setValues((prev) => ({ ...prev, [providerId]: '' }))
       toast.success(
         `${PROVIDERS.find((p) => p.id === providerId)?.name} key saved`,
-      );
+      )
     } catch {
-      toast.error('Failed to save API key');
+      toast.error('Failed to save API key')
     }
-    setSaving(null);
-  };
+    setSaving(null)
+  }
 
   const handleDelete = async (providerId: string) => {
     try {
-      await deleteApiKey(providerId);
+      await deleteApiKey(providerId)
       setSaved((prev) => {
-        const next = new Set(prev);
-        next.delete(providerId);
-        return next;
-      });
-      toast.success('API key removed');
+        const next = new Set(prev)
+        next.delete(providerId)
+        return next
+      })
+      toast.success('API key removed')
     } catch {
-      toast.error('Failed to remove API key');
+      toast.error('Failed to remove API key')
     }
-  };
+  }
 
   return (
     <Card>
@@ -130,11 +130,11 @@ export function ApiKeyManager({ savedProviders }: Props) {
                   className="absolute top-0 right-0 h-full w-10"
                   onClick={() =>
                     setVisible((prev) => {
-                      const next = new Set(prev);
+                      const next = new Set(prev)
                       next.has(provider.id)
                         ? next.delete(provider.id)
-                        : next.add(provider.id);
-                      return next;
+                        : next.add(provider.id)
+                      return next
                     })
                   }
                 >
@@ -169,5 +169,5 @@ export function ApiKeyManager({ savedProviders }: Props) {
         ))}
       </CardContent>
     </Card>
-  );
+  )
 }

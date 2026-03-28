@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { ArrowRight, Settings2, Brain, Layers, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { BuilderSnapshot } from '@/components/home/builder-snapshot';
+import { ArrowRight, Settings2, Brain, Layers, Sparkles } from 'lucide-react'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
+import { BuilderSnapshot } from '@/components/home/builder-snapshot'
 
 const features = [
   {
@@ -20,7 +20,7 @@ const features = [
     icon: Layers,
     title: 'Multi-Model Support',
     description:
-      'Target GPT-4, Claude, Gemini, and more — each prompt optimized for your chosen model.',
+      'Target GPT-5.4, Gemini, and more — each prompt optimized for your chosen model.',
   },
   {
     icon: Sparkles,
@@ -28,7 +28,7 @@ const features = [
     description:
       'See your prompt assemble in real-time as you adjust each parameter.',
   },
-];
+]
 
 export default function HomePage() {
   return (
@@ -68,7 +68,12 @@ export default function HomePage() {
           {/* Single CTA */}
           <div className="animate-fade-in-up animate-delay-300">
             <Button
-              render={<Link href="/builder" />}
+              render={
+                <AppLink
+                  href="/builder"
+                  transitionTypes={appLinkTransitionTypes.builder}
+                />
+              }
               size="lg"
               className="hover:glow-sm gap-2 px-8 shadow-md transition-all"
             >
@@ -130,7 +135,12 @@ export default function HomePage() {
             Free to start. No credit card required.
           </p>
           <Button
-            render={<Link href="/builder" />}
+            render={
+              <AppLink
+                href="/builder"
+                transitionTypes={appLinkTransitionTypes.builder}
+              />
+            }
             size="lg"
             className="hover:glow-sm gap-2 px-8 shadow-md transition-all"
           >
@@ -140,5 +150,5 @@ export default function HomePage() {
         </div>
       </section>
     </div>
-  );
+  )
 }

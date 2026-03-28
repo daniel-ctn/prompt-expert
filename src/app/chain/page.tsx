@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import { ChainClient } from './chain-client';
+import type { Metadata } from 'next'
+import { ChainClient } from './chain-client'
 
 export const metadata: Metadata = {
   title: 'Prompt Chain',
   description:
     "Build multi-step prompt workflows where each step's output feeds into the next.",
-};
+}
 
 export default function ChainPage() {
   return (
@@ -21,5 +21,5 @@ export default function ChainPage() {
       </div>
       <ChainClient />
     </div>
-  );
+  )
 }

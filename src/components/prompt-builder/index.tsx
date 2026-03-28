@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import type { SavedPromptPreset } from '@/types';
-import { ModelSelector } from './model-selector';
-import { CategorySelector } from './category-selector';
-import { ToneSelector } from './tone-selector';
-import { FormatSelector } from './format-selector';
-import { RoleInput } from './role-input';
-import { ContextInput } from './context-input';
-import { TaskInput } from './task-input';
-import { ConstraintsInput } from './constraints-input';
-import { AdvancedSettings } from './advanced-settings';
-import { PromptPreview } from './prompt-preview';
-import { SavePromptDialog } from './save-prompt-dialog';
-import { TemplateSelector } from './template-selector';
+import { RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { SavedPromptPreset } from '@/types'
+import { ModelSelector } from './model-selector'
+import { CategorySelector } from './category-selector'
+import { ToneSelector } from './tone-selector'
+import { FormatSelector } from './format-selector'
+import { RoleInput } from './role-input'
+import { ContextInput } from './context-input'
+import { TaskInput } from './task-input'
+import { ConstraintsInput } from './constraints-input'
+import { AdvancedSettings } from './advanced-settings'
+import { PromptPreview } from './prompt-preview'
+import { SavePromptDialog } from './save-prompt-dialog'
+import { TemplateSelector } from './template-selector'
 
 export function PromptBuilder({
   savedPresets = [],
 }: {
-  savedPresets?: SavedPromptPreset[];
+  savedPresets?: SavedPromptPreset[]
 }) {
-  const reset = usePromptBuilderStore((s) => s.reset);
+  const reset = usePromptBuilderStore((s) => s.reset)
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -85,5 +85,5 @@ export function PromptBuilder({
         <PromptPreview />
       </div>
     </div>
-  );
+  )
 }

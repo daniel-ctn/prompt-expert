@@ -1,7 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from 'react'
 import {
   Copy,
   MoreVertical,
@@ -10,23 +9,24 @@ import {
   Globe,
   Lock,
   Share2,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,53 +36,53 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { deletePrompt, duplicatePrompt } from '@/lib/actions/prompt';
-import { trackPromptEvent } from '@/lib/track-event';
-import { toast } from 'sonner';
+} from '@/components/ui/alert-dialog'
+import { deletePrompt, duplicatePrompt } from '@/lib/actions/prompt'
+import { trackPromptEvent } from '@/lib/track-event'
+import { toast } from 'sonner'
 
 interface PromptCardProps {
   prompt: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    tags: string[];
-    isPublic: boolean;
-    updatedAt: Date;
-  };
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    tags: string[]
+    isPublic: boolean
+    updatedAt: Date
+  }
 }
 
 export function PromptCard({ prompt }: PromptCardProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, 'copy');
-    toast.success('Prompt copied to clipboard');
-  };
+    await navigator.clipboard.writeText(prompt.content)
+    trackPromptEvent(prompt.id, 'copy')
+    toast.success('Prompt copied to clipboard')
+  }
 
   const handleDuplicate = async () => {
     try {
-      await duplicatePrompt(prompt.id);
-      toast.success('Prompt duplicated');
+      await duplicatePrompt(prompt.id)
+      toast.success('Prompt duplicated')
     } catch {
-      toast.error('Failed to duplicate prompt');
+      toast.error('Failed to duplicate prompt')
     }
-  };
+  }
 
   const handleDelete = async () => {
-    setIsDeleting(true);
+    setIsDeleting(true)
     try {
-      await deletePrompt(prompt.id);
-      toast.success('Prompt deleted');
+      await deletePrompt(prompt.id)
+      toast.success('Prompt deleted')
     } catch {
-      toast.error('Failed to delete prompt');
-      setIsDeleting(false);
+      toast.error('Failed to delete prompt')
+      setIsDeleting(false)
     }
-  };
+  }
 
   return (
     <Card
@@ -126,9 +126,9 @@ export function PromptCard({ prompt }: PromptCardProps) {
                   onClick={async () => {
                     await navigator.clipboard.writeText(
                       `${window.location.origin}/share/${prompt.id}`,
-                    );
-                    trackPromptEvent(prompt.id, 'share');
-                    toast.success('Share link copied');
+                    )
+                    trackPromptEvent(prompt.id, 'share')
+                    toast.success('Share link copied')
                   }}
                 >
                   <Share2 className="mr-2 h-4 w-4" />
@@ -136,7 +136,12 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
-                render={<Link href={`/prompts/${prompt.id}`} />}
+                render={
+                  <AppLink
+                    href={`/prompts/${prompt.id}`}
+                    transitionTypes={appLinkTransitionTypes.promptDetail}
+                  />
+                }
               >
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
@@ -208,5 +213,5 @@ export function PromptCard({ prompt }: PromptCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

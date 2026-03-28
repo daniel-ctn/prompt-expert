@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Check, Sparkles, Zap } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { PLANS, CREDIT_PACK } from '@/config/plans';
-import type { CreditInfo } from '@/lib/credits';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Check, Sparkles, Zap } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { PLANS, CREDIT_PACK } from '@/config/plans'
+import type { CreditInfo } from '@/lib/credits'
 
 interface PricingCardsProps {
-  currentPlan: 'free' | 'pro';
-  credits: CreditInfo;
-  isAuthenticated: boolean;
+  currentPlan: 'free' | 'pro'
+  credits: CreditInfo
+  isAuthenticated: boolean
 }
 
 export function PricingCards({
@@ -18,41 +18,41 @@ export function PricingCards({
   credits,
   isAuthenticated,
 }: PricingCardsProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState<string | null>(null);
+  const router = useRouter()
+  const [loading, setLoading] = useState<string | null>(null)
 
   async function handleCheckout(type: 'pro' | 'credit_pack') {
     if (!isAuthenticated) {
-      router.push('/login');
-      return;
+      router.push('/login')
+      return
     }
 
-    setLoading(type);
+    setLoading(type)
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
-      });
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (data.url) {
-        window.location.href = data.url;
+        window.location.href = data.url
       }
     } catch {
-      setLoading(null);
+      setLoading(null)
     }
   }
 
   async function handleManage() {
-    setLoading('manage');
+    setLoading('manage')
     try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' });
-      const data = await res.json();
+      const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      const data = await res.json()
       if (data.url) {
-        window.location.href = data.url;
+        window.location.href = data.url
       }
     } catch {
-      setLoading(null);
+      setLoading(null)
     }
   }
 
@@ -173,5 +173,5 @@ export function PricingCards({
         </div>
       )}
     </div>
-  );
+  )
 }

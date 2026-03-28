@@ -9,7 +9,7 @@ When optimizing a prompt, follow these principles:
 6. Remove redundancy while preserving intent
 7. Structure the prompt logically (role, context, task, constraints, output)
 
-Return ONLY the optimized prompt text, without any explanation or meta-commentary.`;
+Return ONLY the optimized prompt text, without any explanation or meta-commentary.`
 
 export const SYSTEM_PROMPT_ANALYZER = `You are an expert prompt engineer who analyzes and scores prompts. Evaluate the given prompt and return a JSON object with this exact structure:
 
@@ -33,4 +33,4 @@ Scoring criteria:
 - completeness: Does it include all necessary information?
 - effectiveness: How likely is it to produce the desired result?
 
-Return ONLY valid JSON, no markdown formatting or explanation.`;
+Return ONLY valid JSON, no markdown formatting or explanation.`

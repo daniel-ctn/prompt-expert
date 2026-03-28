@@ -1,14 +1,14 @@
-import type { Metadata } from 'next';
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Sign In',
   description: 'Sign in to Prompt Expert to save and manage your AI prompts.',
-};
+}
 
 export default function LoginLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  return children;
+  return children
 }

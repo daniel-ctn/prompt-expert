@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import { signIn } from 'next-auth/react';
-import { Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { signIn } from 'next-auth/react'
+import { Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 
 export default function LoginPage() {
   return (
@@ -77,5 +77,5 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

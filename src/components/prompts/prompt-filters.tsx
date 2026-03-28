@@ -1,60 +1,60 @@
-'use client';
+'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Search } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { PROMPT_CATEGORIES } from '@/config/constants';
+} from '@/components/ui/select'
+import { PROMPT_CATEGORIES } from '@/config/constants'
 
 export function PromptFilters() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(
     searchParams.get('search') ?? '',
-  );
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const isInitialMount = useRef(true);
+  )
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const isInitialMount = useRef(true)
 
   const updateParam = useCallback(
     (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (value && value !== 'all') {
-        params.set(key, value);
+        params.set(key, value)
       } else {
-        params.delete(key);
+        params.delete(key)
       }
-      params.delete('page');
-      router.push(`/prompts?${params.toString()}`);
+      params.delete('page')
+      router.push(`/prompts?${params.toString()}`)
     },
     [router, searchParams],
-  );
+  )
 
   useEffect(() => {
     // Skip the initial mount to avoid triggering on first render
     if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+      isInitialMount.current = false
+      return
     }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      const currentSearch = searchParams.get('search') ?? '';
+      const currentSearch = searchParams.get('search') ?? ''
       // Only push if the value actually changed from what's in the URL
       if (searchValue !== currentSearch) {
-        updateParam('search', searchValue);
+        updateParam('search', searchValue)
       }
-    }, 300);
+    }, 300)
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue]);
+  }, [searchValue])
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
@@ -84,5 +84,5 @@ export function PromptFilters() {
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }

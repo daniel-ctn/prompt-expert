@@ -1,28 +1,28 @@
-'use client';
+'use client'
 
-import { useState, useCallback } from 'react';
-import { BarChart3, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import { useUpgradeModal } from '@/stores/upgrade-modal';
+import { useState, useCallback } from 'react'
+import { BarChart3, Loader2, ChevronUp, ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
+import { useUpgradeModal } from '@/stores/upgrade-modal'
 
 interface AnalysisResult {
   scores: {
-    clarity: number;
-    specificity: number;
-    structure: number;
-    completeness: number;
-    effectiveness: number;
-  };
-  overall: number;
-  strengths: string[];
-  improvements: string[];
+    clarity: number
+    specificity: number
+    structure: number
+    completeness: number
+    effectiveness: number
+  }
+  overall: number
+  strengths: string[]
+  improvements: string[]
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
   const color =
-    score >= 8 ? 'bg-green-500' : score >= 5 ? 'bg-yellow-500' : 'bg-red-500';
+    score >= 8 ? 'bg-green-500' : score >= 5 ? 'bg-yellow-500' : 'bg-red-500'
 
   return (
     <div className="space-y-1">
@@ -37,46 +37,46 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
         />
       </div>
     </div>
-  );
+  )
 }
 
 interface PromptAnalysisProps {
-  prompt: string;
-  disabled?: boolean;
+  prompt: string
+  disabled?: boolean
 }
 
 export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const upgradeModal = useUpgradeModal();
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const upgradeModal = useUpgradeModal()
 
   const handleAnalyze = useCallback(async () => {
-    if (!prompt.trim()) return;
-    setIsAnalyzing(true);
+    if (!prompt.trim()) return
+    setIsAnalyzing(true)
     try {
       const res = await fetch('/api/ai/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
-      });
+      })
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+        const data = await res.json().catch(() => ({}))
         if (data.error === 'insufficient_credits') {
-          upgradeModal.open();
-          return;
+          upgradeModal.open()
+          return
         }
-        throw new Error('Analysis failed');
+        throw new Error('Analysis failed')
       }
-      const data = await res.json();
-      setAnalysis(data);
-      setExpanded(true);
+      const data = await res.json()
+      setAnalysis(data)
+      setExpanded(true)
     } catch {
-      toast.error('Failed to analyze prompt');
+      toast.error('Failed to analyze prompt')
     } finally {
-      setIsAnalyzing(false);
+      setIsAnalyzing(false)
     }
-  }, [prompt, upgradeModal]);
+  }, [prompt, upgradeModal])
 
   return (
     <div className="space-y-3">
@@ -159,5 +159,5 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

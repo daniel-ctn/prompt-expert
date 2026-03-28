@@ -1,21 +1,21 @@
-import type { Metadata } from 'next';
-import { getPublicPrompts, getUserFavoriteIds } from '@/lib/actions/prompt';
-import { GalleryFilters } from '@/components/gallery/gallery-filters';
-import { GalleryList } from '@/components/gallery/gallery-list';
+import type { Metadata } from 'next'
+import { getPublicPrompts, getUserFavoriteIds } from '@/lib/actions/prompt'
+import { GalleryFilters } from '@/components/gallery/gallery-filters'
+import { GalleryList } from '@/components/gallery/gallery-list'
 
 export const metadata: Metadata = {
   title: 'Prompt Gallery',
   description:
     'Discover, fork, and favorite community prompts from the public gallery.',
-};
+}
 
 export default async function GalleryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; category?: string; page?: string }>;
+  searchParams: Promise<{ search?: string; category?: string; page?: string }>
 }) {
-  const params = await searchParams;
-  const currentPage = params.page ? parseInt(params.page) : 1;
+  const params = await searchParams
+  const currentPage = params.page ? parseInt(params.page) : 1
   const [{ prompts, total, totalPages }, favoriteIds] = await Promise.all([
     getPublicPrompts({
       search: params.search,
@@ -23,7 +23,7 @@ export default async function GalleryPage({
       page: currentPage,
     }),
     getUserFavoriteIds(),
-  ]);
+  ])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -48,5 +48,5 @@ export default async function GalleryPage({
         />
       </div>
     </div>
-  );
+  )
 }

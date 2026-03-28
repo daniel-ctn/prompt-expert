@@ -1,29 +1,23 @@
-import Link from 'next/link';
-import {
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Sparkles,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { PromptCard } from './prompt-card';
+import { Plus, ChevronLeft, ChevronRight, Search, Sparkles } from 'lucide-react'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
+import { PromptCard } from './prompt-card'
 
 interface PromptListProps {
   prompts: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    tags: string[];
-    isPublic: boolean;
-    updatedAt: Date;
-  }[];
-  total: number;
-  page: number;
-  totalPages: number;
-  hasFilters?: boolean;
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    tags: string[]
+    isPublic: boolean
+    updatedAt: Date
+  }[]
+  total: number
+  page: number
+  totalPages: number
+  hasFilters?: boolean
 }
 
 export function PromptList({
@@ -43,11 +37,11 @@ export function PromptList({
             Try adjusting your search terms or clearing the filters to see all
             your prompts.
           </p>
-          <Button variant="outline" render={<Link href="/prompts" />}>
+          <Button variant="outline" render={<AppLink href="/prompts" />}>
             Clear filters
           </Button>
         </div>
-      );
+      )
     }
 
     return (
@@ -58,12 +52,19 @@ export function PromptList({
           Get started by creating your first prompt with the builder. Choose a
           template or start from scratch.
         </p>
-        <Button render={<Link href="/builder" />}>
+        <Button
+          render={
+            <AppLink
+              href="/builder"
+              transitionTypes={appLinkTransitionTypes.builder}
+            />
+          }
+        >
           <Plus className="mr-2 h-4 w-4" />
           Create your first prompt
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -83,9 +84,10 @@ export function PromptList({
             size="sm"
             disabled={page <= 1}
             render={
-              <Link
+              <AppLink
                 href={`/prompts?page=${page - 1}`}
                 aria-label="Previous page"
+                transitionTypes={appLinkTransitionTypes.paginationPrevious}
               />
             }
           >
@@ -100,7 +102,11 @@ export function PromptList({
             size="sm"
             disabled={page >= totalPages}
             render={
-              <Link href={`/prompts?page=${page + 1}`} aria-label="Next page" />
+              <AppLink
+                href={`/prompts?page=${page + 1}`}
+                aria-label="Next page"
+                transitionTypes={appLinkTransitionTypes.paginationNext}
+              />
             }
           >
             Next
@@ -109,5 +115,5 @@ export function PromptList({
         </div>
       )}
     </div>
-  );
+  )
 }

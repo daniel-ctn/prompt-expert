@@ -1,32 +1,32 @@
-'use client';
+'use client'
 
-import { useState, useCallback } from 'react';
-import { useCompletion } from '@ai-sdk/react';
-import { Play, Loader2, Copy, Check, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useCallback } from 'react'
+import { useCompletion } from '@ai-sdk/react'
+import { Play, Loader2, Copy, Check, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
+} from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { AI_MODELS } from '@/config/constants';
-import { useUpgradeModal } from '@/stores/upgrade-modal';
-import type { AIModel } from '@/types';
+} from '@/components/ui/select'
+import { AI_MODELS } from '@/config/constants'
+import { useUpgradeModal } from '@/stores/upgrade-modal'
+import type { AIModel } from '@/types'
 
 interface ModelComparisonProps {
-  prompt: string;
-  disabled?: boolean;
+  prompt: string
+  disabled?: boolean
 }
 
 function ComparisonSlot({
@@ -36,32 +36,32 @@ function ComparisonSlot({
   isRunning,
   onStart,
 }: {
-  id: string;
-  model: AIModel;
-  prompt: string;
-  isRunning: boolean;
-  onStart: () => void;
+  id: string
+  model: AIModel
+  prompt: string
+  isRunning: boolean
+  onStart: () => void
 }) {
-  const [copied, setCopied] = useState(false);
-  const upgradeModal = useUpgradeModal();
+  const [copied, setCopied] = useState(false)
+  const upgradeModal = useUpgradeModal()
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/ai/test',
     id: `compare-${id}`,
     onError: (error) => {
       if (error.message.includes('insufficient_credits')) {
-        upgradeModal.open();
+        upgradeModal.open()
       }
     },
-  });
+  })
 
   const handleRun = useCallback(() => {
-    onStart();
+    onStart()
     complete(prompt, {
       body: { prompt, model },
-    });
-  }, [prompt, model, complete, onStart]);
+    })
+  }, [prompt, model, complete, onStart])
 
-  const modelLabel = AI_MODELS.find((m) => m.value === model)?.label ?? model;
+  const modelLabel = AI_MODELS.find((m) => m.value === model)?.label ?? model
 
   return (
     <div className="flex flex-1 flex-col rounded-lg border">
@@ -76,9 +76,9 @@ function ComparisonSlot({
               size="icon"
               className="h-7 w-7"
               onClick={async () => {
-                await navigator.clipboard.writeText(completion);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
+                await navigator.clipboard.writeText(completion)
+                setCopied(true)
+                setTimeout(() => setCopied(false), 2000)
               }}
             >
               {copied ? (
@@ -123,16 +123,16 @@ function ComparisonSlot({
         )}
       </ScrollArea>
     </div>
-  );
+  )
 }
 
 export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [models, setModels] = useState<[AIModel, AIModel]>([
     'gpt-5.2-mini',
     'gemini-3.0-flash',
-  ]);
-  const [isRunning, setIsRunning] = useState(false);
+  ])
+  const [isRunning, setIsRunning] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -152,9 +152,9 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
                 key={i}
                 value={model}
                 onValueChange={(val) => {
-                  const next = [...models] as [AIModel, AIModel];
-                  next[i] = val as AIModel;
-                  setModels(next);
+                  const next = [...models] as [AIModel, AIModel]
+                  next[i] = val as AIModel
+                  setModels(next)
                 }}
               >
                 <SelectTrigger>
@@ -189,5 +189,5 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

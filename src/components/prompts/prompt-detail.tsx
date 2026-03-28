@@ -1,141 +1,149 @@
-'use client';
+'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from 'lucide-react'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { updatePrompt } from '@/lib/actions/prompt';
-import { toast } from 'sonner';
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { updatePrompt } from '@/lib/actions/prompt'
+import { toast } from 'sonner'
 
 function computeDiff(oldText: string, newText: string) {
-  const oldLines = oldText.split('\n');
-  const newLines = newText.split('\n');
-  const result: { type: 'same' | 'added' | 'removed'; text: string }[] = [];
+  const oldLines = oldText.split('\n')
+  const newLines = newText.split('\n')
+  const result: { type: 'same' | 'added' | 'removed'; text: string }[] = []
 
-  const maxLen = Math.max(oldLines.length, newLines.length);
-  let oi = 0;
-  let ni = 0;
+  let oi = 0
+  let ni = 0
 
   while (oi < oldLines.length || ni < newLines.length) {
     if (oi < oldLines.length && ni < newLines.length) {
       if (oldLines[oi] === newLines[ni]) {
-        result.push({ type: 'same', text: oldLines[oi] });
-        oi++;
-        ni++;
+        result.push({ type: 'same', text: oldLines[oi] })
+        oi++
+        ni++
       } else {
-        result.push({ type: 'removed', text: oldLines[oi] });
-        oi++;
+        result.push({ type: 'removed', text: oldLines[oi] })
+        oi++
         if (ni < newLines.length) {
-          result.push({ type: 'added', text: newLines[ni] });
-          ni++;
+          result.push({ type: 'added', text: newLines[ni] })
+          ni++
         }
       }
     } else if (oi < oldLines.length) {
-      result.push({ type: 'removed', text: oldLines[oi] });
-      oi++;
+      result.push({ type: 'removed', text: oldLines[oi] })
+      oi++
     } else {
-      result.push({ type: 'added', text: newLines[ni] });
-      ni++;
+      result.push({ type: 'added', text: newLines[ni] })
+      ni++
     }
   }
 
-  return result;
+  return result
 }
 
 interface PromptDetailProps {
   prompt: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    settings: unknown;
-    tags: string[];
-    isPublic: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    settings: unknown
+    tags: string[]
+    isPublic: boolean
+    createdAt: Date
+    updatedAt: Date
+  }
   versions: {
-    id: string;
-    content: string;
-    versionNumber: number;
-    createdAt: Date;
-  }[];
+    id: string
+    content: string
+    versionNumber: number
+    createdAt: Date
+  }[]
 }
 
 export function PromptDetail({ prompt, versions }: PromptDetailProps) {
-  const router = useRouter();
-  const [title, setTitle] = useState(prompt.title);
-  const [description, setDescription] = useState(prompt.description ?? '');
-  const [content, setContent] = useState(prompt.content);
-  const [saving, setSaving] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [diffLeft, setDiffLeft] = useState<string | null>(null);
-  const [diffRight, setDiffRight] = useState<string | null>(null);
+  const router = useRouter()
+  const [title, setTitle] = useState(prompt.title)
+  const [description, setDescription] = useState(prompt.description ?? '')
+  const [content, setContent] = useState(prompt.content)
+  const [saving, setSaving] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [diffLeft, setDiffLeft] = useState<string | null>(null)
+  const [diffRight, setDiffRight] = useState<string | null>(null)
 
   const diffResult = useMemo(() => {
-    if (!diffLeft || !diffRight || diffLeft === diffRight) return null;
-    const left = versions.find((v) => v.id === diffLeft);
-    const right = versions.find((v) => v.id === diffRight);
-    if (!left || !right) return null;
-    return computeDiff(left.content, right.content);
-  }, [diffLeft, diffRight, versions]);
+    if (!diffLeft || !diffRight || diffLeft === diffRight) return null
+    const left = versions.find((v) => v.id === diffLeft)
+    const right = versions.find((v) => v.id === diffRight)
+    if (!left || !right) return null
+    return computeDiff(left.content, right.content)
+  }, [diffLeft, diffRight, versions])
 
   const handleSave = useCallback(async () => {
-    setSaving(true);
+    setSaving(true)
     try {
       await updatePrompt({
         id: prompt.id,
         title,
         description,
         content,
-      });
-      toast.success('Prompt updated');
-      router.refresh();
+      })
+      toast.success('Prompt updated')
+      router.refresh()
     } catch {
-      toast.error('Failed to update prompt');
+      toast.error('Failed to update prompt')
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  }, [prompt.id, title, description, content, router]);
+  }, [prompt.id, title, description, content, router])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        if (!saving) handleSave();
+        e.preventDefault()
+        if (!saving) handleSave()
       }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [saving, handleSave]);
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [saving, handleSave])
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    await navigator.clipboard.writeText(content)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" render={<Link href="/prompts" />}>
+        <Button
+          variant="ghost"
+          size="icon"
+          render={
+            <AppLink
+              href="/prompts"
+              transitionTypes={appLinkTransitionTypes.back}
+            />
+          }
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1">
@@ -328,5 +336,5 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

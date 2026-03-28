@@ -1,24 +1,24 @@
-import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Search, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { GalleryCard } from './gallery-card';
+import { ChevronLeft, ChevronRight, Search, Globe } from 'lucide-react'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
+import { GalleryCard } from './gallery-card'
 
 interface GalleryListProps {
   prompts: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    tags: string[];
-    authorName: string | null;
-    authorImage: string | null;
-  }[];
-  total: number;
-  page: number;
-  totalPages: number;
-  hasFilters?: boolean;
-  favoriteIds?: Set<string>;
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    tags: string[]
+    authorName: string | null
+    authorImage: string | null
+  }[]
+  total: number
+  page: number
+  totalPages: number
+  hasFilters?: boolean
+  favoriteIds?: Set<string>
 }
 
 export function GalleryList({
@@ -38,11 +38,11 @@ export function GalleryList({
           <p className="text-muted-foreground mb-4 max-w-sm text-sm">
             Try adjusting your search terms or clearing the filters.
           </p>
-          <Button variant="outline" render={<Link href="/gallery" />}>
+          <Button variant="outline" render={<AppLink href="/gallery" />}>
             Clear filters
           </Button>
         </div>
-      );
+      )
     }
 
     return (
@@ -53,9 +53,18 @@ export function GalleryList({
           Be the first to share a prompt! Make any of your prompts public from
           the builder.
         </p>
-        <Button render={<Link href="/builder" />}>Create a prompt</Button>
+        <Button
+          render={
+            <AppLink
+              href="/builder"
+              transitionTypes={appLinkTransitionTypes.builder}
+            />
+          }
+        >
+          Create a prompt
+        </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -79,9 +88,10 @@ export function GalleryList({
             size="sm"
             disabled={page <= 1}
             render={
-              <Link
+              <AppLink
                 href={`/gallery?page=${page - 1}`}
                 aria-label="Previous page"
+                transitionTypes={appLinkTransitionTypes.paginationPrevious}
               />
             }
           >
@@ -96,7 +106,11 @@ export function GalleryList({
             size="sm"
             disabled={page >= totalPages}
             render={
-              <Link href={`/gallery?page=${page + 1}`} aria-label="Next page" />
+              <AppLink
+                href={`/gallery?page=${page + 1}`}
+                aria-label="Next page"
+                transitionTypes={appLinkTransitionTypes.paginationNext}
+              />
             }
           >
             Next
@@ -105,5 +119,5 @@ export function GalleryList({
         </div>
       )}
     </div>
-  );
+  )
 }

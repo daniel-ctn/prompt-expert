@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Select,
@@ -6,19 +6,19 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Lightbulb } from 'lucide-react';
-import { AI_MODELS, MODEL_RECOMMENDATIONS } from '@/config/constants';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import type { AIModel } from '@/types';
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Lightbulb } from 'lucide-react'
+import { AI_MODELS, MODEL_RECOMMENDATIONS } from '@/config/constants'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { AIModel } from '@/types'
 
 export function ModelSelector() {
-  const { settings, updateSettings } = usePromptBuilderStore();
-  const recommendation = MODEL_RECOMMENDATIONS[settings.category];
-  const isRecommended = settings.model === recommendation?.model;
+  const { settings, updateSettings } = usePromptBuilderStore()
+  const recommendation = MODEL_RECOMMENDATIONS[settings.category]
+  const isRecommended = settings.model === recommendation?.model
 
   return (
     <div className="space-y-2">
@@ -26,7 +26,7 @@ export function ModelSelector() {
       <Select
         value={settings.model}
         onValueChange={(value) => {
-          if (value) updateSettings({ model: value as AIModel });
+          if (value) updateSettings({ model: value as AIModel })
         }}
       >
         <SelectTrigger id="model" className="w-full">
@@ -72,5 +72,5 @@ export function ModelSelector() {
         </Button>
       )}
     </div>
-  );
+  )
 }

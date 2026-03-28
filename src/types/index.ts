@@ -1,4 +1,4 @@
-import type { PromptBuilderInput } from '@/lib/validators/prompt';
+import type { PromptBuilderInput } from '@/lib/validators/prompt'
 
 export type PromptCategory =
   | 'instruction'
@@ -6,7 +6,7 @@ export type PromptCategory =
   | 'code'
   | 'analysis'
   | 'qa'
-  | 'conversation';
+  | 'conversation'
 
 export type ToneStyle =
   | 'formal'
@@ -14,7 +14,7 @@ export type ToneStyle =
   | 'technical'
   | 'creative'
   | 'concise'
-  | 'detailed';
+  | 'detailed'
 
 export type OutputFormat =
   | 'text'
@@ -22,58 +22,58 @@ export type OutputFormat =
   | 'markdown'
   | 'list'
   | 'code'
-  | 'table';
+  | 'table'
 
-export type AIModel = 'gpt-5.4-mini' | 'gpt-5.2-mini' | 'gemini-3.0-flash';
+export type AIModel = 'gpt-5.4-mini' | 'gpt-5.2-mini' | 'gemini-3.0-flash'
 
-export type AIProvider = 'openai' | 'google';
+export type AIProvider = 'openai' | 'google'
 
 export interface PromptSettings {
-  model: AIModel;
-  category: PromptCategory;
-  tone: ToneStyle;
-  outputFormat: OutputFormat;
-  maxLength?: number;
-  includeExamples: boolean;
-  temperature?: number;
+  model: AIModel
+  category: PromptCategory
+  tone: ToneStyle
+  outputFormat: OutputFormat
+  maxLength?: number
+  includeExamples: boolean
+  temperature?: number
 }
 
 export interface PromptBuilderState {
-  role: string;
-  context: string;
-  task: string;
-  constraints: string[];
-  settings: PromptSettings;
-  generatedPrompt: string;
+  role: string
+  context: string
+  task: string
+  constraints: string[]
+  settings: PromptSettings
+  generatedPrompt: string
 }
 
 export interface SavedPrompt {
-  id: string;
-  userId: string;
-  title: string;
-  description: string;
-  category: PromptCategory;
-  content: string;
-  settings: PromptSettings;
-  builderState?: PromptBuilderInput | null;
-  tags: string[];
-  isPublic: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  userId: string
+  title: string
+  description: string
+  category: PromptCategory
+  content: string
+  settings: PromptSettings
+  builderState?: PromptBuilderInput | null
+  tags: string[]
+  isPublic: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface SavedPromptPreset {
-  id: string;
-  title: string;
-  description: string | null;
-  builderState: PromptBuilderInput;
+  id: string
+  title: string
+  description: string | null
+  builderState: PromptBuilderInput
 }
 
 export interface PromptVersion {
-  id: string;
-  promptId: string;
-  content: string;
-  settings: PromptSettings;
-  versionNumber: number;
-  createdAt: Date;
+  id: string
+  promptId: string
+  content: string
+  settings: PromptSettings
+  versionNumber: number
+  createdAt: Date
 }

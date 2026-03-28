@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Plus, Trash2, Copy, Check, Key } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from 'react'
+import { Plus, Trash2, Copy, Check, Key } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -18,34 +18,34 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { createApiToken, deleteApiToken } from '@/lib/actions/api-tokens';
-import { toast } from 'sonner';
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { createApiToken, deleteApiToken } from '@/lib/actions/api-tokens'
+import { toast } from 'sonner'
 
 interface Token {
-  id: string;
-  name: string;
-  lastUsedAt: Date | null;
-  createdAt: Date;
+  id: string
+  name: string
+  lastUsedAt: Date | null
+  createdAt: Date
 }
 
 interface Props {
-  initialTokens: Token[];
+  initialTokens: Token[]
 }
 
 export function ApiTokenManager({ initialTokens }: Props) {
-  const [tokens, setTokens] = useState<Token[]>(initialTokens);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [newToken, setNewToken] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [tokens, setTokens] = useState<Token[]>(initialTokens)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [name, setName] = useState('')
+  const [newToken, setNewToken] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const handleCreate = async () => {
-    if (!name.trim()) return;
+    if (!name.trim()) return
     try {
-      const raw = await createApiToken(name.trim());
-      setNewToken(raw);
+      const raw = await createApiToken(name.trim())
+      setNewToken(raw)
       setTokens((prev) => [
         {
           id: crypto.randomUUID(),
@@ -54,29 +54,29 @@ export function ApiTokenManager({ initialTokens }: Props) {
           createdAt: new Date(),
         },
         ...prev,
-      ]);
-      setName('');
+      ])
+      setName('')
     } catch {
-      toast.error('Failed to create token');
+      toast.error('Failed to create token')
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteApiToken(id);
-      setTokens((prev) => prev.filter((t) => t.id !== id));
-      toast.success('Token deleted');
+      await deleteApiToken(id)
+      setTokens((prev) => prev.filter((t) => t.id !== id))
+      toast.success('Token deleted')
     } catch {
-      toast.error('Failed to delete token');
+      toast.error('Failed to delete token')
     }
-  };
+  }
 
   const handleCopyToken = async () => {
-    if (!newToken) return;
-    await navigator.clipboard.writeText(newToken);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    if (!newToken) return
+    await navigator.clipboard.writeText(newToken)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <>
@@ -99,9 +99,9 @@ export function ApiTokenManager({ initialTokens }: Props) {
             variant="outline"
             size="sm"
             onClick={() => {
-              setNewToken(null);
-              setCopied(false);
-              setDialogOpen(true);
+              setNewToken(null)
+              setCopied(false)
+              setDialogOpen(true)
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -143,8 +143,8 @@ export function ApiTokenManager({ initialTokens }: Props) {
       <Dialog
         open={dialogOpen}
         onOpenChange={(open) => {
-          if (!open) setNewToken(null);
-          setDialogOpen(open);
+          if (!open) setNewToken(null)
+          setDialogOpen(open)
         }}
       >
         <DialogContent className="sm:max-w-md">
@@ -199,5 +199,5 @@ export function ApiTokenManager({ initialTokens }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react'
 import {
   Plus,
   Trash2,
@@ -10,37 +10,37 @@ import {
   ArrowDown,
   Copy,
   Check,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { AI_MODELS } from '@/config/constants';
-import { toast } from 'sonner';
-import { useUpgradeModal } from '@/stores/upgrade-modal';
-import type { AIModel } from '@/types';
+} from '@/components/ui/select'
+import { AI_MODELS } from '@/config/constants'
+import { toast } from 'sonner'
+import { useUpgradeModal } from '@/stores/upgrade-modal'
+import type { AIModel } from '@/types'
 
 interface ChainStep {
-  id: string;
-  label: string;
-  prompt: string;
-  model: AIModel;
-  output: string;
-  isRunning: boolean;
+  id: string
+  label: string
+  prompt: string
+  model: AIModel
+  output: string
+  isRunning: boolean
 }
 
 function makeId() {
-  return Math.random().toString(36).slice(2, 9);
+  return Math.random().toString(36).slice(2, 9)
 }
 
 const DEFAULT_STEP: () => ChainStep = () => ({
@@ -50,40 +50,40 @@ const DEFAULT_STEP: () => ChainStep = () => ({
   model: 'gpt-5.2-mini',
   output: '',
   isRunning: false,
-});
+})
 
 export function PromptChainBuilder() {
-  const [steps, setSteps] = useState<ChainStep[]>([DEFAULT_STEP()]);
-  const [isRunningChain, setIsRunningChain] = useState(false);
-  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
-  const upgradeModal = useUpgradeModal();
+  const [steps, setSteps] = useState<ChainStep[]>([DEFAULT_STEP()])
+  const [isRunningChain, setIsRunningChain] = useState(false)
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
+  const upgradeModal = useUpgradeModal()
 
   const updateStep = useCallback((id: string, patch: Partial<ChainStep>) => {
-    setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
-  }, []);
+    setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)))
+  }, [])
 
   const addStep = useCallback(() => {
-    setSteps((prev) => [...prev, DEFAULT_STEP()]);
-  }, []);
+    setSteps((prev) => [...prev, DEFAULT_STEP()])
+  }, [])
 
   const removeStep = useCallback((id: string) => {
     setSteps((prev) =>
       prev.length > 1 ? prev.filter((s) => s.id !== id) : prev,
-    );
-  }, []);
+    )
+  }, [])
 
   const runChain = useCallback(async () => {
-    setIsRunningChain(true);
-    let previousOutput = '';
+    setIsRunningChain(true)
+    let previousOutput = ''
 
     for (let i = 0; i < steps.length; i++) {
-      const step = steps[i];
+      const step = steps[i]
       const resolvedPrompt = step.prompt.replace(
         /\{\{previous_output\}\}/g,
         previousOutput,
-      );
+      )
 
-      updateStep(step.id, { isRunning: true, output: '' });
+      updateStep(step.id, { isRunning: true, output: '' })
 
       try {
         const res = await fetch('/api/ai/test', {
@@ -93,46 +93,46 @@ export function PromptChainBuilder() {
             prompt: resolvedPrompt,
             model: step.model,
           }),
-        });
+        })
 
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
+          const data = await res.json().catch(() => ({}))
           if (data.error === 'insufficient_credits') {
-            upgradeModal.open();
-            updateStep(step.id, { isRunning: false });
-            setIsRunningChain(false);
-            return;
+            upgradeModal.open()
+            updateStep(step.id, { isRunning: false })
+            setIsRunningChain(false)
+            return
           }
-          throw new Error('Request failed');
+          throw new Error('Request failed')
         }
-        if (!res.body) throw new Error('No response body');
+        if (!res.body) throw new Error('No response body')
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let fullOutput = '';
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder()
+        let fullOutput = ''
 
         while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          fullOutput += chunk;
-          updateStep(step.id, { output: fullOutput });
+          const { done, value } = await reader.read()
+          if (done) break
+          const chunk = decoder.decode(value, { stream: true })
+          fullOutput += chunk
+          updateStep(step.id, { output: fullOutput })
         }
 
-        previousOutput = fullOutput;
-        updateStep(step.id, { isRunning: false, output: fullOutput });
+        previousOutput = fullOutput
+        updateStep(step.id, { isRunning: false, output: fullOutput })
       } catch {
         updateStep(step.id, {
           isRunning: false,
           output: 'Error: Failed to generate output',
-        });
-        toast.error(`Step ${i + 1} failed`);
-        break;
+        })
+        toast.error(`Step ${i + 1} failed`)
+        break
       }
     }
 
-    setIsRunningChain(false);
-  }, [steps, updateStep]);
+    setIsRunningChain(false)
+  }, [steps, updateStep])
 
   return (
     <div className="space-y-4">
@@ -226,9 +226,9 @@ export function PromptChainBuilder() {
                       size="icon"
                       className="h-6 w-6"
                       onClick={async () => {
-                        await navigator.clipboard.writeText(step.output);
-                        setCopiedIdx(i);
-                        setTimeout(() => setCopiedIdx(null), 2000);
+                        await navigator.clipboard.writeText(step.output)
+                        setCopiedIdx(i)
+                        setTimeout(() => setCopiedIdx(null), 2000)
                       }}
                     >
                       {copiedIdx === i ? (
@@ -276,5 +276,5 @@ export function PromptChainBuilder() {
         </Button>
       </div>
     </div>
-  );
+  )
 }

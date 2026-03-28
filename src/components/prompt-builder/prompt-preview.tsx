@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useCompletion } from '@ai-sdk/react';
-import { Copy, Sparkles, Check, Play, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { assemblePrompt } from '@/lib/ai';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import { useUpgradeModal } from '@/stores/upgrade-modal';
-import { ModelComparison } from './model-comparison';
-import { PromptAnalysis } from './prompt-analysis';
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCompletion } from '@ai-sdk/react'
+import { Copy, Sparkles, Check, Play, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { assemblePrompt } from '@/lib/ai'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import { useUpgradeModal } from '@/stores/upgrade-modal'
+import { ModelComparison } from './model-comparison'
+import { PromptAnalysis } from './prompt-analysis'
 import {
   VariableFiller,
   extractVariables,
   resolveVariables,
-} from './variable-filler';
+} from './variable-filler'
 
 export function PromptPreview() {
   const {
@@ -30,16 +30,16 @@ export function PromptPreview() {
     setOptimizedPrompt,
     isOptimizing,
     setIsOptimizing,
-  } = usePromptBuilderStore();
+  } = usePromptBuilderStore()
 
-  const upgradeModal = useUpgradeModal();
+  const upgradeModal = useUpgradeModal()
   const [copied, setCopied] = useState<
     'assembled' | 'optimized' | 'test' | null
-  >(null);
-  const [activeTab, setActiveTab] = useState('assembled');
+  >(null)
+  const [activeTab, setActiveTab] = useState('assembled')
   const [variableValues, setVariableValues] = useState<Record<string, string>>(
     {},
-  );
+  )
 
   const assembledPrompt = useMemo(
     () =>
@@ -55,23 +55,23 @@ export function PromptPreview() {
           })
         : '',
     [role, context, task, constraints, settings],
-  );
+  )
 
   const { complete: completeOptimize, isLoading: isOptimizeLoading } =
     useCompletion({
       api: '/api/ai/optimize',
       id: 'optimize',
       onFinish: (_prompt, completion) => {
-        setOptimizedPrompt(completion);
-        setIsOptimizing(false);
+        setOptimizedPrompt(completion)
+        setIsOptimizing(false)
       },
       onError: (error) => {
-        setIsOptimizing(false);
+        setIsOptimizing(false)
         if (error.message.includes('insufficient_credits')) {
-          upgradeModal.open();
+          upgradeModal.open()
         }
       },
-    });
+    })
 
   const {
     completion: testOutput,
@@ -82,74 +82,74 @@ export function PromptPreview() {
     id: 'test',
     onError: (error) => {
       if (error.message.includes('insufficient_credits')) {
-        upgradeModal.open();
+        upgradeModal.open()
       }
     },
-  });
+  })
 
   const handleOptimize = useCallback(() => {
-    if (!assembledPrompt.trim()) return;
-    setIsOptimizing(true);
-    setOptimizedPrompt('');
+    if (!assembledPrompt.trim()) return
+    setIsOptimizing(true)
+    setOptimizedPrompt('')
     completeOptimize(assembledPrompt, {
       body: { prompt: assembledPrompt, model: settings.model },
-    });
+    })
   }, [
     assembledPrompt,
     settings.model,
     completeOptimize,
     setIsOptimizing,
     setOptimizedPrompt,
-  ]);
+  ])
 
-  const currentPrompt = optimizedPrompt || assembledPrompt;
+  const currentPrompt = optimizedPrompt || assembledPrompt
   const variables = useMemo(
     () => extractVariables(currentPrompt),
     [currentPrompt],
-  );
+  )
   const resolvedPrompt = useMemo(
     () =>
       variables.length > 0
         ? resolveVariables(currentPrompt, variableValues)
         : currentPrompt,
     [currentPrompt, variables, variableValues],
-  );
+  )
 
   const handleTest = useCallback(() => {
-    if (!resolvedPrompt.trim()) return;
-    setActiveTab('test');
+    if (!resolvedPrompt.trim()) return
+    setActiveTab('test')
     completeTest(resolvedPrompt, {
       body: {
         prompt: resolvedPrompt,
         model: settings.model,
         temperature: settings.temperature,
       },
-    });
-  }, [resolvedPrompt, settings.model, settings.temperature, completeTest]);
+    })
+  }, [resolvedPrompt, settings.model, settings.temperature, completeTest])
 
   const handleCopy = useCallback(
     async (text: string, type: 'assembled' | 'optimized' | 'test') => {
-      await navigator.clipboard.writeText(text);
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
+      await navigator.clipboard.writeText(text)
+      setCopied(type)
+      setTimeout(() => setCopied(null), 2000)
     },
     [],
-  );
+  )
 
-  const hasContent = assembledPrompt.trim().length > 0;
+  const hasContent = assembledPrompt.trim().length > 0
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        e.preventDefault();
+        e.preventDefault()
         if (hasContent && !isOptimizeLoading && !isOptimizing) {
-          handleOptimize();
+          handleOptimize()
         }
       }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize]);
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize])
 
   return (
     <Card className="border-border/50 bg-card/80 relative flex h-full flex-col overflow-hidden backdrop-blur-sm">
@@ -167,9 +167,9 @@ export function PromptPreview() {
               className="border-border/60"
             >
               {isTesting ? (
-                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Play className="mr-1.5 h-4 w-4" />
+                <Play className="h-4 w-4" />
               )}
               {isTesting ? 'Running...' : 'Test'}
             </Button>
@@ -181,11 +181,6 @@ export function PromptPreview() {
             >
               <Sparkles className="h-3.5 w-3.5" />
               {isOptimizeLoading ? 'Optimizing...' : 'Optimize'}
-              {!isOptimizeLoading && (
-                <kbd className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground/70 ml-1 hidden rounded border px-1 py-0.5 font-mono text-[10px] sm:inline-block">
-                  ⌘↵
-                </kbd>
-              )}
             </Button>
           </div>
         </div>
@@ -307,5 +302,5 @@ export function PromptPreview() {
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

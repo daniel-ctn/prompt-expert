@@ -1,27 +1,27 @@
-import type { Metadata } from 'next';
-import { Analytics } from '@vercel/analytics/next';
-import { DM_Sans, Geist_Mono, Sora } from 'next/font/google';
-import { Providers } from '@/components/providers';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
-import './globals.css';
+import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
+import { DM_Sans, Geist_Mono, Sora } from 'next/font/google'
+import { Providers } from '@/components/providers'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import './globals.css'
 
 const dmSans = DM_Sans({
   variable: '--font-dm-sans',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-});
+})
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
-});
+})
 
 const sora = Sora({
   variable: '--font-sora',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
-});
+})
 
 export const metadata: Metadata = {
   title: {
@@ -47,12 +47,12 @@ export const metadata: Metadata = {
       'Create efficient, optimized prompts for any AI model with an intuitive builder.',
   },
   robots: { index: true, follow: true },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -70,5 +70,5 @@ export default function RootLayout({
         <Analytics />
       </body>
     </html>
-  );
+  )
 }

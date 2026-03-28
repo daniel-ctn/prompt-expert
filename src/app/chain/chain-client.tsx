@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic'
 
 const PromptChainBuilder = dynamic(
   () =>
@@ -8,8 +8,8 @@ const PromptChainBuilder = dynamic(
       (m) => m.PromptChainBuilder,
     ),
   { ssr: false },
-);
+)
 
 export function ChainClient() {
-  return <PromptChainBuilder />;
+  return <PromptChainBuilder />
 }

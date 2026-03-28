@@ -1,7 +1,7 @@
-import { Sparkles, ChevronDown, Copy } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Sparkles, ChevronDown, Copy } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 const FAKE_PROMPT_OUTPUT = `You are a senior software engineer specializing in code review.
 
@@ -17,9 +17,9 @@ Review the provided code and return:
 ## Constraints
 - Focus on correctness first, then performance
 - Use the same programming language for fixes
-- Keep explanations concise and actionable`;
+- Keep explanations concise and actionable`
 
-const tones = ['Professional', 'Technical', 'Casual', 'Academic', 'Creative'];
+const tones = ['Professional', 'Technical', 'Casual', 'Academic', 'Creative']
 
 export function BuilderSnapshot() {
   return (
@@ -173,5 +173,5 @@ export function BuilderSnapshot() {
         </div>
       </div>
     </section>
-  );
+  )
 }

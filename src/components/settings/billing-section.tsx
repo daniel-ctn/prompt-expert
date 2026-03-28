@@ -1,52 +1,52 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { CreditCard, Coins, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { CreditCard, Coins, ArrowRight } from 'lucide-react'
+import { AppLink } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
-import { PLANS, CREDIT_PACK } from '@/config/plans';
-import type { PlanId } from '@/config/plans';
-import type { CreditInfo } from '@/lib/credits';
+} from '@/components/ui/card'
+import { PLANS, CREDIT_PACK } from '@/config/plans'
+import type { PlanId } from '@/config/plans'
+import type { CreditInfo } from '@/lib/credits'
 
 interface BillingSectionProps {
-  plan: PlanId;
-  credits: CreditInfo;
+  plan: PlanId
+  credits: CreditInfo
 }
 
 export function BillingSection({ plan, credits }: BillingSectionProps) {
-  const [loading, setLoading] = useState<string | null>(null);
-  const planInfo = PLANS[plan];
+  const [loading, setLoading] = useState<string | null>(null)
+  const planInfo = PLANS[plan]
 
   async function handlePortal() {
-    setLoading('portal');
+    setLoading('portal')
     try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
     } catch {
-      setLoading(null);
+      setLoading(null)
     }
   }
 
   async function handleBuyCredits() {
-    setLoading('credits');
+    setLoading('credits')
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'credit_pack' }),
-      });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
     } catch {
-      setLoading(null);
+      setLoading(null)
     }
   }
 
@@ -74,7 +74,7 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
           </div>
           {plan === 'free' ? (
             <Button
-              render={<Link href="/pricing" />}
+              render={<AppLink href="/pricing" />}
               size="sm"
               className="bg-primary gap-1.5"
             >
@@ -119,5 +119,5 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

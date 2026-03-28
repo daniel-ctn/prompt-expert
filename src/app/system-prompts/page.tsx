@@ -1,14 +1,14 @@
-import type { Metadata } from 'next';
-import { getUserSystemPrompts } from '@/lib/actions/system-prompts';
-import { SystemPromptManager } from '@/components/system-prompts/system-prompt-manager';
+import type { Metadata } from 'next'
+import { getUserSystemPrompts } from '@/lib/actions/system-prompts'
+import { SystemPromptManager } from '@/components/system-prompts/system-prompt-manager'
 
 export const metadata: Metadata = {
   title: 'System Prompts',
   description: 'Create and manage reusable system prompt fragments.',
-};
+}
 
 export default async function SystemPromptsPage() {
-  const systemPrompts = await getUserSystemPrompts();
+  const systemPrompts = await getUserSystemPrompts()
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
@@ -23,5 +23,5 @@ export default async function SystemPromptsPage() {
       </div>
       <SystemPromptManager initialPrompts={systemPrompts} />
     </div>
-  );
+  )
 }

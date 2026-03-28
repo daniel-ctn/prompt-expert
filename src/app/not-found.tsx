@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Home, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import type { Metadata } from 'next'
+import { Home } from 'lucide-react'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'Page Not Found',
-};
+}
 
 export default function NotFound() {
   return (
@@ -16,12 +16,26 @@ export default function NotFound() {
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <div className="mt-6 flex gap-3">
-        <Button variant="outline" render={<Link href="/" />}>
+        <Button
+          variant="outline"
+          render={
+            <AppLink href="/" transitionTypes={appLinkTransitionTypes.back} />
+          }
+        >
           <Home className="mr-2 h-4 w-4" />
           Home
         </Button>
-        <Button render={<Link href="/builder" />}>Go to Builder</Button>
+        <Button
+          render={
+            <AppLink
+              href="/builder"
+              transitionTypes={appLinkTransitionTypes.builder}
+            />
+          }
+        >
+          Go to Builder
+        </Button>
       </div>
     </div>
-  );
+  )
 }

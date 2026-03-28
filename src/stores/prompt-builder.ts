@@ -1,30 +1,30 @@
-import { create } from 'zustand';
-import { DEFAULT_PROMPT_SETTINGS } from '@/config/constants';
-import type { PromptSettings } from '@/types';
-import type { PromptBuilderInput } from '@/lib/validators/prompt';
+import { create } from 'zustand'
+import { DEFAULT_PROMPT_SETTINGS } from '@/config/constants'
+import type { PromptSettings } from '@/types'
+import type { PromptBuilderInput } from '@/lib/validators/prompt'
 
 interface PromptBuilderStore {
-  role: string;
-  context: string;
-  task: string;
-  constraints: string[];
-  settings: PromptSettings;
-  generatedPrompt: string;
-  optimizedPrompt: string;
-  isOptimizing: boolean;
+  role: string
+  context: string
+  task: string
+  constraints: string[]
+  settings: PromptSettings
+  generatedPrompt: string
+  optimizedPrompt: string
+  isOptimizing: boolean
 
-  setRole: (role: string) => void;
-  setContext: (context: string) => void;
-  setTask: (task: string) => void;
-  addConstraint: (constraint: string) => void;
-  removeConstraint: (index: number) => void;
-  updateConstraint: (index: number, value: string) => void;
-  updateSettings: (settings: Partial<PromptSettings>) => void;
-  setGeneratedPrompt: (prompt: string) => void;
-  setOptimizedPrompt: (prompt: string) => void;
-  setIsOptimizing: (value: boolean) => void;
-  loadPreset: (preset: PromptBuilderInput) => void;
-  reset: () => void;
+  setRole: (role: string) => void
+  setContext: (context: string) => void
+  setTask: (task: string) => void
+  addConstraint: (constraint: string) => void
+  removeConstraint: (index: number) => void
+  updateConstraint: (index: number, value: string) => void
+  updateSettings: (settings: Partial<PromptSettings>) => void
+  setGeneratedPrompt: (prompt: string) => void
+  setOptimizedPrompt: (prompt: string) => void
+  setIsOptimizing: (value: boolean) => void
+  loadPreset: (preset: PromptBuilderInput) => void
+  reset: () => void
 }
 
 const initialState = {
@@ -36,7 +36,7 @@ const initialState = {
   generatedPrompt: '',
   optimizedPrompt: '',
   isOptimizing: false,
-};
+}
 
 export const usePromptBuilderStore = create<PromptBuilderStore>((set) => ({
   ...initialState,
@@ -79,4 +79,4 @@ export const usePromptBuilderStore = create<PromptBuilderStore>((set) => ({
     }),
 
   reset: () => set(initialState),
-}));
+}))

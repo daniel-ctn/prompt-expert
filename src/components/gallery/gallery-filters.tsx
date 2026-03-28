@@ -1,49 +1,49 @@
-'use client';
+'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Search } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { PROMPT_CATEGORIES } from '@/config/constants';
+} from '@/components/ui/select'
+import { PROMPT_CATEGORIES } from '@/config/constants'
 
 export function GalleryFilters() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(
     searchParams.get('search') ?? '',
-  );
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  )
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
 
   const updateParam = useCallback(
     (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (value && value !== 'all') {
-        params.set(key, value);
+        params.set(key, value)
       } else {
-        params.delete(key);
+        params.delete(key)
       }
-      params.delete('page');
-      router.push(`/gallery?${params.toString()}`);
+      params.delete('page')
+      router.push(`/gallery?${params.toString()}`)
     },
     [router, searchParams],
-  );
+  )
 
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      updateParam('search', searchValue);
-    }, 300);
+      updateParam('search', searchValue)
+    }, 300)
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [searchValue, updateParam]);
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [searchValue, updateParam])
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
@@ -73,5 +73,5 @@ export function GalleryFilters() {
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }

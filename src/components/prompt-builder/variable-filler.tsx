@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import { useMemo } from 'react';
-import { Variable } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import { useMemo } from 'react'
+import { Variable } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 
-const VARIABLE_REGEX = /\{\{([^}]+)\}\}/g;
+const VARIABLE_REGEX = /\{\{([^}]+)\}\}/g
 
 export function extractVariables(text: string): string[] {
-  const matches = new Set<string>();
-  let match;
+  const matches = new Set<string>()
+  let match
   while ((match = VARIABLE_REGEX.exec(text)) !== null) {
-    matches.add(match[1].trim());
+    matches.add(match[1].trim())
   }
-  return Array.from(matches);
+  return Array.from(matches)
 }
 
 export function resolveVariables(
@@ -22,15 +22,15 @@ export function resolveVariables(
   values: Record<string, string>,
 ): string {
   return text.replace(VARIABLE_REGEX, (_, name) => {
-    const key = name.trim();
-    return values[key] ?? `{{${key}}}`;
-  });
+    const key = name.trim()
+    return values[key] ?? `{{${key}}}`
+  })
 }
 
 interface VariableFillerProps {
-  variables: string[];
-  values: Record<string, string>;
-  onChange: (values: Record<string, string>) => void;
+  variables: string[]
+  values: Record<string, string>
+  onChange: (values: Record<string, string>) => void
 }
 
 export function VariableFiller({
@@ -38,7 +38,7 @@ export function VariableFiller({
   values,
   onChange,
 }: VariableFillerProps) {
-  if (variables.length === 0) return null;
+  if (variables.length === 0) return null
 
   return (
     <div className="space-y-3 rounded-lg border p-4">
@@ -63,5 +63,5 @@ export function VariableFiller({
         ))}
       </div>
     </div>
-  );
+  )
 }

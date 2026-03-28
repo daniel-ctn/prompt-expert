@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod/v4'
 
 const promptCategories = [
   'instruction',
@@ -7,7 +7,7 @@ const promptCategories = [
   'analysis',
   'qa',
   'conversation',
-] as const;
+] as const
 
 const toneStyles = [
   'formal',
@@ -16,7 +16,7 @@ const toneStyles = [
   'creative',
   'concise',
   'detailed',
-] as const;
+] as const
 
 const outputFormats = [
   'text',
@@ -25,9 +25,9 @@ const outputFormats = [
   'list',
   'code',
   'table',
-] as const;
+] as const
 
-const aiModels = ['gpt-5.4-mini', 'gpt-5.2-mini', 'gemini-3.0-flash'] as const;
+const aiModels = ['gpt-5.4-mini', 'gpt-5.2-mini', 'gemini-3.0-flash'] as const
 
 export const promptSettingsSchema = z.object({
   model: z.enum(aiModels),
@@ -37,7 +37,7 @@ export const promptSettingsSchema = z.object({
   maxLength: z.number().int().positive().optional(),
   includeExamples: z.boolean(),
   temperature: z.number().min(0).max(2).optional(),
-});
+})
 
 export const promptBuilderSchema = z.object({
   role: z.string().max(500).default(''),
@@ -45,7 +45,7 @@ export const promptBuilderSchema = z.object({
   task: z.string().min(1, 'Task description is required').max(2000),
   constraints: z.array(z.string().max(200)).max(10).default([]),
   settings: promptSettingsSchema,
-});
+})
 
 export const createPromptSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
@@ -56,12 +56,12 @@ export const createPromptSchema = z.object({
   builderState: promptBuilderSchema.optional(),
   tags: z.array(z.string().max(50)).max(10).default([]),
   isPublic: z.boolean().default(false),
-});
+})
 
 export const updatePromptSchema = createPromptSchema.partial().extend({
   id: z.string().uuid(),
-});
+})
 
-export type CreatePromptInput = z.infer<typeof createPromptSchema>;
-export type UpdatePromptInput = z.infer<typeof updatePromptSchema>;
-export type PromptBuilderInput = z.infer<typeof promptBuilderSchema>;
+export type CreatePromptInput = z.infer<typeof createPromptSchema>
+export type UpdatePromptInput = z.infer<typeof updatePromptSchema>
+export type PromptBuilderInput = z.infer<typeof promptBuilderSchema>

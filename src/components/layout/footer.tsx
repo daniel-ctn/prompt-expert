@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
-import { APP_NAME } from '@/config/constants';
+import { Sparkles } from 'lucide-react'
+import { AppLink } from '@/components/ui/app-link'
+import { APP_NAME } from '@/config/constants'
 
 export function Footer() {
   return (
@@ -16,30 +16,30 @@ export function Footer() {
           </div>
 
           <nav className="flex items-center gap-6">
-            <Link
+            <AppLink
               href="/builder"
               className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             >
               Builder
-            </Link>
-            <Link
+            </AppLink>
+            <AppLink
               href="/gallery"
               className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             >
               Gallery
-            </Link>
-            <Link
+            </AppLink>
+            <AppLink
               href="/chain"
               className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             >
               Chain
-            </Link>
-            <Link
+            </AppLink>
+            <AppLink
               href="/pricing"
               className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             >
               Pricing
-            </Link>
+            </AppLink>
           </nav>
 
           <p className="text-muted-foreground/70 text-xs">
@@ -48,5 +48,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Select,
@@ -6,14 +6,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { OUTPUT_FORMATS } from '@/config/constants';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import type { OutputFormat } from '@/types';
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { OUTPUT_FORMATS } from '@/config/constants'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { OutputFormat } from '@/types'
 
 export function FormatSelector() {
-  const { settings, updateSettings } = usePromptBuilderStore();
+  const { settings, updateSettings } = usePromptBuilderStore()
 
   return (
     <div className="space-y-2">
@@ -21,7 +21,7 @@ export function FormatSelector() {
       <Select
         value={settings.outputFormat}
         onValueChange={(value) => {
-          if (value) updateSettings({ outputFormat: value as OutputFormat });
+          if (value) updateSettings({ outputFormat: value as OutputFormat })
         }}
       >
         <SelectTrigger id="format" className="w-full">
@@ -36,5 +36,5 @@ export function FormatSelector() {
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }

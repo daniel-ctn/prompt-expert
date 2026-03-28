@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Plus, Pencil, Trash2, Copy, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react'
+import { Plus, Pencil, Trash2, Copy, Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,93 +28,93 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/alert-dialog'
+import { Label } from '@/components/ui/label'
 import {
   createSystemPrompt,
   updateSystemPrompt,
   deleteSystemPrompt,
-} from '@/lib/actions/system-prompts';
-import { toast } from 'sonner';
+} from '@/lib/actions/system-prompts'
+import { toast } from 'sonner'
 
 interface SystemPrompt {
-  id: string;
-  name: string;
-  content: string;
-  updatedAt: Date;
+  id: string
+  name: string
+  content: string
+  updatedAt: Date
 }
 
 interface Props {
-  initialPrompts: SystemPrompt[];
+  initialPrompts: SystemPrompt[]
 }
 
 export function SystemPromptManager({ initialPrompts }: Props) {
-  const [items, setItems] = useState<SystemPrompt[]>(initialPrompts);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [name, setName] = useState('');
-  const [content, setContent] = useState('');
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [items, setItems] = useState<SystemPrompt[]>(initialPrompts)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [name, setName] = useState('')
+  const [content, setContent] = useState('')
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const resetForm = () => {
-    setEditingId(null);
-    setName('');
-    setContent('');
-  };
+    setEditingId(null)
+    setName('')
+    setContent('')
+  }
 
   const openCreate = () => {
-    resetForm();
-    setDialogOpen(true);
-  };
+    resetForm()
+    setDialogOpen(true)
+  }
 
   const openEdit = (item: SystemPrompt) => {
-    setEditingId(item.id);
-    setName(item.name);
-    setContent(item.content);
-    setDialogOpen(true);
-  };
+    setEditingId(item.id)
+    setName(item.name)
+    setContent(item.content)
+    setDialogOpen(true)
+  }
 
   const handleSave = async () => {
-    if (!name.trim() || !content.trim()) return;
+    if (!name.trim() || !content.trim()) return
 
     try {
       if (editingId) {
-        const updated = await updateSystemPrompt(editingId, { name, content });
+        const updated = await updateSystemPrompt(editingId, { name, content })
         setItems((prev) =>
           prev.map((p) => (p.id === editingId ? { ...p, ...updated } : p)),
-        );
-        toast.success('System prompt updated');
+        )
+        toast.success('System prompt updated')
       } else {
-        const created = await createSystemPrompt(name, content);
-        setItems((prev) => [created, ...prev]);
-        toast.success('System prompt created');
+        const created = await createSystemPrompt(name, content)
+        setItems((prev) => [created, ...prev])
+        toast.success('System prompt created')
       }
-      setDialogOpen(false);
-      resetForm();
+      setDialogOpen(false)
+      resetForm()
     } catch {
-      toast.error('Failed to save system prompt');
+      toast.error('Failed to save system prompt')
     }
-  };
+  }
 
   const handleDelete = async () => {
-    if (!deleteId) return;
+    if (!deleteId) return
     try {
-      await deleteSystemPrompt(deleteId);
-      setItems((prev) => prev.filter((p) => p.id !== deleteId));
-      toast.success('System prompt deleted');
+      await deleteSystemPrompt(deleteId)
+      setItems((prev) => prev.filter((p) => p.id !== deleteId))
+      toast.success('System prompt deleted')
     } catch {
-      toast.error('Failed to delete');
+      toast.error('Failed to delete')
     }
-    setDeleteId(null);
-  };
+    setDeleteId(null)
+  }
 
   const handleCopy = async (item: SystemPrompt) => {
-    await navigator.clipboard.writeText(item.content);
-    setCopiedId(item.id);
-    setTimeout(() => setCopiedId(null), 2000);
-    toast.success('Copied to clipboard');
-  };
+    await navigator.clipboard.writeText(item.content)
+    setCopiedId(item.id)
+    setTimeout(() => setCopiedId(null), 2000)
+    toast.success('Copied to clipboard')
+  }
 
   return (
     <>
@@ -254,5 +254,5 @@ export function SystemPromptManager({ initialPrompts }: Props) {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { LayoutTemplate } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { LayoutTemplate } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +10,22 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { DEFAULT_PROMPT_SETTINGS, PROMPT_TEMPLATES } from '@/config/constants';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import type { SavedPromptPreset } from '@/types';
-import { toast } from 'sonner';
+} from '@/components/ui/dropdown-menu'
+import { DEFAULT_PROMPT_SETTINGS, PROMPT_TEMPLATES } from '@/config/constants'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { SavedPromptPreset } from '@/types'
+import { toast } from 'sonner'
 
 export function TemplateSelector({
   savedPresets = [],
 }: {
-  savedPresets?: SavedPromptPreset[];
+  savedPresets?: SavedPromptPreset[]
 }) {
-  const loadPreset = usePromptBuilderStore((s) => s.loadPreset);
+  const loadPreset = usePromptBuilderStore((s) => s.loadPreset)
 
   const applyTemplate = (templateId: string) => {
-    const template = PROMPT_TEMPLATES.find((t) => t.id === templateId);
-    if (!template) return;
+    const template = PROMPT_TEMPLATES.find((t) => t.id === templateId)
+    if (!template) return
 
     loadPreset({
       role: template.role,
@@ -38,15 +38,15 @@ export function TemplateSelector({
         tone: template.tone,
         outputFormat: template.outputFormat,
       },
-    });
+    })
 
-    toast.success(`Template "${template.label}" applied`);
-  };
+    toast.success(`Template "${template.label}" applied`)
+  }
 
   const applySavedPreset = (preset: SavedPromptPreset) => {
-    loadPreset(preset.builderState);
-    toast.success(`Preset "${preset.title}" loaded`);
-  };
+    loadPreset(preset.builderState)
+    toast.success(`Preset "${preset.title}" loaded`)
+  }
 
   return (
     <DropdownMenu>
@@ -84,5 +84,5 @@ export function TemplateSelector({
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

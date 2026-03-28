@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
+import { Switch } from '@/components/ui/switch'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function AdvancedSettings() {
-  const { settings, updateSettings } = usePromptBuilderStore();
+  const { settings, updateSettings } = usePromptBuilderStore()
 
   return (
     <div className="space-y-4">
@@ -52,5 +52,5 @@ export function AdvancedSettings() {
         </div>
       </div>
     </div>
-  );
+  )
 }

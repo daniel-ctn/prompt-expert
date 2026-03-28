@@ -1,12 +1,12 @@
-export type PlanId = 'free' | 'pro';
+export type PlanId = 'free' | 'pro'
 
-export type CreditOperation = 'optimize' | 'test' | 'analyze';
+export type CreditOperation = 'optimize' | 'test' | 'analyze'
 
 export interface PlanDefinition {
-  name: string;
-  credits: number;
-  price: number;
-  features: string[];
+  name: string
+  credits: number
+  price: number
+  features: string[]
 }
 
 export const PLANS: Record<PlanId, PlanDefinition> = {
@@ -37,15 +37,15 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       'REST API access',
     ],
   },
-} as const;
+} as const
 
 export const CREDIT_COSTS: Record<CreditOperation, number> = {
   optimize: 1,
   test: 1,
   analyze: 1,
-};
+}
 
 export const CREDIT_PACK = {
   credits: 200,
   price: 5,
-} as const;
+} as const

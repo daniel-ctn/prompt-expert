@@ -22,6 +22,6 @@ const config = {
     'subject-case': [2, 'never', ['upper-case', 'pascal-case', 'start-case']],
     'subject-max-length': [2, 'always', 72],
   },
-};
+}
 
-export default config;
+export default config

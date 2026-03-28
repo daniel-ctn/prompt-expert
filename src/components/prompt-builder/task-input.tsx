@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function TaskInput() {
-  const { task, setTask } = usePromptBuilderStore();
+  const { task, setTask } = usePromptBuilderStore()
 
   return (
     <div className="space-y-2">
@@ -24,5 +24,5 @@ export function TaskInput() {
         {task.length}/2000 characters
       </p>
     </div>
-  );
+  )
 }

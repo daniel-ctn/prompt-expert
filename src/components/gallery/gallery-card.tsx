@@ -1,59 +1,59 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Copy, GitFork, Check, Heart } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { Copy, GitFork, Check, Heart } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { forkPrompt, toggleFavorite } from '@/lib/actions/prompt';
-import { trackPromptEvent } from '@/lib/track-event';
-import { toast } from 'sonner';
+} from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { forkPrompt, toggleFavorite } from '@/lib/actions/prompt'
+import { trackPromptEvent } from '@/lib/track-event'
+import { toast } from 'sonner'
 
 interface GalleryCardProps {
   prompt: {
-    id: string;
-    title: string;
-    description: string | null;
-    category: string;
-    content: string;
-    tags: string[];
-    authorName: string | null;
-    authorImage: string | null;
-  };
-  isFavorited?: boolean;
+    id: string
+    title: string
+    description: string | null
+    category: string
+    content: string
+    tags: string[]
+    authorName: string | null
+    authorImage: string | null
+  }
+  isFavorited?: boolean
 }
 
 export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
-  const [copied, setCopied] = useState(false);
-  const [forking, setForking] = useState(false);
-  const [favorited, setFavorited] = useState(isFavorited);
+  const [copied, setCopied] = useState(false)
+  const [forking, setForking] = useState(false)
+  const [favorited, setFavorited] = useState(isFavorited)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(prompt.content);
-    trackPromptEvent(prompt.id, 'copy');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    toast.success('Prompt copied to clipboard');
-  };
+    await navigator.clipboard.writeText(prompt.content)
+    trackPromptEvent(prompt.id, 'copy')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+    toast.success('Prompt copied to clipboard')
+  }
 
   const handleFork = async () => {
-    setForking(true);
+    setForking(true)
     try {
-      await forkPrompt(prompt.id);
-      toast.success('Prompt forked to your library');
+      await forkPrompt(prompt.id)
+      toast.success('Prompt forked to your library')
     } catch {
-      toast.error('Sign in to fork prompts');
+      toast.error('Sign in to fork prompts')
     } finally {
-      setForking(false);
+      setForking(false)
     }
-  };
+  }
 
   return (
     <Card className="hover:ring-border/80 transition-all">
@@ -107,10 +107,10 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
               className="h-7 w-7"
               onClick={async () => {
                 try {
-                  const result = await toggleFavorite(prompt.id);
-                  setFavorited(result.favorited);
+                  const result = await toggleFavorite(prompt.id)
+                  setFavorited(result.favorited)
                 } catch {
-                  toast.error('Sign in to favorite prompts');
+                  toast.error('Sign in to favorite prompts')
                 }
               }}
             >
@@ -143,5 +143,5 @@ export function GalleryCard({ prompt, isFavorited = false }: GalleryCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function RoleInput() {
-  const { role, setRole } = usePromptBuilderStore();
+  const { role, setRole } = usePromptBuilderStore()
 
   return (
     <div className="space-y-2">
@@ -20,5 +20,5 @@ export function RoleInput() {
         Define who the AI should act as
       </p>
     </div>
-  );
+  )
 }

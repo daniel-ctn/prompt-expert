@@ -4,26 +4,26 @@ import type {
   OutputFormat,
   PromptCategory,
   ToneStyle,
-} from '@/types';
+} from '@/types'
 
-export const APP_NAME = 'Prompt Expert';
+export const APP_NAME = 'Prompt Expert'
 export const APP_DESCRIPTION =
-  'Create efficient, optimized prompts for any AI model';
+  'Create efficient, optimized prompts for any AI model'
 
 export const AI_MODELS: {
-  value: AIModel;
-  label: string;
-  provider: AIProvider;
+  value: AIModel
+  label: string
+  provider: AIProvider
 }[] = [
   { value: 'gpt-5.4-mini', label: 'GPT-5.4 Mini', provider: 'openai' },
   { value: 'gpt-5.2-mini', label: 'GPT-5.2 Mini', provider: 'openai' },
   { value: 'gemini-3.0-flash', label: 'Gemini 3 Flash', provider: 'google' },
-];
+]
 
 export const PROMPT_CATEGORIES: {
-  value: PromptCategory;
-  label: string;
-  description: string;
+  value: PromptCategory
+  label: string
+  description: string
 }[] = [
   {
     value: 'instruction',
@@ -55,7 +55,7 @@ export const PROMPT_CATEGORIES: {
     label: 'Conversation',
     description: 'Dialogue and chat interactions',
   },
-];
+]
 
 export const TONE_STYLES: { value: ToneStyle; label: string }[] = [
   { value: 'formal', label: 'Formal' },
@@ -64,7 +64,7 @@ export const TONE_STYLES: { value: ToneStyle; label: string }[] = [
   { value: 'creative', label: 'Creative' },
   { value: 'concise', label: 'Concise' },
   { value: 'detailed', label: 'Detailed' },
-];
+]
 
 export const OUTPUT_FORMATS: { value: OutputFormat; label: string }[] = [
   { value: 'text', label: 'Plain Text' },
@@ -73,7 +73,7 @@ export const OUTPUT_FORMATS: { value: OutputFormat; label: string }[] = [
   { value: 'list', label: 'Bullet List' },
   { value: 'code', label: 'Code Block' },
   { value: 'table', label: 'Table' },
-];
+]
 
 export const MODEL_RECOMMENDATIONS: Record<
   PromptCategory,
@@ -103,7 +103,7 @@ export const MODEL_RECOMMENDATIONS: Record<
     model: 'gemini-3.0-flash',
     reason: 'Natural, empathetic conversational tone',
   },
-};
+}
 
 export const DEFAULT_PROMPT_SETTINGS = {
   model: 'gpt-5.2-mini' as AIModel,
@@ -112,18 +112,18 @@ export const DEFAULT_PROMPT_SETTINGS = {
   outputFormat: 'text' as OutputFormat,
   includeExamples: false,
   temperature: 0.7,
-} as const;
+} as const
 
 export const PROMPT_TEMPLATES: {
-  id: string;
-  label: string;
-  category: PromptCategory;
-  role: string;
-  context: string;
-  task: string;
-  constraints: string[];
-  tone: ToneStyle;
-  outputFormat: OutputFormat;
+  id: string
+  label: string
+  category: PromptCategory
+  role: string
+  context: string
+  task: string
+  constraints: string[]
+  tone: ToneStyle
+  outputFormat: OutputFormat
 }[] = [
   {
     id: 'code-review',
@@ -219,4 +219,4 @@ export const PROMPT_TEMPLATES: {
     tone: 'casual',
     outputFormat: 'text',
   },
-];
+]

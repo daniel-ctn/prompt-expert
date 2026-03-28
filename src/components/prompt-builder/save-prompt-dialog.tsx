@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Save } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,26 +12,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import { createPrompt } from '@/lib/actions/prompt';
-import { assemblePrompt } from '@/lib/ai';
-import { toast } from 'sonner';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import { createPrompt } from '@/lib/actions/prompt'
+import { assemblePrompt } from '@/lib/ai'
+import { toast } from 'sonner'
 
 export function SavePromptDialog() {
   const { role, context, task, constraints, settings, optimizedPrompt } =
-    usePromptBuilderStore();
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [tagsInput, setTagsInput] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
-  const [saving, setSaving] = useState(false);
+    usePromptBuilderStore()
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [tagsInput, setTagsInput] = useState('')
+  const [isPublic, setIsPublic] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   const assembled = assemblePrompt({
     role,
@@ -41,19 +41,19 @@ export function SavePromptDialog() {
     tone: settings.tone,
     outputFormat: settings.outputFormat,
     includeExamples: settings.includeExamples,
-  });
+  })
 
-  const content = optimizedPrompt || assembled;
+  const content = optimizedPrompt || assembled
 
   const handleSave = async () => {
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim() || !content.trim()) return
 
-    setSaving(true);
+    setSaving(true)
     try {
       const tags = tagsInput
         .split(',')
         .map((t) => t.trim())
-        .filter(Boolean);
+        .filter(Boolean)
 
       await createPrompt({
         title: title.trim(),
@@ -70,21 +70,21 @@ export function SavePromptDialog() {
         },
         tags,
         isPublic,
-      });
+      })
 
-      toast.success('Prompt saved successfully');
-      router.refresh();
-      setOpen(false);
-      setTitle('');
-      setDescription('');
-      setTagsInput('');
-      setIsPublic(false);
+      toast.success('Prompt saved successfully')
+      router.refresh()
+      setOpen(false)
+      setTitle('')
+      setDescription('')
+      setTagsInput('')
+      setIsPublic(false)
     } catch {
-      toast.error('Failed to save prompt');
+      toast.error('Failed to save prompt')
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -150,5 +150,5 @@ export function SavePromptDialog() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

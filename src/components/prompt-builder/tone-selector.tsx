@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { TONE_STYLES } from '@/config/constants';
-import { usePromptBuilderStore } from '@/stores/prompt-builder';
-import type { ToneStyle } from '@/types';
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { TONE_STYLES } from '@/config/constants'
+import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { ToneStyle } from '@/types'
 
 export function ToneSelector() {
-  const { settings, updateSettings } = usePromptBuilderStore();
+  const { settings, updateSettings } = usePromptBuilderStore()
 
   return (
     <div className="space-y-2">
@@ -25,5 +25,5 @@ export function ToneSelector() {
         ))}
       </div>
     </div>
-  );
+  )
 }

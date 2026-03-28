@@ -1,15 +1,15 @@
-import type { Metadata } from 'next';
-import { getUserPromptPresets } from '@/lib/actions/prompt';
-import { BuilderClient } from './builder-client';
+import type { Metadata } from 'next'
+import { getUserPromptPresets } from '@/lib/actions/prompt'
+import { BuilderClient } from './builder-client'
 
 export const metadata: Metadata = {
   title: 'Prompt Builder',
   description:
     'Build and optimize AI prompts with fine-tuned controls for model, tone, format, and constraints.',
-};
+}
 
 export default async function BuilderPage() {
-  const savedPresets = await getUserPromptPresets();
+  const savedPresets = await getUserPromptPresets()
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -23,5 +23,5 @@ export default async function BuilderPage() {
       </div>
       <BuilderClient savedPresets={savedPresets} />
     </div>
-  );
+  )
 }
