@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function ContextInput() {
-  const { context, setContext } = usePromptBuilderStore()
+  const { context, setContext, errors } = usePromptBuilderStore()
+  const error = errors.context
 
   return (
     <div className="space-y-2">
@@ -16,11 +17,15 @@ export function ContextInput() {
         value={context}
         onChange={(e) => setContext(e.target.value)}
         rows={3}
-        className="resize-y"
+        className={`resize-y ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
       />
-      <p className="text-muted-foreground text-xs">
-        {context.length}/2000 characters
-      </p>
+      {error ? (
+        <p className="text-destructive text-xs">{error}</p>
+      ) : (
+        <p className="text-muted-foreground text-xs">
+          {context.length}/2000 characters
+        </p>
+      )}
     </div>
   )
 }

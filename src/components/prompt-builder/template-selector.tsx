@@ -51,7 +51,7 @@ export function TemplateSelector({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
-        <LayoutTemplate className="mr-1.5 h-4 w-4" />
+        <LayoutTemplate className="h-4 w-4" />
         Templates
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

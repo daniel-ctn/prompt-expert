@@ -50,7 +50,7 @@ A comprehensive guide for developers joining the project. Covers setup, architec
 
 | Layer             | Technology                    | Version         |
 | ----------------- | ----------------------------- | --------------- |
-| Framework         | Next.js (App Router)          | 16.1.7          |
+| Framework         | Next.js (App Router)          | 16.2.0          |
 | UI Library        | React                         | 19.2.3          |
 | Language          | TypeScript                    | 5.x             |
 | Styling           | Tailwind CSS                  | 4.x             |

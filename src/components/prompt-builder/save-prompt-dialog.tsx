@@ -23,8 +23,15 @@ import { assemblePrompt } from '@/lib/ai'
 import { toast } from 'sonner'
 
 export function SavePromptDialog() {
-  const { role, context, task, constraints, settings, optimizedPrompt } =
-    usePromptBuilderStore()
+  const {
+    role,
+    context,
+    task,
+    constraints,
+    settings,
+    optimizedPrompt,
+    validate,
+  } = usePromptBuilderStore()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
@@ -46,6 +53,7 @@ export function SavePromptDialog() {
   const content = optimizedPrompt || assembled
 
   const handleSave = async () => {
+    if (!validate()) return
     if (!title.trim() || !content.trim()) return
 
     setSaving(true)
@@ -91,7 +99,7 @@ export function SavePromptDialog() {
       <DialogTrigger
         render={<Button variant="default" disabled={!task.trim()} />}
       >
-        <Save className="mr-1.5 h-4 w-4" />
+        <Save className="h-4 w-4" />
         Save Prompt
       </DialogTrigger>
       <DialogContent>

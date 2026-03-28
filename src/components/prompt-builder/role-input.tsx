@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function RoleInput() {
-  const { role, setRole } = usePromptBuilderStore()
+  const { role, setRole, errors } = usePromptBuilderStore()
+  const error = errors.role
 
   return (
     <div className="space-y-2">
@@ -15,10 +16,17 @@ export function RoleInput() {
         placeholder='e.g. "a senior software engineer specializing in React"'
         value={role}
         onChange={(e) => setRole(e.target.value)}
+        className={
+          error ? 'border-destructive focus-visible:ring-destructive' : ''
+        }
       />
-      <p className="text-muted-foreground text-xs">
-        Define who the AI should act as
-      </p>
+      {error ? (
+        <p className="text-destructive text-xs">{error}</p>
+      ) : (
+        <p className="text-muted-foreground text-xs">
+          Define who the AI should act as
+        </p>
+      )}
     </div>
   )
 }

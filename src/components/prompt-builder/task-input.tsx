@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function TaskInput() {
-  const { task, setTask } = usePromptBuilderStore()
+  const { task, setTask, errors } = usePromptBuilderStore()
+  const error = errors.task
 
   return (
     <div className="space-y-2">
@@ -18,11 +19,15 @@ export function TaskInput() {
         value={task}
         onChange={(e) => setTask(e.target.value)}
         rows={4}
-        className="resize-y"
+        className={`resize-y ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
       />
-      <p className="text-muted-foreground text-xs">
-        {task.length}/2000 characters
-      </p>
+      {error ? (
+        <p className="text-destructive text-xs">{error}</p>
+      ) : (
+        <p className="text-muted-foreground text-xs">
+          {task.length}/2000 characters
+        </p>
+      )}
     </div>
   )
 }

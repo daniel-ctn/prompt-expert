@@ -45,7 +45,7 @@ export function PromptBuilder({
                   onClick={reset}
                   className="text-muted-foreground hover:text-foreground"
                 >
-                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  <RotateCcw className="h-3.5 w-3.5" />
                   Reset
                 </Button>
                 <SavePromptDialog />
@@ -53,7 +53,7 @@ export function PromptBuilder({
             </div>
           </CardHeader>
           <Separator className="opacity-50" />
-          <CardContent className="space-y-6 pt-6">
+          <CardContent className="space-y-6 pt-3">
             <div className="grid gap-4 sm:grid-cols-2">
               <ModelSelector />
               <CategorySelector />
@@ -81,7 +81,7 @@ export function PromptBuilder({
       </div>
 
       {/* Right panel: Preview */}
-      <div className="lg:sticky lg:top-20 lg:self-start">
+      <div className="lg:sticky lg:top-20">
         <PromptPreview />
       </div>
     </div>

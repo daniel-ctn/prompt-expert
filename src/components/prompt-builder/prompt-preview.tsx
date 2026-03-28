@@ -30,6 +30,7 @@ export function PromptPreview() {
     setOptimizedPrompt,
     isOptimizing,
     setIsOptimizing,
+    validate,
   } = usePromptBuilderStore()
 
   const upgradeModal = useUpgradeModal()
@@ -88,6 +89,7 @@ export function PromptPreview() {
   })
 
   const handleOptimize = useCallback(() => {
+    if (!validate()) return
     if (!assembledPrompt.trim()) return
     setIsOptimizing(true)
     setOptimizedPrompt('')
@@ -100,6 +102,7 @@ export function PromptPreview() {
     completeOptimize,
     setIsOptimizing,
     setOptimizedPrompt,
+    validate,
   ])
 
   const currentPrompt = optimizedPrompt || assembledPrompt
@@ -116,6 +119,7 @@ export function PromptPreview() {
   )
 
   const handleTest = useCallback(() => {
+    if (!validate()) return
     if (!resolvedPrompt.trim()) return
     setActiveTab('test')
     completeTest(resolvedPrompt, {
@@ -125,7 +129,13 @@ export function PromptPreview() {
         temperature: settings.temperature,
       },
     })
-  }, [resolvedPrompt, settings.model, settings.temperature, completeTest])
+  }, [
+    resolvedPrompt,
+    settings.model,
+    settings.temperature,
+    completeTest,
+    validate,
+  ])
 
   const handleCopy = useCallback(
     async (text: string, type: 'assembled' | 'optimized' | 'test') => {
@@ -186,9 +196,9 @@ export function PromptPreview() {
         </div>
       </CardHeader>
       <Separator className="opacity-50" />
-      <CardContent className="flex-1 pt-4">
+      <CardContent className="flex min-h-0 flex-1 flex-col pt-4">
         {!hasContent ? (
-          <div className="text-muted-foreground flex h-full items-center justify-center">
+          <div className="text-muted-foreground flex flex-1 items-center justify-center">
             <div className="text-center">
               <Sparkles className="mx-auto mb-3 h-8 w-8 opacity-20" />
               <p className="text-sm">
@@ -201,16 +211,16 @@ export function PromptPreview() {
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
-              className="flex flex-1 flex-col"
+              className="flex min-h-0 flex-1 flex-col"
             >
               <TabsList>
                 <TabsTrigger value="assembled">Assembled</TabsTrigger>
                 <TabsTrigger value="optimized">Optimized</TabsTrigger>
                 <TabsTrigger value="test">Test</TabsTrigger>
               </TabsList>
-              <TabsContent value="assembled" className="flex-1">
-                <div className="relative">
-                  <ScrollArea className="h-[400px] rounded-md border p-4">
+              <TabsContent value="assembled" className="min-h-0">
+                <div className="relative flex h-full min-h-0 flex-col">
+                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
                     <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {assembledPrompt}
                     </pre>
@@ -231,9 +241,9 @@ export function PromptPreview() {
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="optimized" className="flex-1">
-                <div className="relative">
-                  <ScrollArea className="h-[400px] rounded-md border p-4">
+              <TabsContent value="optimized" className="min-h-0">
+                <div className="relative flex h-full min-h-0 flex-col">
+                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
                     <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {optimizedPrompt}
                     </pre>
@@ -254,9 +264,9 @@ export function PromptPreview() {
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="test" className="flex-1">
-                <div className="relative">
-                  <ScrollArea className="h-[400px] rounded-md border p-4">
+              <TabsContent value="test" className="min-h-0">
+                <div className="relative flex h-full min-h-0 flex-col">
+                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
                     {isTesting && !testOutput && (
                       <div className="text-muted-foreground flex items-center gap-2 text-sm">
                         <Loader2 className="h-4 w-4 animate-spin" />

@@ -8,8 +8,14 @@ import { Label } from '@/components/ui/label'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 
 export function ConstraintsInput() {
-  const { constraints, addConstraint, removeConstraint, updateConstraint } =
-    usePromptBuilderStore()
+  const {
+    constraints,
+    addConstraint,
+    removeConstraint,
+    updateConstraint,
+    errors,
+  } = usePromptBuilderStore()
+  const error = errors.constraints
   const [newConstraint, setNewConstraint] = useState('')
 
   const handleAdd = () => {
@@ -71,9 +77,13 @@ export function ConstraintsInput() {
           </div>
         )}
       </div>
-      <p className="text-muted-foreground text-xs">
-        {constraints.length}/10 constraints
-      </p>
+      {error ? (
+        <p className="text-destructive text-xs">{error}</p>
+      ) : (
+        <p className="text-muted-foreground text-xs">
+          {constraints.length}/10 constraints
+        </p>
+      )}
     </div>
   )
 }
