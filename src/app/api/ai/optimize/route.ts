@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
   const {
     prompt,
-    model = 'gpt-5.2-mini',
+    model = 'gpt-5.4-mini',
   }: { prompt: string; model?: AIModel } = await req.json()
 
   if (!prompt?.trim()) {

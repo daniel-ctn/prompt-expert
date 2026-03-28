@@ -88,7 +88,7 @@ export function ExportImport({ prompts }: ExportImportProps) {
           category: item.category ?? 'instruction',
           content: item.content,
           settings: item.settings ?? {
-            model: 'gpt-5.2-mini',
+            model: 'gpt-5.4-mini',
             category: item.category ?? 'instruction',
             tone: 'formal',
             outputFormat: 'text',
@@ -124,7 +124,7 @@ export function ExportImport({ prompts }: ExportImportProps) {
             />
           }
         >
-          <Download className="mr-1.5 h-4 w-4" />
+          <Download className="h-4 w-4" />
           Export
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -144,9 +144,9 @@ export function ExportImport({ prompts }: ExportImportProps) {
         onClick={() => fileRef.current?.click()}
       >
         {importing ? (
-          <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <Upload className="mr-1.5 h-4 w-4" />
+          <Upload className="h-4 w-4" />
         )}
         {importing ? 'Importing...' : 'Import'}
       </Button>

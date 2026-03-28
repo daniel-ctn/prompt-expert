@@ -24,7 +24,7 @@ export type OutputFormat =
   | 'code'
   | 'table'
 
-export type AIModel = 'gpt-5.4-mini' | 'gpt-5.2-mini' | 'gemini-3.0-flash'
+export type AIModel = 'gpt-5.4-mini' | 'gemini-2.5-flash'
 
 export type AIProvider = 'openai' | 'google'
 

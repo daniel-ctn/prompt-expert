@@ -71,6 +71,7 @@ export function PromptAnalysis({ prompt, disabled }: PromptAnalysisProps) {
       const data = await res.json()
       setAnalysis(data)
       setExpanded(true)
+      window.dispatchEvent(new Event('credits:updated'))
     } catch {
       toast.error('Failed to analyze prompt')
     } finally {

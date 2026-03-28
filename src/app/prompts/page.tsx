@@ -46,7 +46,7 @@ export default async function PromptsPage({
               />
             }
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="h-4 w-4" />
             New Prompt
           </Button>
         </div>

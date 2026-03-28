@@ -62,9 +62,11 @@ export function PromptPreview() {
     useCompletion({
       api: '/api/ai/optimize',
       id: 'optimize',
+      streamProtocol: 'text',
       onFinish: (_prompt, completion) => {
         setOptimizedPrompt(completion)
         setIsOptimizing(false)
+        window.dispatchEvent(new Event('credits:updated'))
       },
       onError: (error) => {
         setIsOptimizing(false)
@@ -81,6 +83,10 @@ export function PromptPreview() {
   } = useCompletion({
     api: '/api/ai/test',
     id: 'test',
+    streamProtocol: 'text',
+    onFinish: () => {
+      window.dispatchEvent(new Event('credits:updated'))
+    },
     onError: (error) => {
       if (error.message.includes('insufficient_credits')) {
         upgradeModal.open()
@@ -196,7 +202,7 @@ export function PromptPreview() {
         </div>
       </CardHeader>
       <Separator className="opacity-50" />
-      <CardContent className="flex min-h-0 flex-1 flex-col pt-4">
+      <CardContent className="flex min-h-0 flex-1 flex-col pt-3">
         {!hasContent ? (
           <div className="text-muted-foreground flex flex-1 items-center justify-center">
             <div className="text-center">

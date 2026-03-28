@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
@@ -96,12 +96,20 @@ function ThemeToggle() {
 function CreditsBadge() {
   const [credits, setCredits] = useState<number | null>(null)
 
-  useEffect(() => {
+  const fetchCredits = useCallback(() => {
     fetch('/api/credits')
       .then((r) => r.json())
       .then((data) => setCredits(data.total))
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    fetchCredits()
+
+    const handler = () => fetchCredits()
+    window.addEventListener('credits:updated', handler)
+    return () => window.removeEventListener('credits:updated', handler)
+  }, [fetchCredits])
 
   if (credits === null) return <span>...</span>
   return <span>{credits} credits</span>

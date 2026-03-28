@@ -4,8 +4,7 @@ import type { AIModel, AIProvider } from '@/types'
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
   'gpt-5.4-mini': { provider: 'openai', modelId: 'gpt-5.4-mini' },
-  'gpt-5.2-mini': { provider: 'openai', modelId: 'gpt-5.2-mini' },
-  'gemini-3.0-flash': { provider: 'google', modelId: 'gemini-3.0-flash' },
+  'gemini-2.5-flash': { provider: 'google', modelId: 'gemini-2.5-flash' },
 }
 
 function getProviderInstance(

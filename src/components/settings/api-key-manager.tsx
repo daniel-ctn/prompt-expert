@@ -21,13 +21,13 @@ const PROVIDERS = [
     id: 'openai',
     name: 'OpenAI',
     placeholder: 'sk-...',
-    description: 'GPT-5.2 Mini, GPT-5.4 Mini',
+    description: 'GPT-5.4 Mini',
   },
   {
     id: 'google',
     name: 'Google AI',
     placeholder: 'AIza...',
-    description: 'Gemini 3.0 Flash',
+    description: 'Gemini 2.5 Flash',
   },
 ] as const
 

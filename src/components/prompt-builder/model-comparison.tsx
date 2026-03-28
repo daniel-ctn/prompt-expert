@@ -47,6 +47,10 @@ function ComparisonSlot({
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/ai/test',
     id: `compare-${id}`,
+    streamProtocol: 'text',
+    onFinish: () => {
+      window.dispatchEvent(new Event('credits:updated'))
+    },
     onError: (error) => {
       if (error.message.includes('insufficient_credits')) {
         upgradeModal.open()
@@ -129,8 +133,8 @@ function ComparisonSlot({
 export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
   const [open, setOpen] = useState(false)
   const [models, setModels] = useState<[AIModel, AIModel]>([
-    'gpt-5.2-mini',
-    'gemini-3.0-flash',
+    'gpt-5.4-mini',
+    'gemini-2.5-flash',
   ])
   const [isRunning, setIsRunning] = useState(false)
 
