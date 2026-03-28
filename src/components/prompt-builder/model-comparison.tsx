@@ -33,14 +33,10 @@ function ComparisonSlot({
   id,
   model,
   prompt,
-  isRunning,
-  onStart,
 }: {
   id: string
   model: AIModel
   prompt: string
-  isRunning: boolean
-  onStart: () => void
 }) {
   const [copied, setCopied] = useState(false)
   const upgradeModal = useUpgradeModal()
@@ -59,11 +55,10 @@ function ComparisonSlot({
   })
 
   const handleRun = useCallback(() => {
-    onStart()
     complete(prompt, {
       body: { prompt, model },
     })
-  }, [prompt, model, complete, onStart])
+  }, [prompt, model, complete])
 
   const modelLabel = AI_MODELS.find((m) => m.value === model)?.label ?? model
 
@@ -97,7 +92,7 @@ function ComparisonSlot({
             size="icon"
             className="h-7 w-7"
             onClick={handleRun}
-            disabled={isLoading || isRunning}
+            disabled={isLoading}
           >
             {isLoading ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -107,7 +102,7 @@ function ComparisonSlot({
           </Button>
         </div>
       </div>
-      <ScrollArea className="h-64 p-3">
+      <ScrollArea className="h-96 p-3">
         {isLoading && !completion && (
           <div className="text-muted-foreground flex items-center gap-2 text-sm">
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -136,8 +131,6 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
     'gpt-5.4-mini',
     'gemini-2.5-flash',
   ])
-  const [isRunning, setIsRunning] = useState(false)
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -145,7 +138,7 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
       >
         Compare Models
       </DialogTrigger>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="sm:max-w-[900px]!">
         <DialogHeader>
           <DialogTitle>Multi-Model Comparison</DialogTitle>
         </DialogHeader>
@@ -181,8 +174,6 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
                 id={`${i}`}
                 model={model}
                 prompt={prompt}
-                isRunning={isRunning}
-                onStart={() => setIsRunning(true)}
               />
             ))}
           </div>
