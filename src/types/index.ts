@@ -24,9 +24,9 @@ export type OutputFormat =
   | 'code'
   | 'table'
 
-export type AIModel = 'gpt-5.4-mini' | 'gemini-2.5-flash'
+export type AIModel = 'gpt-5.4-mini' | 'gemini-2.5-flash' | 'claude-sonnet-4-6'
 
-export type AIProvider = 'openai' | 'google'
+export type AIProvider = 'openai' | 'google' | 'anthropic'
 
 export interface PromptSettings {
   model: AIModel

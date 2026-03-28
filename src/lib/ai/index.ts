@@ -1,10 +1,12 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { createAnthropic } from '@ai-sdk/anthropic'
 import type { AIModel, AIProvider } from '@/types'
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
   'gpt-5.4-mini': { provider: 'openai', modelId: 'gpt-5.4-mini' },
   'gemini-2.5-flash': { provider: 'google', modelId: 'gemini-2.5-flash' },
+  'claude-sonnet-4-6': { provider: 'anthropic', modelId: 'claude-sonnet-4-6' },
 }
 
 function getProviderInstance(
@@ -19,6 +21,10 @@ function getProviderInstance(
     case 'google':
       return createGoogleGenerativeAI({
         apiKey: userKeys?.google ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      })
+    case 'anthropic':
+      return createAnthropic({
+        apiKey: userKeys?.anthropic ?? process.env.ANTHROPIC_API_KEY,
       })
   }
 }

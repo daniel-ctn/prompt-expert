@@ -29,6 +29,12 @@ const PROVIDERS = [
     placeholder: 'AIza...',
     description: 'Gemini 2.5 Flash',
   },
+  {
+    id: 'anthropic',
+    name: 'Anthropic',
+    placeholder: 'sk-ant-...',
+    description: 'Claude Sonnet 4.6',
+  },
 ] as const
 
 interface Props {

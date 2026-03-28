@@ -17,6 +17,11 @@ export const AI_MODELS: {
 }[] = [
   { value: 'gpt-5.4-mini', label: 'GPT-5.4 Mini', provider: 'openai' },
   { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', provider: 'google' },
+  {
+    value: 'claude-sonnet-4-6',
+    label: 'Claude Sonnet 4.6',
+    provider: 'anthropic',
+  },
 ]
 
 export const PROMPT_CATEGORIES: {
@@ -83,7 +88,7 @@ export const MODEL_RECOMMENDATIONS: Record<
     reason: 'Fast and precise for step-by-step instructions',
   },
   creative: {
-    model: 'gemini-2.5-flash',
+    model: 'claude-sonnet-4-6',
     reason: 'Excellent at creative writing and nuanced language',
   },
   code: {
