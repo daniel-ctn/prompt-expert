@@ -1,14 +1,8 @@
 import Link from 'next/link'
 import type { ComponentProps } from 'react'
+import { appLinkTransitionTypes } from '@/components/ui/app-transition-types'
 
-export const appLinkTransitionTypes = {
-  default: ['app-navigation'],
-  builder: ['app-navigation', 'builder-entry'],
-  back: ['app-navigation', 'navigation-back'],
-  promptDetail: ['app-navigation', 'prompt-detail'],
-  paginationNext: ['app-navigation', 'pagination', 'navigation-forward'],
-  paginationPrevious: ['app-navigation', 'pagination', 'navigation-back'],
-} as const
+export { appLinkTransitionTypes } from '@/components/ui/app-transition-types'
 
 type AppLinkProps = Omit<ComponentProps<typeof Link>, 'transitionTypes'> & {
   transitionTypes?: readonly string[]

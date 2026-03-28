@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { DM_Sans, Geist_Mono, Sora } from 'next/font/google'
-import { Providers } from '@/components/providers'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { PageTransitionShell } from '@/components/layout/page-transition-shell'
+import { Providers } from '@/components/providers'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -63,7 +64,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <PageTransitionShell>{children}</PageTransitionShell>
             <Footer />
           </div>
         </Providers>
