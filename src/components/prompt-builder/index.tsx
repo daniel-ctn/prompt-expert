@@ -59,15 +59,12 @@ export function PromptBuilder({
 }: {
   savedPresets?: SavedPromptPreset[]
 }) {
-  const { reset, role, context, task, constraints, settings } =
-    usePromptBuilderStore((state) => ({
-      reset: state.reset,
-      role: state.role,
-      context: state.context,
-      task: state.task,
-      constraints: state.constraints,
-      settings: state.settings,
-    }))
+  const reset = usePromptBuilderStore((state) => state.reset)
+  const role = usePromptBuilderStore((state) => state.role)
+  const context = usePromptBuilderStore((state) => state.context)
+  const task = usePromptBuilderStore((state) => state.task)
+  const constraints = usePromptBuilderStore((state) => state.constraints)
+  const settings = usePromptBuilderStore((state) => state.settings)
 
   const briefingCount = [role, context, task].filter((value) =>
     value.trim(),
