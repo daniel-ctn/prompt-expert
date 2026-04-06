@@ -2,24 +2,20 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function PromptsLoading() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <div className="mb-8 flex items-center justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-9 w-40" />
-          <Skeleton className="h-5 w-64" />
-        </div>
-        <Skeleton className="h-10 w-32" />
+    <div className="page-shell space-y-6">
+      <div className="page-frame space-y-4 rounded-[calc(var(--radius-4xl)+2px)] p-6">
+        <Skeleton className="h-4 w-28 rounded-full" />
+        <Skeleton className="h-11 w-full max-w-2xl" />
+        <Skeleton className="h-5 w-full max-w-3xl" />
       </div>
-      <div className="space-y-6">
-        <div className="flex gap-3">
-          <Skeleton className="h-10 flex-1" />
-          <Skeleton className="h-10 w-44" />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-48 rounded-lg" />
-          ))}
-        </div>
+      <Skeleton className="h-24 rounded-[calc(var(--radius-3xl)+2px)]" />
+      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            className="h-[24rem] rounded-[calc(var(--radius-4xl)+2px)]"
+          />
+        ))}
       </div>
     </div>
   )

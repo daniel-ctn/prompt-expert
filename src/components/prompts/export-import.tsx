@@ -31,7 +31,16 @@ export function ExportImport({ prompts }: ExportImportProps) {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleExportJSON = () => {
-    const data = prompts.map(({ id, ...rest }) => rest)
+    const data = prompts.map(
+      ({ title, description, category, content, settings, tags }) => ({
+        title,
+        description,
+        category,
+        content,
+        settings,
+        tags,
+      }),
+    )
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
     })

@@ -30,7 +30,7 @@ export function PromptList({
   if (prompts.length === 0) {
     if (hasFilters) {
       return (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+        <div className="page-frame flex flex-col items-center justify-center rounded-[calc(var(--radius-3xl)+2px)] border-dashed p-12 text-center">
           <Search className="text-muted-foreground/50 mb-4 h-10 w-10" />
           <h3 className="mb-2 text-lg font-semibold">No matching prompts</h3>
           <p className="text-muted-foreground mb-4 max-w-sm text-sm">
@@ -45,7 +45,7 @@ export function PromptList({
     }
 
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+      <div className="page-frame flex flex-col items-center justify-center rounded-[calc(var(--radius-3xl)+2px)] border-dashed p-12 text-center">
         <Sparkles className="text-muted-foreground/50 mb-4 h-10 w-10" />
         <h3 className="mb-2 text-lg font-semibold">No prompts yet</h3>
         <p className="text-muted-foreground mb-4 max-w-sm text-sm">
@@ -69,10 +69,18 @@ export function PromptList({
 
   return (
     <div className="space-y-6">
-      <p className="text-muted-foreground text-sm">
-        {total} prompt{total !== 1 ? 's' : ''}
-      </p>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="page-frame flex flex-col gap-3 rounded-[calc(var(--radius-3xl)+2px)] p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="section-label">Library overview</p>
+          <p className="text-muted-foreground mt-2 text-sm">
+            {total} prompt{total !== 1 ? 's' : ''} in this view
+          </p>
+        </div>
+        <p className="text-muted-foreground text-sm">
+          Edit titles, version prompts, and share the ones worth publishing.
+        </p>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
         {prompts.map((prompt) => (
           <PromptCard key={prompt.id} prompt={prompt} />
         ))}

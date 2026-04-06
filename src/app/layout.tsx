@@ -62,7 +62,12 @@ export default function RootLayout({
         className={`${dmSans.variable} ${geistMono.variable} ${sora.variable} antialiased`}
       >
         <Providers>
-          <div className="flex min-h-screen flex-col">
+          <div className="app-shell relative flex min-h-screen flex-col">
+            <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+              <div className="bg-grid-mask absolute inset-0 opacity-60" />
+              <div className="bg-radial-spot absolute top-[-8rem] left-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full" />
+              <div className="bg-radial-spot-secondary absolute top-[24rem] right-[-8rem] h-[22rem] w-[22rem] rounded-full" />
+            </div>
             <Header />
             <PageTransitionShell>{children}</PageTransitionShell>
             <Footer />

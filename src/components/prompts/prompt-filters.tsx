@@ -57,32 +57,38 @@ export function PromptFilters() {
   }, [searchValue])
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
-      <div className="relative flex-1">
-        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-        <Input
-          placeholder="Search prompts..."
-          className="pl-9"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
+    <div className="page-frame flex flex-col gap-4 rounded-[calc(var(--radius-3xl)+2px)] p-4 sm:flex-row sm:items-center">
+      <div className="min-w-0 flex-1">
+        <p className="section-label">Search library</p>
+        <div className="relative mt-2">
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <Input
+            placeholder="Search prompts..."
+            className="border-border/70 bg-background/84 h-11 rounded-full pl-9"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+        </div>
       </div>
-      <Select
-        defaultValue={searchParams.get('category') ?? 'all'}
-        onValueChange={(value) => updateParam('category', value ?? 'all')}
-      >
-        <SelectTrigger className="w-full sm:w-44">
-          <SelectValue placeholder="All categories" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All categories</SelectItem>
-          {PROMPT_CATEGORIES.map((cat) => (
-            <SelectItem key={cat.value} value={cat.value}>
-              {cat.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="sm:w-52">
+        <p className="section-label">Category</p>
+        <Select
+          defaultValue={searchParams.get('category') ?? 'all'}
+          onValueChange={(value) => updateParam('category', value ?? 'all')}
+        >
+          <SelectTrigger className="border-border/70 bg-background/84 mt-2 h-11 w-full rounded-full">
+            <SelectValue placeholder="All categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All categories</SelectItem>
+            {PROMPT_CATEGORIES.map((cat) => (
+              <SelectItem key={cat.value} value={cat.value}>
+                {cat.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   )
 }

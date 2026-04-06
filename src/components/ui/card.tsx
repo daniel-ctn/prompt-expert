@@ -12,7 +12,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        'group/card bg-card text-card-foreground ring-border flex flex-col gap-4 overflow-hidden rounded-xl py-4 text-sm ring-1 transition-shadow has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
+        'group/card bg-card/92 text-card-foreground ring-border hover:ring-border-strong/80 flex flex-col gap-4 overflow-hidden rounded-2xl py-4 text-sm shadow-[var(--shadow-soft)] ring-1 transition-[transform,box-shadow,border-color,background-color] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-2xl *:[img:last-child]:rounded-b-2xl',
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card-footer"
       className={cn(
-        'bg-muted/50 flex items-center rounded-b-xl border-t p-4 group-data-[size=sm]/card:p-3',
+        'bg-muted/45 flex items-center rounded-b-2xl border-t p-4 group-data-[size=sm]/card:p-3',
         className,
       )}
       {...props}

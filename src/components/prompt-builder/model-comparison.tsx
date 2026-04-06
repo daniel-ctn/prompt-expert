@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useCompletion } from '@ai-sdk/react'
-import { Play, Loader2, Copy, Check, X } from 'lucide-react'
+import { Play, Loader2, Copy, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

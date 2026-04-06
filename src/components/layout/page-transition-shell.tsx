@@ -1,8 +1,8 @@
 'use client'
 
-import { ViewTransition } from 'react'
 import { usePathname } from 'next/navigation'
 import { appTransitionType } from '@/components/ui/app-transition-types'
+import { AppViewTransition } from '@/components/ui/app-view-transition'
 
 export function PageTransitionShell({
   children,
@@ -12,7 +12,7 @@ export function PageTransitionShell({
   const pathname = usePathname()
 
   return (
-    <ViewTransition
+    <AppViewTransition
       key={pathname}
       default="none"
       enter={{
@@ -36,6 +36,6 @@ export function PageTransitionShell({
       }}
     >
       <main className="flex-1">{children}</main>
-    </ViewTransition>
+    </AppViewTransition>
   )
 }

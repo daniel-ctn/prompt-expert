@@ -1,17 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, Coins, ArrowRight } from 'lucide-react'
+import { ArrowRight, Coins, CreditCard } from 'lucide-react'
 import { AppLink } from '@/components/ui/app-link'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card'
-import { PLANS, CREDIT_PACK } from '@/config/plans'
+import { CREDIT_PACK, PLANS } from '@/config/plans'
 import type { PlanId } from '@/config/plans'
 import type { CreditInfo } from '@/lib/credits'
 
@@ -51,71 +51,80 @@ export function BillingSection({ plan, credits }: BillingSectionProps) {
   }
 
   return (
-    <Card>
+    <Card className="bg-background/84">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
-          Billing & Credits
+          Billing and credits
         </CardTitle>
         <CardDescription>
-          Manage your subscription and credit balance.
+          Review plan status, remaining balance, and the fastest path to more
+          capacity.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="border-border/50 flex items-center justify-between rounded-lg border p-4">
-          <div>
-            <p className="text-sm font-medium">Current Plan</p>
-            <p className="text-2xl font-bold">
-              {planInfo.name}
-              <span className="text-muted-foreground ml-1.5 text-sm font-normal">
-                {plan === 'free' ? '— Free' : `— $${planInfo.price}/mo`}
-              </span>
-            </p>
+      <CardContent className="grid gap-4 md:grid-cols-2">
+        <div className="border-border/70 bg-surface-1/75 rounded-3xl border p-4">
+          <p className="section-label">Current plan</p>
+          <p className="font-display mt-2 text-3xl font-semibold">
+            {planInfo.name}
+          </p>
+          <p className="text-muted-foreground mt-2 text-sm">
+            {plan === 'free' ? 'Free tier' : `$${planInfo.price}/month`} with{' '}
+            {planInfo.credits} monthly credits.
+          </p>
+          <div className="mt-4">
+            {plan === 'free' ? (
+              <Button
+                render={<AppLink href="/pricing" />}
+                size="sm"
+                className="rounded-full"
+              >
+                Upgrade plan
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePortal}
+                disabled={loading === 'portal'}
+                className="rounded-full"
+              >
+                {loading === 'portal' ? 'Loading...' : 'Manage subscription'}
+              </Button>
+            )}
           </div>
-          {plan === 'free' ? (
-            <Button
-              render={<AppLink href="/pricing" />}
-              size="sm"
-              className="bg-primary gap-1.5"
-            >
-              Upgrade
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handlePortal}
-              disabled={loading === 'portal'}
-            >
-              {loading === 'portal' ? 'Loading...' : 'Manage Subscription'}
-            </Button>
-          )}
         </div>
 
-        <div className="border-border/50 flex items-center justify-between rounded-lg border p-4">
-          <div className="flex items-center gap-3">
-            <Coins className="text-primary h-5 w-5" />
-            <div>
-              <p className="text-sm font-medium">Credits Remaining</p>
-              <p className="text-muted-foreground text-sm">
-                {credits.monthly} monthly + {credits.bonus} bonus ={' '}
-                {credits.total} total
+        <div className="border-border/70 bg-surface-1/75 rounded-3xl border p-4">
+          <div className="flex items-start gap-3">
+            <div className="bg-primary/10 text-primary flex h-11 w-11 items-center justify-center rounded-2xl">
+              <Coins className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="section-label">Credit balance</p>
+              <p className="font-display mt-2 text-3xl font-semibold">
+                {credits.total}
               </p>
+              <p className="text-muted-foreground mt-2 text-sm">
+                {credits.monthly} monthly + {credits.bonus} bonus credits
+                currently available.
+              </p>
+              {plan === 'pro' ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBuyCredits}
+                  disabled={loading === 'credits'}
+                  className="mt-4 rounded-full"
+                >
+                  {loading === 'credits'
+                    ? 'Loading...'
+                    : `Buy ${CREDIT_PACK.credits} more credits`}
+                </Button>
+              ) : null}
             </div>
           </div>
-          {plan === 'pro' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBuyCredits}
-              disabled={loading === 'credits'}
-            >
-              {loading === 'credits'
-                ? 'Loading...'
-                : `+${CREDIT_PACK.credits} for $${CREDIT_PACK.price}`}
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>

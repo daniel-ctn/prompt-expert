@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { Check, Eye, EyeOff, Key, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
@@ -12,28 +12,28 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { saveApiKey, deleteApiKey } from '@/lib/actions/api-keys'
-import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { deleteApiKey, saveApiKey } from '@/lib/actions/api-keys'
 
 const PROVIDERS = [
   {
     id: 'openai',
     name: 'OpenAI',
     placeholder: 'sk-...',
-    description: 'GPT-5.4 Mini',
+    description: 'Use your own key for GPT-5.4 Mini routing.',
   },
   {
     id: 'google',
     name: 'Google AI',
     placeholder: 'AIza...',
-    description: 'Gemini 2.5 Flash',
+    description: 'Use your own key for Gemini 2.5 Flash requests.',
   },
   {
     id: 'anthropic',
     name: 'Anthropic',
     placeholder: 'sk-ant-...',
-    description: 'Claude Sonnet 4.6',
+    description: 'Use your own key for Claude Sonnet 4.6 runs.',
   },
 ] as const
 
@@ -57,7 +57,7 @@ export function ApiKeyManager({ savedProviders }: Props) {
       setSaved((prev) => new Set([...prev, providerId]))
       setValues((prev) => ({ ...prev, [providerId]: '' }))
       toast.success(
-        `${PROVIDERS.find((p) => p.id === providerId)?.name} key saved`,
+        `${PROVIDERS.find((provider) => provider.id === providerId)?.name} key saved`,
       )
     } catch {
       toast.error('Failed to save API key')
@@ -80,66 +80,74 @@ export function ApiKeyManager({ savedProviders }: Props) {
   }
 
   return (
-    <Card>
+    <Card className="bg-background/84">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Key className="h-5 w-5" />
-          API Keys
+          Provider API keys
         </CardTitle>
-        <CardDescription>
-          Add your own API keys to use instead of the shared server keys. Keys
-          are encrypted at rest.
+        <CardDescription className="leading-6">
+          Add your own provider keys if you want direct quota control. Keys are
+          encrypted at rest and can replace the shared server defaults.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {PROVIDERS.map((provider) => (
-          <div key={provider.id} className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label
-                htmlFor={`key-${provider.id}`}
-                className="text-sm font-medium"
-              >
-                {provider.name}
-                <span className="text-muted-foreground ml-2 text-xs font-normal">
+          <div
+            key={provider.id}
+            className="border-border/70 bg-surface-1/75 rounded-3xl border p-4"
+          >
+            <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+              <div className="space-y-1">
+                <Label
+                  htmlFor={`key-${provider.id}`}
+                  className="text-sm font-medium"
+                >
+                  {provider.name}
+                </Label>
+                <p className="text-muted-foreground text-sm">
                   {provider.description}
-                </span>
-              </Label>
-              {saved.has(provider.id) && (
-                <Badge variant="secondary" className="gap-1 text-xs">
+                </p>
+              </div>
+              {saved.has(provider.id) ? (
+                <Badge variant="secondary" className="rounded-full px-3 py-1">
                   <Check className="h-3 w-3" />
                   Configured
                 </Badge>
-              )}
+              ) : null}
             </div>
-            <div className="flex gap-2">
+
+            <div className="flex flex-col gap-2 sm:flex-row">
               <div className="relative flex-1">
                 <Input
                   id={`key-${provider.id}`}
                   type={visible.has(provider.id) ? 'text' : 'password'}
                   value={values[provider.id] ?? ''}
-                  onChange={(e) =>
+                  onChange={(event) =>
                     setValues((prev) => ({
                       ...prev,
-                      [provider.id]: e.target.value,
+                      [provider.id]: event.target.value,
                     }))
                   }
                   placeholder={
                     saved.has(provider.id)
-                      ? '••••••••  (replace existing)'
+                      ? '•••••••• (replace existing)'
                       : provider.placeholder
                   }
-                  className="pr-10 font-mono text-sm"
+                  className="border-border/70 bg-background/84 h-11 rounded-2xl pr-10 font-mono text-sm"
                 />
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-0 right-0 h-full w-10"
+                  className="absolute top-1 right-1 h-9 w-9 rounded-full"
                   onClick={() =>
                     setVisible((prev) => {
                       const next = new Set(prev)
-                      next.has(provider.id)
-                        ? next.delete(provider.id)
-                        : next.add(provider.id)
+                      if (next.has(provider.id)) {
+                        next.delete(provider.id)
+                      } else {
+                        next.add(provider.id)
+                      }
                       return next
                     })
                   }
@@ -156,20 +164,20 @@ export function ApiKeyManager({ savedProviders }: Props) {
                 disabled={
                   !values[provider.id]?.trim() || saving === provider.id
                 }
-                size="sm"
+                className="rounded-full"
               >
-                {saving === provider.id ? 'Saving...' : 'Save'}
+                {saving === provider.id ? 'Saving...' : 'Save key'}
               </Button>
-              {saved.has(provider.id) && (
+              {saved.has(provider.id) ? (
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive"
+                  variant="outline"
+                  className="rounded-full"
                   onClick={() => handleDelete(provider.id)}
                 >
                   <Trash2 className="h-4 w-4" />
+                  Remove
                 </Button>
-              )}
+              ) : null}
             </div>
           </div>
         ))}

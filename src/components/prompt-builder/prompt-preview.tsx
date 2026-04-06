@@ -2,7 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
-import { Copy, Sparkles, Check, Play, Loader2 } from 'lucide-react'
+import {
+  Check,
+  Copy,
+  Loader2,
+  Play,
+  Sparkles,
+  TextCursorInput,
+  Wand2,
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -18,6 +27,46 @@ import {
   extractVariables,
   resolveVariables,
 } from './variable-filler'
+
+function EmptyPreviewState() {
+  const items = [
+    'Choose model, category, tone, and format.',
+    'Write the task and enough context for the AI to act well.',
+    'Test the prompt before you decide to optimize it.',
+  ]
+
+  return (
+    <div className="flex flex-1 items-center justify-center">
+      <div className="max-w-md space-y-4 text-center">
+        <div className="bg-primary/10 text-primary mx-auto flex h-12 w-12 items-center justify-center rounded-3xl">
+          <Wand2 className="h-5 w-5" />
+        </div>
+        <div className="space-y-2">
+          <p className="font-display text-2xl font-semibold">
+            The live prompt will appear here
+          </p>
+          <p className="text-muted-foreground text-sm leading-6">
+            Once the task is defined, this panel becomes your workspace for
+            previewing, testing, copying, and optimizing.
+          </p>
+        </div>
+        <div className="grid gap-2 text-left">
+          {items.map((item, index) => (
+            <div
+              key={item}
+              className="border-border/70 bg-surface-1/70 text-muted-foreground flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm"
+            >
+              <span className="bg-primary/10 text-primary flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold">
+                {index + 1}
+              </span>
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function PromptPreview() {
   const {
@@ -156,9 +205,9 @@ export function PromptPreview() {
   const hasContent = assembledPrompt.trim().length > 0
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        e.preventDefault()
+    const handler = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        event.preventDefault()
         if (hasContent && !isOptimizeLoading && !isOptimizing) {
           handleOptimize()
         }
@@ -169,19 +218,27 @@ export function PromptPreview() {
   }, [hasContent, isOptimizeLoading, isOptimizing, handleOptimize])
 
   return (
-    <Card className="border-border/50 bg-card/80 relative flex h-full flex-col overflow-hidden backdrop-blur-sm">
-      <div className="via-primary/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="font-display text-lg">Prompt Preview</CardTitle>
-          <div className="flex items-center gap-2">
+    <Card className="surface-raised relative flex h-full flex-col overflow-hidden border-0">
+      <CardHeader className="border-border/70 gap-4 border-b pb-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="section-label">Live workstation</p>
+            <CardTitle className="font-display text-2xl font-semibold tracking-tight">
+              Prompt preview
+            </CardTitle>
+            <p className="text-muted-foreground text-sm leading-6">
+              Assemble the prompt live, test it, and optimize only when the
+              brief is stable.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
             <ModelComparison prompt={resolvedPrompt} disabled={!hasContent} />
             <Button
               variant="outline"
               size="sm"
               onClick={handleTest}
               disabled={!hasContent || isTesting}
-              className="border-border/60"
+              className="rounded-full"
             >
               {isTesting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -194,25 +251,40 @@ export function PromptPreview() {
               size="sm"
               onClick={handleOptimize}
               disabled={!hasContent || isOptimizeLoading || isOptimizing}
-              className="bg-primary hover:glow-sm gap-1.5 shadow-sm transition-all"
+              className="rounded-full"
             >
               <Sparkles className="h-3.5 w-3.5" />
               {isOptimizeLoading ? 'Optimizing...' : 'Optimize'}
             </Button>
           </div>
         </div>
+        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
+          <Badge variant="secondary" className="rounded-full px-3 py-1">
+            {settings.model}
+          </Badge>
+          <Badge variant="outline" className="rounded-full px-3 py-1">
+            {resolvedPrompt.length || 0} characters
+          </Badge>
+          <Badge variant="outline" className="rounded-full px-3 py-1">
+            <TextCursorInput className="mr-1 h-3 w-3" />
+            {variables.length} variables
+          </Badge>
+          <span>
+            Shortcut:{' '}
+            <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
+              Ctrl
+            </kbd>{' '}
+            +{' '}
+            <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
+              Enter
+            </kbd>{' '}
+            optimizes the current prompt.
+          </span>
+        </div>
       </CardHeader>
-      <Separator className="opacity-50" />
-      <CardContent className="flex min-h-0 flex-1 flex-col pt-3">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-4 py-5">
         {!hasContent ? (
-          <div className="text-muted-foreground flex flex-1 items-center justify-center">
-            <div className="text-center">
-              <Sparkles className="mx-auto mb-3 h-8 w-8 opacity-20" />
-              <p className="text-sm">
-                Fill in the fields on the left to see your prompt preview here.
-              </p>
-            </div>
-          </div>
+          <EmptyPreviewState />
         ) : (
           <>
             <Tabs
@@ -220,23 +292,30 @@ export function PromptPreview() {
               onValueChange={setActiveTab}
               className="flex min-h-0 flex-1 flex-col"
             >
-              <TabsList>
-                <TabsTrigger value="assembled">Assembled</TabsTrigger>
-                <TabsTrigger value="optimized">Optimized</TabsTrigger>
-                <TabsTrigger value="test">Test</TabsTrigger>
+              <TabsList className="bg-surface-1/80 w-fit rounded-full p-1">
+                <TabsTrigger value="assembled" className="rounded-full">
+                  Assembled
+                </TabsTrigger>
+                <TabsTrigger value="optimized" className="rounded-full">
+                  Optimized
+                </TabsTrigger>
+                <TabsTrigger value="test" className="rounded-full">
+                  Test output
+                </TabsTrigger>
               </TabsList>
-              <TabsContent value="assembled" className="min-h-0">
-                <div className="relative flex h-full min-h-0 flex-col">
-                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
-                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
+
+              <TabsContent value="assembled" className="min-h-0 flex-1">
+                <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
+                  <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
+                    <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
                       {assembledPrompt}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-5 right-5">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="rounded-full"
                       onClick={() => handleCopy(assembledPrompt, 'assembled')}
                     >
                       {copied === 'assembled' ? (
@@ -248,18 +327,19 @@ export function PromptPreview() {
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="optimized" className="min-h-0">
-                <div className="relative flex h-full min-h-0 flex-col">
-                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
-                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
+
+              <TabsContent value="optimized" className="min-h-0 flex-1">
+                <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
+                  <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
+                    <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
                       {optimizedPrompt}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-5 right-5">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="rounded-full"
                       onClick={() => handleCopy(optimizedPrompt, 'optimized')}
                     >
                       {copied === 'optimized' ? (
@@ -271,25 +351,26 @@ export function PromptPreview() {
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="test" className="min-h-0">
-                <div className="relative flex h-full min-h-0 flex-col">
-                  <ScrollArea className="h-[400px] rounded-md border p-4 lg:h-full">
-                    {isTesting && !testOutput && (
+
+              <TabsContent value="test" className="min-h-0 flex-1">
+                <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
+                  <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
+                    {isTesting && !testOutput ? (
                       <div className="text-muted-foreground flex items-center gap-2 text-sm">
                         <Loader2 className="h-4 w-4 animate-spin" />
                         Generating response...
                       </div>
-                    )}
-                    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
+                    ) : null}
+                    <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
                       {testOutput}
                     </pre>
                   </ScrollArea>
-                  {testOutput && (
-                    <div className="absolute top-2 right-2">
+                  {testOutput ? (
+                    <div className="absolute top-5 right-5">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="rounded-full"
                         onClick={() => handleCopy(testOutput, 'test')}
                       >
                         {copied === 'test' ? (
@@ -299,22 +380,40 @@ export function PromptPreview() {
                         )}
                       </Button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </TabsContent>
             </Tabs>
-            {variables.length > 0 && (
+
+            {variables.length > 0 ? (
               <>
-                <Separator className="my-4" />
-                <VariableFiller
-                  variables={variables}
-                  values={variableValues}
-                  onChange={setVariableValues}
-                />
+                <Separator />
+                <div className="border-border/70 bg-surface-1/70 rounded-[calc(var(--radius-3xl)+2px)] border p-4">
+                  <div className="mb-4 space-y-1">
+                    <p className="section-label">Runtime variables</p>
+                    <p className="text-muted-foreground text-sm">
+                      Fill placeholder values before testing the prompt.
+                    </p>
+                  </div>
+                  <VariableFiller
+                    variables={variables}
+                    values={variableValues}
+                    onChange={setVariableValues}
+                  />
+                </div>
               </>
-            )}
-            <Separator className="my-4" />
-            <PromptAnalysis prompt={resolvedPrompt} disabled={!hasContent} />
+            ) : null}
+
+            <Separator />
+            <div className="border-border/70 bg-surface-1/70 rounded-[calc(var(--radius-3xl)+2px)] border p-4">
+              <div className="mb-4 space-y-1">
+                <p className="section-label">Quality analysis</p>
+                <p className="text-muted-foreground text-sm">
+                  Run an analysis pass when the prompt feels close to final.
+                </p>
+              </div>
+              <PromptAnalysis prompt={resolvedPrompt} disabled={!hasContent} />
+            </div>
           </>
         )}
       </CardContent>

@@ -2,16 +2,14 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Copy, Check, Save, GitCompareArrows } from 'lucide-react'
+import { ArrowLeft, Check, Copy, GitCompareArrows, Save } from 'lucide-react'
 import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -20,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import { updatePrompt } from '@/lib/actions/prompt'
 import { toast } from 'sonner'
 
@@ -90,8 +89,8 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
 
   const diffResult = useMemo(() => {
     if (!diffLeft || !diffRight || diffLeft === diffRight) return null
-    const left = versions.find((v) => v.id === diffLeft)
-    const right = versions.find((v) => v.id === diffRight)
+    const left = versions.find((version) => version.id === diffLeft)
+    const right = versions.find((version) => version.id === diffRight)
     if (!left || !right) return null
     return computeDiff(left.content, right.content)
   }, [diffLeft, diffRight, versions])
@@ -115,9 +114,9 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
   }, [prompt.id, title, description, content, router])
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault()
+    const handler = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault()
         if (!saving) handleSave()
       }
     }
@@ -132,82 +131,134 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          render={
-            <AppLink
-              href="/prompts"
-              transitionTypes={appLinkTransitionTypes.back}
-            />
-          }
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold tracking-tight">{prompt.title}</h1>
-          <div className="mt-1 flex items-center gap-2">
-            <Badge variant="secondary">{prompt.category}</Badge>
-            {prompt.tags.map((tag) => (
-              <Badge key={tag} variant="outline">
-                {tag}
-              </Badge>
-            ))}
+    <div className="space-y-4">
+      <Card className="page-frame bg-transparent">
+        <CardHeader className="gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                size="sm"
+                render={
+                  <AppLink
+                    href="/prompts"
+                    transitionTypes={appLinkTransitionTypes.back}
+                  />
+                }
+                className="w-fit rounded-full"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to library
+              </Button>
+              <div className="space-y-2">
+                <p className="section-label">Prompt editor</p>
+                <h1 className="font-display text-3xl font-semibold tracking-tight">
+                  {prompt.title}
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  Updated {new Date(prompt.updatedAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="rounded-full px-3 py-1">
+                  {prompt.category}
+                </Badge>
+                <Badge variant="outline" className="rounded-full px-3 py-1">
+                  {prompt.isPublic ? 'Public' : 'Private'}
+                </Badge>
+                {prompt.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="rounded-full px-3 py-1"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopy}
+                className="rounded-full"
+              >
+                {copied ? (
+                  <Check className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied ? 'Copied' : 'Copy'}
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={saving}
+                className="rounded-full"
+              >
+                <Save className="h-4 w-4" />
+                {saving ? 'Saving...' : 'Save changes'}
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleCopy}>
-            {copied ? (
-              <Check className="mr-1.5 h-4 w-4 text-green-500" />
-            ) : (
-              <Copy className="mr-1.5 h-4 w-4" />
-            )}
-            {copied ? 'Copied' : 'Copy'}
-          </Button>
-          <Button size="sm" onClick={handleSave} disabled={saving}>
-            <Save className="mr-1.5 h-4 w-4" />
-            {saving ? 'Saving...' : 'Save'}
-          </Button>
-        </div>
-      </div>
+        </CardHeader>
+      </Card>
 
       <Tabs defaultValue="edit">
-        <TabsList>
-          <TabsTrigger value="edit">Edit</TabsTrigger>
-          <TabsTrigger value="versions">
+        <TabsList className="bg-surface-1/80 rounded-full p-1">
+          <TabsTrigger value="edit" className="rounded-full">
+            Edit
+          </TabsTrigger>
+          <TabsTrigger value="versions" className="rounded-full">
             Versions ({versions.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="edit" className="mt-4">
-          <Card>
-            <CardContent className="space-y-4 pt-6">
-              <div className="space-y-2">
-                <Label htmlFor="edit-title">Title</Label>
-                <Input
-                  id="edit-title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
+          <Card className="bg-background/84">
+            <CardContent className="grid gap-4 py-5">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-title">Title</Label>
+                    <Input
+                      id="edit-title"
+                      value={title}
+                      onChange={(event) => setTitle(event.target.value)}
+                      className="rounded-2xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-description">Description</Label>
+                    <Input
+                      id="edit-description"
+                      value={description}
+                      onChange={(event) => setDescription(event.target.value)}
+                      className="rounded-2xl"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-border/70 bg-surface-1/75 rounded-3xl border p-4">
+                  <p className="section-label">Editing notes</p>
+                  <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
+                    <li>Use concise titles that describe the intended job.</li>
+                    <li>Keep description and tags focused on reuse context.</li>
+                    <li>Press Ctrl/Cmd + S to save quickly.</li>
+                  </ul>
+                </div>
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="edit-description">Description</Label>
-                <Input
-                  id="edit-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-content">Prompt Content</Label>
+                <Label htmlFor="edit-content">Prompt content</Label>
                 <Textarea
                   id="edit-content"
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={12}
-                  className="resize-y font-mono text-sm"
+                  onChange={(event) => setContent(event.target.value)}
+                  rows={16}
+                  className="border-border/70 bg-surface-1/75 resize-y rounded-3xl font-mono text-sm leading-7"
                 />
               </div>
             </CardContent>
@@ -215,9 +266,11 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
         </TabsContent>
 
         <TabsContent value="versions" className="mt-4 space-y-4">
-          <Card>
+          <Card className="bg-background/84">
             <CardHeader>
-              <CardTitle className="text-base">Version History</CardTitle>
+              <CardTitle className="font-display text-xl font-semibold">
+                Version history
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {versions.length === 0 ? (
@@ -226,24 +279,32 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                 </p>
               ) : (
                 <div className="space-y-4">
-                  {versions.map((version, i) => (
-                    <div key={version.id}>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">
-                          Version {version.versionNumber}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                          {version.createdAt.toLocaleDateString()}
-                        </span>
+                  {versions.map((version, index) => (
+                    <div
+                      key={version.id}
+                      className="border-border/70 bg-surface-1/75 rounded-3xl border p-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium">
+                            Version {version.versionNumber}
+                          </p>
+                          <p className="text-muted-foreground text-sm">
+                            Saved {version.createdAt.toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Badge
+                          variant="outline"
+                          className="rounded-full px-3 py-1"
+                        >
+                          Snapshot {versions.length - index}
+                        </Badge>
                       </div>
-                      <ScrollArea className="mt-2 h-32 rounded-md border p-3">
-                        <pre className="font-mono text-xs whitespace-pre-wrap">
+                      <ScrollArea className="border-border/70 bg-background/84 mt-3 h-36 rounded-2xl border p-3">
+                        <pre className="font-mono text-xs leading-6 whitespace-pre-wrap">
                           {version.content}
                         </pre>
                       </ScrollArea>
-                      {i < versions.length - 1 && (
-                        <Separator className="mt-4" />
-                      )}
                     </div>
                   ))}
                 </div>
@@ -251,29 +312,31 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
             </CardContent>
           </Card>
 
-          {versions.length >= 2 && (
-            <Card>
-              <CardHeader>
+          {versions.length >= 2 ? (
+            <Card className="bg-background/84">
+              <CardHeader className="gap-4">
                 <div className="flex items-center gap-2">
-                  <GitCompareArrows className="h-4 w-4" />
-                  <CardTitle className="text-base">Compare Versions</CardTitle>
+                  <GitCompareArrows className="text-primary h-4 w-4" />
+                  <CardTitle className="font-display text-xl font-semibold">
+                    Compare versions
+                  </CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Older version</Label>
                     <Select
                       value={diffLeft ?? undefined}
                       onValueChange={setDiffLeft}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="rounded-2xl">
                         <SelectValue placeholder="Select version..." />
                       </SelectTrigger>
                       <SelectContent>
-                        {versions.map((v) => (
-                          <SelectItem key={v.id} value={v.id}>
-                            Version {v.versionNumber}
+                        {versions.map((version) => (
+                          <SelectItem key={version.id} value={version.id}>
+                            Version {version.versionNumber}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -285,30 +348,32 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                       value={diffRight ?? undefined}
                       onValueChange={setDiffRight}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="rounded-2xl">
                         <SelectValue placeholder="Select version..." />
                       </SelectTrigger>
                       <SelectContent>
-                        {versions.map((v) => (
-                          <SelectItem key={v.id} value={v.id}>
-                            Version {v.versionNumber}
+                        {versions.map((version) => (
+                          <SelectItem key={version.id} value={version.id}>
+                            Version {version.versionNumber}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-                {diffLeft && diffRight && diffLeft === diffRight && (
+
+                {diffLeft && diffRight && diffLeft === diffRight ? (
                   <p className="text-muted-foreground text-sm">
-                    Select two different versions to compare.
+                    Select two different versions to compare changes.
                   </p>
-                )}
-                {diffResult && (
-                  <ScrollArea className="h-64 rounded-md border">
-                    <div className="p-3 font-mono text-xs">
-                      {diffResult.map((line, i) => (
+                ) : null}
+
+                {diffResult ? (
+                  <ScrollArea className="border-border/70 bg-surface-1/75 h-72 rounded-3xl border">
+                    <div className="p-4 font-mono text-xs">
+                      {diffResult.map((line, index) => (
                         <div
-                          key={i}
+                          key={`${line.text}-${index}`}
                           className={
                             line.type === 'added'
                               ? 'bg-green-500/15 text-green-700 dark:text-green-400'
@@ -329,10 +394,10 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                       ))}
                     </div>
                   </ScrollArea>
-                )}
+                ) : null}
               </CardContent>
             </Card>
-          )}
+          ) : null}
         </TabsContent>
       </Tabs>
     </div>

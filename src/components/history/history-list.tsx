@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, ChevronUp, Copy, Check, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+import { useMemo, useState } from 'react'
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Search,
+  Trash2,
+} from 'lucide-react'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,8 +20,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import { clearPromptHistory } from '@/lib/actions/prompt-history'
-import { toast } from 'sonner'
 
 interface HistoryEntry {
   id: string
@@ -35,9 +43,20 @@ interface Props {
 
 export function HistoryList({ initialHistory }: Props) {
   const [entries, setEntries] = useState<HistoryEntry[]>(initialHistory)
+  const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [showClearDialog, setShowClearDialog] = useState(false)
+
+  const filteredEntries = useMemo(() => {
+    const query = search.trim().toLowerCase()
+    if (!query) return entries
+    return entries.filter((entry) => {
+      const haystack =
+        `${entry.promptContent} ${entry.output} ${entry.model}`.toLowerCase()
+      return haystack.includes(query)
+    })
+  }, [entries, search])
 
   const handleCopy = async (text: string, id: string) => {
     await navigator.clipboard.writeText(text)
@@ -58,11 +77,11 @@ export function HistoryList({ initialHistory }: Props) {
 
   if (entries.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <p className="text-muted-foreground mb-2">No history yet.</p>
-          <p className="text-muted-foreground text-sm">
-            Test or optimize prompts to see your history here.
+      <Card className="bg-background/84">
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-sm font-medium">No history yet.</p>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Test or optimize prompts to see run history appear here.
           </p>
         </CardContent>
       </Card>
@@ -71,110 +90,123 @@ export function HistoryList({ initialHistory }: Props) {
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
+      <div className="page-frame flex flex-col gap-4 rounded-[calc(var(--radius-3xl)+2px)] p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <p className="section-label">Search history</p>
+          <div className="relative mt-2">
+            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search prompts, output, or model..."
+              className="border-border/70 bg-background/84 h-11 rounded-full pl-9"
+            />
+          </div>
+        </div>
         <Button
           variant="outline"
           size="sm"
-          className="text-destructive"
+          className="text-destructive rounded-full"
           onClick={() => setShowClearDialog(true)}
         >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Clear All
+          <Trash2 className="h-4 w-4" />
+          Clear all
         </Button>
       </div>
 
       <div className="space-y-3">
-        {entries.map((entry) => {
+        {filteredEntries.map((entry) => {
           const isExpanded = expandedId === entry.id
           return (
-            <Card key={entry.id}>
+            <Card key={entry.id} className="bg-background/84">
               <CardHeader
-                className="cursor-pointer pb-3"
+                className="cursor-pointer gap-3 pb-4"
                 onClick={() => setExpandedId(isExpanded ? null : entry.id)}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     <CardTitle className="text-sm font-medium">
                       {entry.endpoint === 'test'
-                        ? 'Prompt Test'
-                        : 'Optimization'}
+                        ? 'Prompt test'
+                        : 'Prompt optimization'}
                     </CardTitle>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-full px-3 py-1"
+                    >
                       {entry.model}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs">
-                      {new Date(entry.createdAt).toLocaleString()}
-                    </span>
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <span>{new Date(entry.createdAt).toLocaleString()}</span>
                     {isExpanded ? (
-                      <ChevronUp className="text-muted-foreground h-4 w-4" />
+                      <ChevronUp className="h-4 w-4" />
                     ) : (
-                      <ChevronDown className="text-muted-foreground h-4 w-4" />
+                      <ChevronDown className="h-4 w-4" />
                     )}
                   </div>
                 </div>
-                {!isExpanded && (
-                  <p className="text-muted-foreground line-clamp-1 font-mono text-xs">
+                {!isExpanded ? (
+                  <p className="border-border/70 bg-surface-1/75 text-muted-foreground line-clamp-2 rounded-2xl border px-3 py-3 font-mono text-xs leading-6">
                     {entry.promptContent}
                   </p>
-                )}
+                ) : null}
               </CardHeader>
-              {isExpanded && (
+              {isExpanded ? (
                 <CardContent className="space-y-4 pt-0">
                   <div>
-                    <div className="mb-1 flex items-center justify-between">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-medium">Prompt</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
-                        onClick={(e) => {
-                          e.stopPropagation()
+                        className="rounded-full"
+                        onClick={(event) => {
+                          event.stopPropagation()
                           handleCopy(entry.promptContent, `p-${entry.id}`)
                         }}
                       >
                         {copiedId === `p-${entry.id}` ? (
-                          <Check className="h-3 w-3 text-green-500" />
+                          <Check className="h-4 w-4 text-green-500" />
                         ) : (
-                          <Copy className="h-3 w-3" />
+                          <Copy className="h-4 w-4" />
                         )}
                       </Button>
                     </div>
-                    <ScrollArea className="max-h-40 rounded-md border p-3">
-                      <pre className="font-mono text-xs whitespace-pre-wrap">
+                    <ScrollArea className="border-border/70 bg-surface-1/75 max-h-44 rounded-3xl border p-4">
+                      <pre className="font-mono text-xs leading-6 whitespace-pre-wrap">
                         {entry.promptContent}
                       </pre>
                     </ScrollArea>
                   </div>
                   <Separator />
                   <div>
-                    <div className="mb-1 flex items-center justify-between">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-medium">Output</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
-                        onClick={(e) => {
-                          e.stopPropagation()
+                        className="rounded-full"
+                        onClick={(event) => {
+                          event.stopPropagation()
                           handleCopy(entry.output, `o-${entry.id}`)
                         }}
                       >
                         {copiedId === `o-${entry.id}` ? (
-                          <Check className="h-3 w-3 text-green-500" />
+                          <Check className="h-4 w-4 text-green-500" />
                         ) : (
-                          <Copy className="h-3 w-3" />
+                          <Copy className="h-4 w-4" />
                         )}
                       </Button>
                     </div>
-                    <ScrollArea className="max-h-60 rounded-md border p-3">
-                      <pre className="font-mono text-xs whitespace-pre-wrap">
+                    <ScrollArea className="border-border/70 bg-surface-1/75 max-h-72 rounded-3xl border p-4">
+                      <pre className="font-mono text-xs leading-6 whitespace-pre-wrap">
                         {entry.output}
                       </pre>
                     </ScrollArea>
                   </div>
                 </CardContent>
-              )}
+              ) : null}
             </Card>
           )
         })}
@@ -185,8 +217,8 @@ export function HistoryList({ initialHistory }: Props) {
           <AlertDialogHeader>
             <AlertDialogTitle>Clear all history</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all your prompt history. This action
-              cannot be undone.
+              This permanently deletes your recorded prompt tests and
+              optimizations. Use it only if you do not need these references.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -195,7 +227,7 @@ export function HistoryList({ initialHistory }: Props) {
               onClick={handleClear}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Clear All
+              Clear all
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

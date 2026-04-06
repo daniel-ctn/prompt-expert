@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check, GitFork, Share2 } from 'lucide-react'
+import { Check, Copy, GitFork, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -65,68 +65,117 @@ export function SharedPromptView({ prompt }: SharedPromptViewProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-xl">{prompt.title}</CardTitle>
-            {prompt.description && (
-              <CardDescription>{prompt.description}</CardDescription>
-            )}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Badge variant="secondary">{prompt.category}</Badge>
-              {prompt.tags.map((tag) => (
-                <Badge key={tag} variant="outline">
-                  {tag}
+    <div className="space-y-4">
+      <Card className="page-frame bg-transparent">
+        <CardHeader className="gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="space-y-3">
+              <p className="section-label">Shared prompt</p>
+              <div className="space-y-2">
+                <CardTitle className="font-display text-3xl font-semibold tracking-tight">
+                  {prompt.title}
+                </CardTitle>
+                {prompt.description ? (
+                  <CardDescription className="max-w-2xl text-sm leading-6">
+                    {prompt.description}
+                  </CardDescription>
+                ) : null}
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="rounded-full px-3 py-1">
+                  {prompt.category}
                 </Badge>
-              ))}
+                {prompt.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="rounded-full px-3 py-1"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShareLink}
+                className="rounded-full"
+              >
+                {linkCopied ? (
+                  <Check className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Share2 className="h-4 w-4" />
+                )}
+                {linkCopied ? 'Copied' : 'Share'}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopy}
+                className="rounded-full"
+              >
+                {copied ? (
+                  <Check className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied ? 'Copied' : 'Copy'}
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleFork}
+                disabled={forking}
+                className="rounded-full"
+              >
+                <GitFork className="h-4 w-4" />
+                {forking ? 'Forking...' : 'Fork prompt'}
+              </Button>
             </div>
           </div>
-        </div>
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={prompt.authorImage ?? ''} />
-              <AvatarFallback className="text-xs">
-                {prompt.authorName?.charAt(0).toUpperCase() ?? '?'}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-muted-foreground text-sm">
-              {prompt.authorName ?? 'Anonymous'}
-            </span>
+
+          <div className="border-border/70 bg-background/84 flex flex-wrap items-center justify-between gap-3 rounded-3xl border p-4">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={prompt.authorImage ?? ''} />
+                <AvatarFallback>
+                  {prompt.authorName?.charAt(0).toUpperCase() ?? '?'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">
+                  {prompt.authorName ?? 'Anonymous'}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Published {new Date(prompt.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              Review the structure, copy it directly, or fork it into your own
+              library for editing.
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleShareLink}>
-              {linkCopied ? (
-                <Check className="mr-1.5 h-4 w-4 text-green-500" />
-              ) : (
-                <Share2 className="mr-1.5 h-4 w-4" />
-              )}
-              {linkCopied ? 'Copied' : 'Share'}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleCopy}>
-              {copied ? (
-                <Check className="mr-1.5 h-4 w-4 text-green-500" />
-              ) : (
-                <Copy className="mr-1.5 h-4 w-4" />
-              )}
-              {copied ? 'Copied' : 'Copy'}
-            </Button>
-            <Button size="sm" onClick={handleFork} disabled={forking}>
-              <GitFork className="mr-1.5 h-4 w-4" />
-              {forking ? 'Forking...' : 'Fork'}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <Separator />
-      <CardContent className="pt-4">
-        <ScrollArea className="max-h-[500px] rounded-md border p-4">
-          <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
-            {prompt.content}
-          </pre>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+        </CardHeader>
+      </Card>
+
+      <Card className="bg-background/84">
+        <CardHeader className="pb-4">
+          <CardTitle className="font-display text-xl font-semibold">
+            Prompt content
+          </CardTitle>
+        </CardHeader>
+        <Separator />
+        <CardContent className="pt-5">
+          <ScrollArea className="border-border/70 bg-surface-1/75 max-h-[42rem] rounded-3xl border p-4">
+            <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
+              {prompt.content}
+            </pre>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

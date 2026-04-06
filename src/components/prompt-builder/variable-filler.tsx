@@ -1,6 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
 import { Variable } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

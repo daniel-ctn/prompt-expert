@@ -1,10 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, Pencil, Trash2, Copy, Check } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Check, Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
   CardContent,
@@ -15,10 +14,13 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,13 +31,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Label } from '@/components/ui/label'
 import {
   createSystemPrompt,
-  updateSystemPrompt,
   deleteSystemPrompt,
+  updateSystemPrompt,
 } from '@/lib/actions/system-prompts'
-import { toast } from 'sonner'
 
 interface SystemPrompt {
   id: string
@@ -50,12 +50,22 @@ interface Props {
 
 export function SystemPromptManager({ initialPrompts }: Props) {
   const [items, setItems] = useState<SystemPrompt[]>(initialPrompts)
+  const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [content, setContent] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  const filteredItems = useMemo(() => {
+    const query = search.trim().toLowerCase()
+    if (!query) return items
+    return items.filter((item) => {
+      const haystack = `${item.name} ${item.content}`.toLowerCase()
+      return haystack.includes(query)
+    })
+  }, [items, search])
 
   const resetForm = () => {
     setEditingId(null)
@@ -82,7 +92,9 @@ export function SystemPromptManager({ initialPrompts }: Props) {
       if (editingId) {
         const updated = await updateSystemPrompt(editingId, { name, content })
         setItems((prev) =>
-          prev.map((p) => (p.id === editingId ? { ...p, ...updated } : p)),
+          prev.map((item) =>
+            item.id === editingId ? { ...item, ...updated } : item,
+          ),
         )
         toast.success('System prompt updated')
       } else {
@@ -101,10 +113,10 @@ export function SystemPromptManager({ initialPrompts }: Props) {
     if (!deleteId) return
     try {
       await deleteSystemPrompt(deleteId)
-      setItems((prev) => prev.filter((p) => p.id !== deleteId))
+      setItems((prev) => prev.filter((item) => item.id !== deleteId))
       toast.success('System prompt deleted')
     } catch {
-      toast.error('Failed to delete')
+      toast.error('Failed to delete system prompt')
     }
     setDeleteId(null)
   }
@@ -118,84 +130,103 @@ export function SystemPromptManager({ initialPrompts }: Props) {
 
   return (
     <>
-      <div className="mb-6">
-        <Button onClick={openCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          New System Prompt
-        </Button>
-      </div>
-
-      {items.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-muted-foreground mb-2">No system prompts yet.</p>
-            <p className="text-muted-foreground mb-4 text-sm">
-              Create reusable fragments like personas, formatting rules, or
-              domain context.
-            </p>
-            <Button variant="outline" onClick={openCreate}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create your first
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {items.map((item) => (
-            <Card key={item.id}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-base">{item.name}</CardTitle>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => handleCopy(item)}
-                    >
-                      {copiedId === item.id ? (
-                        <Check className="h-3.5 w-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => openEdit(item)}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive h-7 w-7"
-                      onClick={() => setDeleteId(item.id)}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-                <CardDescription className="text-xs">
-                  Updated {new Date(item.updatedAt).toLocaleDateString()}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <pre className="text-muted-foreground line-clamp-4 font-mono text-xs whitespace-pre-wrap">
-                  {item.content}
-                </pre>
-              </CardContent>
-            </Card>
-          ))}
+      <div className="space-y-4">
+        <div className="page-frame flex flex-col gap-4 rounded-[calc(var(--radius-3xl)+2px)] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 flex-1">
+            <p className="section-label">Find fragments</p>
+            <div className="relative mt-2">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search names or content..."
+                className="border-border/70 bg-background/84 h-11 rounded-full pl-9"
+              />
+            </div>
+          </div>
+          <Button onClick={openCreate} className="rounded-full">
+            <Plus className="h-4 w-4" />
+            New system prompt
+          </Button>
         </div>
-      )}
+
+        {filteredItems.length === 0 ? (
+          <Card className="bg-background/84">
+            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-sm font-medium">
+                {items.length === 0
+                  ? 'No system prompts yet.'
+                  : 'No prompts match this search.'}
+              </p>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {items.length === 0
+                  ? 'Create reusable personas, formatting rules, or domain context snippets.'
+                  : 'Try a broader term or clear the search.'}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {filteredItems.map((item) => (
+              <Card key={item.id} className="bg-background/84">
+                <CardHeader className="border-border/70 gap-3 border-b pb-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <CardTitle className="font-display text-xl font-semibold">
+                        {item.name}
+                      </CardTitle>
+                      <CardDescription>
+                        Updated {new Date(item.updatedAt).toLocaleDateString()}
+                      </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        onClick={() => handleCopy(item)}
+                      >
+                        {copiedId === item.id ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        onClick={() => openEdit(item)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive rounded-full"
+                        onClick={() => setDeleteId(item.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="py-5">
+                  <pre className="border-border/70 bg-surface-1/75 text-foreground/80 line-clamp-8 rounded-3xl border p-4 font-mono text-xs leading-6 whitespace-pre-wrap">
+                    {item.content}
+                  </pre>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingId ? 'Edit System Prompt' : 'New System Prompt'}
+              {editingId ? 'Edit system prompt' : 'New system prompt'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -204,8 +235,9 @@ export function SystemPromptManager({ initialPrompts }: Props) {
               <Input
                 id="sp-name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Code Reviewer Persona"
+                onChange={(event) => setName(event.target.value)}
+                placeholder="e.g. Code reviewer persona"
+                className="h-11 rounded-2xl"
               />
             </div>
             <div className="space-y-2">
@@ -213,20 +245,25 @@ export function SystemPromptManager({ initialPrompts }: Props) {
               <Textarea
                 id="sp-content"
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={(event) => setContent(event.target.value)}
                 placeholder="You are a senior code reviewer..."
-                rows={8}
-                className="font-mono text-sm"
+                rows={10}
+                className="rounded-3xl font-mono text-sm"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              className="rounded-full"
+            >
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               disabled={!name.trim() || !content.trim()}
+              className="rounded-full"
             >
               {editingId ? 'Update' : 'Create'}
             </Button>
@@ -239,7 +276,8 @@ export function SystemPromptManager({ initialPrompts }: Props) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete system prompt</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone.
+              This action cannot be undone. Remove it only if you are sure it is
+              no longer useful.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
