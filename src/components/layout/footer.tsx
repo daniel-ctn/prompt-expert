@@ -6,6 +6,10 @@ import { APP_NAME } from '@/config/constants'
 import { Button } from '@/components/ui/button'
 import { setCommandPaletteOpen } from '@/lib/command-palette'
 
+const githubUrl =
+  process.env.NEXT_PUBLIC_GITHUB_URL ||
+  'https://github.com/your-org/prompt-expert'
+
 export function Footer() {
   return (
     <footer className="px-3 pb-4 sm:px-4 sm:pb-5">
@@ -75,11 +79,31 @@ export function Footer() {
                   My prompts
                 </AppLink>
                 <AppLink href="/pricing" className="footer-link">
-                  Pricing
+                  Usage
                 </AppLink>
                 <AppLink href="/settings" className="footer-link">
                   Settings
                 </AppLink>
+                <AppLink href="/privacy" className="footer-link">
+                  Privacy
+                </AppLink>
+                <AppLink href="/terms" className="footer-link">
+                  Terms
+                </AppLink>
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="footer-link"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="mailto:support@prompt-expert.org"
+                  className="footer-link"
+                >
+                  Support
+                </a>
               </div>
             </div>
           </div>
@@ -93,7 +117,7 @@ export function Footer() {
             href="/pricing"
             className="hover:text-foreground inline-flex items-center gap-1.5"
           >
-            Review plans and credits
+            Review usage and credits
             <ArrowUpRight className="h-3.5 w-3.5" />
           </AppLink>
         </div>

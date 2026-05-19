@@ -5,12 +5,13 @@ import {
   promptSettingsSchema,
   updatePromptSchema,
 } from '@/lib/validators/prompt'
+import { DEFAULT_PROMPT_SETTINGS, PROMPT_TEMPLATES } from '@/config/constants'
 
 describe('promptSettingsSchema', () => {
   it('accepts valid settings', () => {
     const result = promptSettingsSchema.safeParse({
       model: 'gpt-5.4-mini',
-      category: 'instruction',
+      category: 'agent',
       tone: 'technical',
       outputFormat: 'markdown',
       includeExamples: true,
@@ -32,6 +33,27 @@ describe('promptSettingsSchema', () => {
     })
 
     expect(result.success).toBe(false)
+  })
+})
+
+describe('built-in prompt templates', () => {
+  it('keeps all built-in templates compatible with the builder schema', () => {
+    for (const template of PROMPT_TEMPLATES) {
+      const result = promptBuilderSchema.safeParse({
+        role: template.role,
+        context: template.context,
+        task: template.task,
+        constraints: template.constraints,
+        settings: {
+          ...DEFAULT_PROMPT_SETTINGS,
+          category: template.category,
+          tone: template.tone,
+          outputFormat: template.outputFormat,
+        },
+      })
+
+      expect(result.success, template.id).toBe(true)
+    }
   })
 })
 

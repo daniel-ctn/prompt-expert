@@ -187,8 +187,15 @@ export const apiUsage = pgTable('api_usage', {
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
 })
 
+export const rateLimits = pgTable('rate_limits', {
+  key: text('key').primaryKey(),
+  count: integer('count').notNull().default(0),
+  resetAt: timestamp('reset_at', { mode: 'date' }).notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+})
+
 // ──────────────────────────────────────────────
-// Billing & credits
+// Usage & credits
 // ──────────────────────────────────────────────
 
 export const subscriptions = pgTable('subscriptions', {
@@ -197,8 +204,6 @@ export const subscriptions = pgTable('subscriptions', {
     .notNull()
     .unique()
     .references(() => users.id, { onDelete: 'cascade' }),
-  stripeCustomerId: text('stripe_customer_id').unique(),
-  stripeSubscriptionId: text('stripe_subscription_id').unique(),
   plan: text('plan').notNull().default('free'),
   status: text('status').notNull().default('active'),
   currentPeriodStart: timestamp('current_period_start', { mode: 'date' }),

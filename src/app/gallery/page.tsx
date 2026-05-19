@@ -33,7 +33,7 @@ export default async function GalleryPage({
       <div className="page-shell pt-8 sm:pt-10">
         <PageIntro
           eyebrow="Community gallery"
-          title="Browse prompts that other teams are already using in the wild."
+          title="Browse prompts the community is already using in the wild."
           description="Explore public prompts, preview how they are structured, and fork the strongest ones into your own workspace."
           aside={
             <div className="grid gap-3 md:w-[24rem]">

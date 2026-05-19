@@ -11,14 +11,16 @@ function mutateHex(value: string): string {
 
 describe('crypto helpers', () => {
   const originalKey = process.env.ENCRYPTION_KEY
+  const originalNodeEnv = process.env.NODE_ENV
 
   afterEach(() => {
     if (originalKey) {
       process.env.ENCRYPTION_KEY = originalKey
-      return
+    } else {
+      delete process.env.ENCRYPTION_KEY
     }
 
-    delete process.env.ENCRYPTION_KEY
+    process.env.NODE_ENV = originalNodeEnv
   })
 
   it('encrypts and decrypts a payload round-trip', () => {
@@ -46,6 +48,15 @@ describe('crypto helpers', () => {
 
     expect(() => encrypt('secret')).toThrow(
       'ENCRYPTION_KEY must be at least 32 characters',
+    )
+  })
+
+  it('rejects weak placeholder keys in production', () => {
+    process.env.NODE_ENV = 'production'
+    process.env.ENCRYPTION_KEY = 'change-me-change-me-change-me-123456'
+
+    expect(() => encrypt('secret')).toThrow(
+      'ENCRYPTION_KEY must be a strong production secret',
     )
   })
 

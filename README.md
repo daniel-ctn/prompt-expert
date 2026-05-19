@@ -1,6 +1,6 @@
 # Prompt Expert
 
-Build better prompts, get better results. An AI-powered prompt engineering tool that helps you create efficient, optimized prompts for any AI model.
+Build better prompts, get better results. Prompt Expert is a free community-oriented prompt workflow tool for creating, testing, improving, saving, sharing, and forking prompts.
 
 ## Features
 
@@ -9,6 +9,8 @@ Build better prompts, get better results. An AI-powered prompt engineering tool 
 - **Live Preview** -- See your prompt assemble in real-time as you adjust parameters
 - **Multi-Model Support** -- Target OpenAI, Anthropic, and Google AI models
 - **Prompt Library** -- Save, organize, search, and manage your prompts with tags and categories
+- **Public Gallery** -- Share prompts publicly and fork community prompts into your own library
+- **BYO Provider Keys** -- Use your own OpenAI, Anthropic, or Google key for heavier AI usage
 - **Version History** -- Track changes across prompt iterations
 - **Authentication** -- Google and GitHub OAuth via Auth.js
 
@@ -65,6 +67,10 @@ cp .env.example .env.local
 | `OPENAI_API_KEY`               | OpenAI API key (optional)                             |
 | `ANTHROPIC_API_KEY`            | Anthropic API key (optional)                          |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI API key (optional)                          |
+| `ENABLE_HOSTED_AI`             | Set to `false` to disable hosted AI calls             |
+| `ENCRYPTION_KEY`               | 32+ character key for saved provider key encryption   |
+| `NEXT_PUBLIC_APP_URL`          | Public app URL for SEO metadata                       |
+| `NEXT_PUBLIC_GITHUB_URL`       | Public repository URL for footer links                |
 
 ### Database Setup
 
@@ -145,4 +151,4 @@ vercel deploy
 
 ## License
 
-Private project.
+License is not finalized. Add a `LICENSE` file before an open-source launch.

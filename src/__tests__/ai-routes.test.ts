@@ -4,11 +4,11 @@ import { CREDIT_COSTS } from '@/config/plans'
 const routeMocks = vi.hoisted(() => ({
   auth: vi.fn(),
   rateLimit: vi.fn(),
-  hasCredits: vi.fn(),
   deductCredit: vi.fn(),
   getUserApiKey: vi.fn(),
   savePromptHistory: vi.fn(),
   trackUsage: vi.fn(),
+  logAiRequest: vi.fn(),
   getModel: vi.fn(),
   getProviderForModel: vi.fn(),
   streamText: vi.fn(),
@@ -24,7 +24,6 @@ vi.mock('@/lib/rate-limit', () => ({
 }))
 
 vi.mock('@/lib/credits', () => ({
-  hasCredits: routeMocks.hasCredits,
   deductCredit: routeMocks.deductCredit,
 }))
 
@@ -38,6 +37,10 @@ vi.mock('@/lib/actions/prompt-history', () => ({
 
 vi.mock('@/lib/track-usage', () => ({
   trackUsage: routeMocks.trackUsage,
+}))
+
+vi.mock('@/lib/ai/logging', () => ({
+  logAiRequest: routeMocks.logAiRequest,
 }))
 
 vi.mock('@/lib/ai', () => ({
@@ -55,12 +58,14 @@ import { POST as optimizePOST } from '@/app/api/ai/optimize/route'
 import { POST as testPromptPOST } from '@/app/api/ai/test/route'
 
 function createPostRequest(path: string, body: unknown): Request {
+  const serialized = JSON.stringify(body)
   return new Request(`http://localhost${path}`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      'content-length': String(new TextEncoder().encode(serialized).length),
     },
-    body: JSON.stringify(body),
+    body: serialized,
   })
 }
 
@@ -71,14 +76,15 @@ function createStreamResponse(body = 'streamed completion'): Response {
 describe('AI route handlers', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    delete process.env.ENABLE_HOSTED_AI
 
     routeMocks.auth.mockResolvedValue({ user: { id: 'user-1' } })
     routeMocks.rateLimit.mockReturnValue({ success: true, remaining: 19 })
-    routeMocks.hasCredits.mockResolvedValue(true)
     routeMocks.deductCredit.mockResolvedValue(true)
     routeMocks.getUserApiKey.mockResolvedValue(null)
     routeMocks.savePromptHistory.mockResolvedValue(undefined)
     routeMocks.trackUsage.mockResolvedValue(undefined)
+    routeMocks.logAiRequest.mockReturnValue(undefined)
     routeMocks.getModel.mockReturnValue('mock-model')
     routeMocks.getProviderForModel.mockImplementation((model: string) => {
       if (model.startsWith('claude-')) return 'anthropic'
@@ -122,8 +128,8 @@ describe('AI route handlers', () => {
       })
     })
 
-    it('returns 403 when the user has no remaining credits', async () => {
-      routeMocks.hasCredits.mockResolvedValue(false)
+    it('returns 403 when hosted credit deduction fails', async () => {
+      routeMocks.deductCredit.mockResolvedValue(false)
 
       const response = await analyzePOST(
         createPostRequest('/api/ai/analyze', { prompt: 'Analyze this' }),
@@ -132,8 +138,26 @@ describe('AI route handlers', () => {
       expect(response.status).toBe(403)
       expect(await response.json()).toEqual({
         error: 'insufficient_credits',
-        message: "You've run out of credits. Upgrade your plan or buy more.",
+        message:
+          'You have used your hosted AI allowance for this period. You can keep building prompts or use your own provider key from Settings.',
       })
+    })
+
+    it('returns 503 when hosted AI is disabled and no BYO key is configured', async () => {
+      process.env.ENABLE_HOSTED_AI = 'false'
+
+      const response = await analyzePOST(
+        createPostRequest('/api/ai/analyze', { prompt: 'Analyze this' }),
+      )
+
+      expect(response.status).toBe(503)
+      expect(await response.json()).toEqual({
+        error: 'hosted_ai_disabled',
+        message:
+          'Hosted AI is temporarily unavailable. You can keep building prompts and use your own provider key from Settings.',
+      })
+      expect(routeMocks.deductCredit).not.toHaveBeenCalled()
+      expect(routeMocks.generateText).not.toHaveBeenCalled()
     })
 
     it('returns 400 when the prompt is blank', async () => {
@@ -143,6 +167,18 @@ describe('AI route handlers', () => {
 
       expect(response.status).toBe(400)
       expect(await response.json()).toEqual({ error: 'Prompt is required' })
+    })
+
+    it('returns 413 when the request body is too large', async () => {
+      const response = await analyzePOST(
+        createPostRequest('/api/ai/analyze', { prompt: 'x'.repeat(32_001) }),
+      )
+
+      expect(response.status).toBe(413)
+      expect(await response.json()).toEqual({
+        error: 'Request body is too large',
+      })
+      expect(routeMocks.deductCredit).not.toHaveBeenCalled()
     })
 
     it('analyzes a prompt with the saved OpenAI key and returns parsed JSON', async () => {
@@ -163,11 +199,7 @@ describe('AI route handlers', () => {
       expect(routeMocks.getModel).toHaveBeenCalledWith('gpt-5.4-mini', {
         openai: 'user-openai-key',
       })
-      expect(routeMocks.deductCredit).toHaveBeenCalledWith(
-        'user-1',
-        CREDIT_COSTS.analyze,
-        'Analyze prompt (gpt-5.4-mini)',
-      )
+      expect(routeMocks.deductCredit).not.toHaveBeenCalled()
       expect(routeMocks.trackUsage).toHaveBeenCalledWith(
         'user-1',
         'analyze',
@@ -216,9 +248,7 @@ describe('AI route handlers', () => {
       expect(await response.json()).toEqual({ error: 'Prompt is required' })
     })
 
-    it('streams an optimized prompt and records history for non-Claude models', async () => {
-      routeMocks.getUserApiKey.mockResolvedValue('user-google-key')
-
+    it('streams an optimized prompt and records hosted usage for non-Claude models', async () => {
       const response = await optimizePOST(
         createPostRequest('/api/ai/optimize', {
           prompt: 'Make this prompt clearer',
@@ -230,9 +260,7 @@ describe('AI route handlers', () => {
         'gemini-2.5-flash',
       )
       expect(routeMocks.getUserApiKey).toHaveBeenCalledWith('user-1', 'google')
-      expect(routeMocks.getModel).toHaveBeenCalledWith('gemini-2.5-flash', {
-        google: 'user-google-key',
-      })
+      expect(routeMocks.getModel).toHaveBeenCalledWith('gemini-2.5-flash', {})
       expect(routeMocks.deductCredit).toHaveBeenCalledWith(
         'user-1',
         CREDIT_COSTS.optimize,
@@ -246,6 +274,7 @@ describe('AI route handlers', () => {
 
       const options = routeMocks.streamText.mock.calls[0][0]
       expect(options.temperature).toBe(0.7)
+      expect(options.maxOutputTokens).toBe(1200)
       expect(routeMocks.savePromptHistory).toHaveBeenCalledWith('user-1', {
         promptContent: 'Make this prompt clearer',
         output: 'streamed completion',
@@ -273,8 +302,8 @@ describe('AI route handlers', () => {
   })
 
   describe('test route', () => {
-    it('returns 403 when the user has no credits left', async () => {
-      routeMocks.hasCredits.mockResolvedValue(false)
+    it('returns 403 when hosted credit deduction fails', async () => {
+      routeMocks.deductCredit.mockResolvedValue(false)
 
       const response = await testPromptPOST(
         createPostRequest('/api/ai/test', { prompt: 'Test this prompt' }),
@@ -283,7 +312,8 @@ describe('AI route handlers', () => {
       expect(response.status).toBe(403)
       expect(await response.json()).toEqual({
         error: 'insufficient_credits',
-        message: "You've run out of credits. Upgrade your plan or buy more.",
+        message:
+          'You have used your hosted AI allowance for this period. You can keep building prompts or use your own provider key from Settings.',
       })
     })
 
@@ -296,9 +326,7 @@ describe('AI route handlers', () => {
       expect(await response.json()).toEqual({ error: 'Prompt is required' })
     })
 
-    it('uses the requested temperature for non-Claude models', async () => {
-      routeMocks.getUserApiKey.mockResolvedValue('user-openai-key')
-
+    it('uses the requested temperature for hosted non-Claude models', async () => {
       const response = await testPromptPOST(
         createPostRequest('/api/ai/test', {
           prompt: 'Test this prompt',
@@ -311,9 +339,7 @@ describe('AI route handlers', () => {
         'gpt-5.4-mini',
       )
       expect(routeMocks.getUserApiKey).toHaveBeenCalledWith('user-1', 'openai')
-      expect(routeMocks.getModel).toHaveBeenCalledWith('gpt-5.4-mini', {
-        openai: 'user-openai-key',
-      })
+      expect(routeMocks.getModel).toHaveBeenCalledWith('gpt-5.4-mini', {})
       expect(routeMocks.deductCredit).toHaveBeenCalledWith(
         'user-1',
         CREDIT_COSTS.test,
@@ -327,6 +353,7 @@ describe('AI route handlers', () => {
 
       const options = routeMocks.streamText.mock.calls[0][0]
       expect(options.temperature).toBe(1.1)
+      expect(options.maxOutputTokens).toBe(1600)
       expect(routeMocks.savePromptHistory).toHaveBeenCalledWith('user-1', {
         promptContent: 'Test this prompt',
         output: 'streamed completion',
@@ -347,6 +374,20 @@ describe('AI route handlers', () => {
 
       const options = routeMocks.streamText.mock.calls[0][0]
       expect(options).not.toHaveProperty('temperature')
+    })
+
+    it('does not deduct hosted credits when a BYO provider key is available', async () => {
+      routeMocks.getUserApiKey.mockResolvedValue('user-openai-key')
+
+      const response = await testPromptPOST(
+        createPostRequest('/api/ai/test', {
+          prompt: 'Test this prompt',
+          model: 'gpt-5.4-mini',
+        }),
+      )
+
+      expect(routeMocks.deductCredit).not.toHaveBeenCalled()
+      expect(response.status).toBe(200)
     })
   })
 })

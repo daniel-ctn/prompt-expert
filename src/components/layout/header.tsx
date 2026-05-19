@@ -7,8 +7,8 @@ import { useTheme } from 'next-themes'
 import {
   Coins,
   Command,
-  CreditCard,
   FileText,
+  Gauge,
   History,
   LayoutDashboard,
   LogOut,
@@ -40,7 +40,7 @@ const navItems = [
   { href: '/chain', label: 'Chain' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/prompts', label: 'My Prompts' },
-  { href: '/pricing', label: 'Pricing' },
+  { href: '/pricing', label: 'Usage' },
 ]
 
 function NavLinks({
@@ -234,8 +234,8 @@ export function Header() {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem render={<AppLink href="/pricing" />}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Pricing & Credits
+                  <Gauge className="mr-2 h-4 w-4" />
+                  Usage & Credits
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>

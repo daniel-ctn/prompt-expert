@@ -56,6 +56,15 @@ export async function deleteApiToken(id: string) {
   revalidatePath('/settings')
 }
 
+export async function deleteAllApiTokens() {
+  const userId = await getAuthenticatedUserId()
+  const db = getDb()
+
+  await db.delete(apiTokens).where(eq(apiTokens.userId, userId))
+
+  revalidatePath('/settings')
+}
+
 export async function validateApiToken(token: string): Promise<string | null> {
   const db = getDb()
   const tokenHash = hashToken(token)

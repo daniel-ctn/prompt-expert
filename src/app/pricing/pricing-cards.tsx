@@ -1,12 +1,9 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Check, Coins, Sparkles, Zap } from 'lucide-react'
+import { Check, KeyRound, Zap } from 'lucide-react'
+import { AppLink } from '@/components/ui/app-link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HoverScale } from '@/components/ui/reveal'
-import { CREDIT_PACK, PLANS } from '@/config/plans'
+import { HOSTED_AI_LIMITS, PLANS } from '@/config/plans'
 import type { CreditInfo } from '@/lib/credits'
 
 interface PricingCardsProps {
@@ -20,44 +17,6 @@ export function PricingCards({
   credits,
   isAuthenticated,
 }: PricingCardsProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState<string | null>(null)
-
-  async function handleCheckout(type: 'pro' | 'credit_pack') {
-    if (!isAuthenticated) {
-      router.push('/login')
-      return
-    }
-
-    setLoading(type)
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-      })
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      }
-    } catch {
-      setLoading(null)
-    }
-  }
-
-  async function handleManage() {
-    setLoading('manage')
-    try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' })
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      }
-    } catch {
-      setLoading(null)
-    }
-  }
-
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <HoverScale>
@@ -68,29 +27,31 @@ export function PricingCards({
                 <Zap className="h-5 w-5" />
               </div>
               <div>
-                <p className="section-label">Starter plan</p>
+                <p className="section-label">Hosted allowance</p>
                 <CardTitle className="font-display text-2xl font-semibold">
                   {PLANS.free.name}
                 </CardTitle>
               </div>
             </div>
             <div className="flex items-end gap-2">
-              <span className="font-display text-5xl font-semibold">$0</span>
+              <span className="font-display text-5xl font-semibold">
+                {PLANS.free.credits}
+              </span>
               <span className="text-muted-foreground pb-1 text-sm">
-                per month
+                credits per month
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-6">
-              Ideal for solo exploration, first prompt libraries, and validating
-              whether the workflow fits your team.
+              {PLANS.free.description} Credits apply only to hosted AI calls.
             </p>
           </CardHeader>
           <CardContent className="space-y-5 py-5">
             <div className="border-border/70 bg-surface-1/75 rounded-3xl border p-4">
-              <p className="section-label">Included usage</p>
+              <p className="section-label">Safety limits</p>
               <p className="mt-2 text-sm font-medium">
-                {PLANS.free.credits} credits each month with core builder
-                access.
+                {HOSTED_AI_LIMITS.perMinuteRequests} AI requests per minute and{' '}
+                {HOSTED_AI_LIMITS.maxPromptInputLength.toLocaleString()} input
+                characters per request.
               </p>
             </div>
             <ul className="space-y-3">
@@ -102,7 +63,9 @@ export function PricingCards({
               ))}
             </ul>
             <Button variant="outline" disabled className="w-full rounded-full">
-              {currentPlan === 'free' ? 'Current plan' : 'Included baseline'}
+              {currentPlan === 'free'
+                ? 'Current allowance'
+                : 'Included baseline'}
             </Button>
           </CardContent>
         </Card>
@@ -116,45 +79,46 @@ export function PricingCards({
           <CardHeader className="border-border/70 space-y-4 border-b pb-5">
             <div className="flex items-center gap-3">
               <div className="bg-primary/12 text-primary flex h-11 w-11 items-center justify-center rounded-2xl">
-                <Sparkles className="h-5 w-5" />
+                <KeyRound className="h-5 w-5" />
               </div>
               <div>
-                <p className="section-label text-primary">Operational plan</p>
+                <p className="section-label text-primary">Higher usage</p>
                 <CardTitle className="font-display text-2xl font-semibold">
-                  {PLANS.pro.name}
+                  Bring your own key
                 </CardTitle>
               </div>
             </div>
             <div className="flex items-end gap-2">
-              <span className="font-display text-5xl font-semibold">
-                ${PLANS.pro.price}
-              </span>
+              <span className="font-display text-5xl font-semibold">BYO</span>
               <span className="text-muted-foreground pb-1 text-sm">
-                per month
+                provider billing
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-6">
-              For prompt-heavy teams and power users who test frequently, build
-              internal libraries, and need headroom for repeated iteration.
+              Use your own provider account when you need more AI calls or want
+              direct control over spend, data handling, and model access.
             </p>
           </CardHeader>
           <CardContent className="space-y-5 py-5">
             <div className="grid gap-3 md:grid-cols-2">
               <div className="border-primary/18 bg-background/90 rounded-3xl border p-4">
-                <p className="section-label">Monthly credits</p>
-                <p className="font-display mt-2 text-3xl font-semibold">
-                  {PLANS.pro.credits}
-                </p>
+                <p className="section-label">Supported keys</p>
+                <p className="font-display mt-2 text-3xl font-semibold">3</p>
               </div>
               <div className="border-primary/18 bg-background/90 rounded-3xl border p-4">
-                <p className="section-label">Extra pack</p>
+                <p className="section-label">Feature access</p>
                 <p className="mt-2 text-sm font-medium">
-                  {CREDIT_PACK.credits} credits for ${CREDIT_PACK.price}
+                  Saving, sharing, gallery, and API tokens remain free.
                 </p>
               </div>
             </div>
             <ul className="space-y-3">
-              {PLANS.pro.features.map((feature) => (
+              {[
+                'OpenAI, Google, and Anthropic key storage',
+                'Hosted credit deduction is skipped for BYO-key calls',
+                'Public gallery and sharing remain available',
+                'No payment is required',
+              ].map((feature) => (
                 <li key={feature} className="flex items-start gap-3 text-sm">
                   <Check className="text-primary mt-0.5 h-4 w-4" />
                   <span>{feature}</span>
@@ -162,36 +126,15 @@ export function PricingCards({
               ))}
             </ul>
 
-            {currentPlan === 'pro' ? (
-              <div className="space-y-3">
-                <Button
-                  variant="outline"
-                  className="w-full rounded-full"
-                  onClick={handleManage}
-                  disabled={loading === 'manage'}
-                >
-                  {loading === 'manage' ? 'Loading...' : 'Manage subscription'}
-                </Button>
-                <Button
-                  className="w-full rounded-full"
-                  onClick={() => handleCheckout('credit_pack')}
-                  disabled={loading === 'credit_pack'}
-                >
-                  <Coins className="h-4 w-4" />
-                  {loading === 'credit_pack'
-                    ? 'Loading...'
-                    : `Buy ${CREDIT_PACK.credits} extra credits`}
-                </Button>
-              </div>
-            ) : (
-              <Button
-                className="w-full rounded-full"
-                onClick={() => handleCheckout('pro')}
-                disabled={loading === 'pro'}
-              >
-                {loading === 'pro' ? 'Loading...' : 'Upgrade to Pro'}
-              </Button>
-            )}
+            <Button
+              render={
+                <AppLink href={isAuthenticated ? '/settings' : '/login'} />
+              }
+              className="w-full rounded-full"
+            >
+              <KeyRound className="h-4 w-4" />
+              {isAuthenticated ? 'Manage provider keys' : 'Sign in to add keys'}
+            </Button>
           </CardContent>
         </Card>
       </HoverScale>
@@ -206,7 +149,7 @@ export function PricingCards({
                 <span className="text-foreground font-medium">
                   {credits.total}
                 </span>{' '}
-                credits available across monthly and bonus balance.
+                hosted credits available across monthly and bonus balance.
               </p>
             </div>
             <div className="border-border/70 bg-surface-1/75 text-muted-foreground rounded-2xl border px-4 py-3 text-sm">

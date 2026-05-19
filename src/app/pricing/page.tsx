@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CreditCard, Sparkles, Zap } from 'lucide-react'
+import { HeartHandshake, KeyRound, Zap } from 'lucide-react'
 import { auth } from '@/lib/auth'
 import { getUserCredits } from '@/lib/credits'
 import { PageIntro } from '@/components/layout/page-intro'
@@ -8,28 +8,29 @@ import { FadeIn, StaggerGroup, StaggerItem } from '@/components/ui/reveal'
 import { PricingCards } from './pricing-cards'
 
 export const metadata: Metadata = {
-  title: 'Pricing — Prompt Expert',
-  description: 'Choose a plan that fits your prompt engineering needs.',
+  title: 'Usage — Prompt Expert',
+  description:
+    'Review hosted AI limits, BYO provider key options, and community support for Prompt Expert.',
 }
 
 const usageCards = [
   {
     icon: Zap,
-    title: 'Start free',
+    title: 'Small hosted allowance',
     description:
-      'Use the builder, save prompts, explore the gallery, and validate the workflow before you commit.',
+      'Every account gets a limited hosted AI allowance for testing, optimizing, and analyzing prompts.',
   },
   {
-    icon: Sparkles,
-    title: 'Upgrade when prompting becomes operational',
+    icon: KeyRound,
+    title: 'Bring your own keys',
     description:
-      'Pro is built for teams and power users who test, optimize, and save prompts as part of regular delivery.',
+      'Connect your own OpenAI, Google, or Anthropic key in Settings when your workflow needs more usage.',
   },
   {
-    icon: CreditCard,
-    title: 'Keep costs predictable',
+    icon: HeartHandshake,
+    title: 'No paid feature gates',
     description:
-      'Credits are simple to reason about, and additional packs are available when you need temporary headroom.',
+      'Prompt Expert is positioned as a free community tool. Donations or sponsorships do not unlock features.',
   },
 ]
 
@@ -37,7 +38,7 @@ const faqs = [
   {
     question: 'How do credits work?',
     answer:
-      'Testing, optimizing, and analysis consume credits. The free plan includes a monthly allocation, and Pro expands that allowance significantly.',
+      'Hosted testing, optimization, and analysis consume credits from your monthly allowance. BYO-key calls use your provider account instead.',
   },
   {
     question: 'Can I bring my own provider keys?',
@@ -45,9 +46,9 @@ const faqs = [
       'Yes. Settings already supports connecting your own OpenAI, Google, and Anthropic keys if you want more direct control.',
   },
   {
-    question: 'What happens when I need more credits?',
+    question: 'What happens when hosted AI is paused?',
     answer:
-      'Pro users can buy additional credit packs without changing plans. Free users can upgrade whenever they hit the ceiling.',
+      'You can keep building prompts locally in the app. AI calls continue when you use a configured provider key.',
   },
 ]
 
@@ -70,9 +71,9 @@ export default async function PricingPage() {
     <div className="space-y-10 pb-10">
       <div className="page-shell pt-8 sm:pt-10">
         <PageIntro
-          eyebrow="Pricing and credits"
-          title="Plans that match how serious your prompt workflow has become."
-          description="Start free while you build habits. Upgrade when prompt testing, optimization, and reusable workflows become part of your day-to-day delivery."
+          eyebrow="Usage and support"
+          title="Free community prompting with clear hosted AI limits."
+          description="Use Prompt Expert to build, test, save, share, and fork prompts without payment tiers. Hosted AI is limited; BYO provider keys are available for heavier use."
           align="center"
           aside={
             !!session?.user && (
@@ -92,7 +93,7 @@ export default async function PricingPage() {
                     <span className="text-foreground font-medium">
                       {currentPlan}
                     </span>{' '}
-                    plan
+                    usage tier
                   </div>
                 </CardContent>
               </Card>
@@ -136,7 +137,7 @@ export default async function PricingPage() {
           <div className="mb-5">
             <p className="section-label">FAQ</p>
             <h2 className="font-display mt-2 text-3xl font-semibold tracking-tight">
-              Common pricing questions
+              Common usage questions
             </h2>
           </div>
         </FadeIn>

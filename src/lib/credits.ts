@@ -6,7 +6,7 @@ import {
   creditTransactions,
   subscriptions,
 } from '@/lib/db/schema'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { PLANS, type PlanId } from '@/config/plans'
 
 export interface CreditInfo {
@@ -75,26 +75,22 @@ export async function deductCredit(
   const db = getDb()
   await ensureCreditBalance(userId)
 
-  const balance = await db.query.creditBalances.findFirst({
-    where: eq(creditBalances.userId, userId),
-  })
-
-  if (!balance) return false
-
-  const total = balance.monthlyCredits + balance.bonusCredits
-  if (total < cost) return false
-
-  const monthlyDeduction = Math.min(balance.monthlyCredits, cost)
-  const bonusDeduction = cost - monthlyDeduction
-
-  await db
+  const updated = await db
     .update(creditBalances)
     .set({
-      monthlyCredits: sql`${creditBalances.monthlyCredits} - ${monthlyDeduction}`,
-      bonusCredits: sql`${creditBalances.bonusCredits} - ${bonusDeduction}`,
+      monthlyCredits: sql`greatest(${creditBalances.monthlyCredits} - ${cost}, 0)`,
+      bonusCredits: sql`${creditBalances.bonusCredits} - greatest(${cost} - ${creditBalances.monthlyCredits}, 0)`,
       updatedAt: new Date(),
     })
-    .where(eq(creditBalances.userId, userId))
+    .where(
+      and(
+        eq(creditBalances.userId, userId),
+        sql`${creditBalances.monthlyCredits} + ${creditBalances.bonusCredits} >= ${cost}`,
+      ),
+    )
+    .returning({ id: creditBalances.id })
+
+  if (updated.length === 0) return false
 
   await db.insert(creditTransactions).values({
     userId,

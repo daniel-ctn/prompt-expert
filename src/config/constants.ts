@@ -45,6 +45,16 @@ export const PROMPT_CATEGORIES: {
     description: 'Programming and technical tasks',
   },
   {
+    value: 'design',
+    label: 'Design',
+    description: 'AI design tools, UI briefs, and visual direction',
+  },
+  {
+    value: 'agent',
+    label: 'Agent',
+    description: 'Coding agents, scaffolding, and implementation plans',
+  },
+  {
     value: 'analysis',
     label: 'Analysis',
     description: 'Data analysis and interpretation',
@@ -94,6 +104,14 @@ export const MODEL_RECOMMENDATIONS: Record<
   code: {
     model: 'gpt-5.4-mini',
     reason: 'Top-tier code generation and understanding',
+  },
+  design: {
+    model: 'claude-sonnet-4-6',
+    reason: 'Strong at product direction, UI language, and creative briefs',
+  },
+  agent: {
+    model: 'gpt-5.4-mini',
+    reason: 'Strong at structured project plans and coding-agent instructions',
   },
   analysis: {
     model: 'gemini-2.5-flash',
@@ -188,6 +206,60 @@ export const PROMPT_TEMPLATES: {
       'Include request and response examples in JSON',
       'Document all possible error responses',
       'Add rate limiting and authentication details',
+    ],
+    tone: 'technical',
+    outputFormat: 'markdown',
+  },
+  {
+    id: 'ai-design-tool-brief',
+    label: 'AI Design Tool Brief',
+    category: 'design',
+    role: 'a senior product designer writing an execution-ready prompt for an AI design tool',
+    context:
+      'You are preparing a prompt for Claude Design, v0, Figma AI, or a similar AI design tool. The tool should generate a usable interface, not a marketing description.',
+    task: 'Create a detailed design-generation prompt for the requested product, feature, or screen. Define the user, workflow, layout, visual style, components, states, responsive behavior, and accessibility expectations.',
+    constraints: [
+      'Specify the actual UI to generate, including primary screens and important states',
+      'Use the project design system or named visual direction when provided',
+      'Avoid vague adjectives unless they are tied to concrete UI decisions',
+      'Include copy, component behavior, and responsive requirements',
+      'Ask the design tool for production-ready structure, not a concept image',
+    ],
+    tone: 'technical',
+    outputFormat: 'markdown',
+  },
+  {
+    id: 'project-scaffold-agent',
+    label: 'Project Scaffold Agent',
+    category: 'agent',
+    role: 'a senior software architect writing a precise project scaffolding prompt for Claude Code, Codex, or Cursor',
+    context:
+      'You are preparing instructions for a coding agent to initialize a new software project from scratch.',
+    task: 'Generate a complete scaffolding prompt that tells the coding agent what to build, which stack to use, how to structure files, which commands to run, what environment variables are needed, and how to verify the result.',
+    constraints: [
+      'Include a clear project goal, target users, and non-goals',
+      'Specify package manager, framework, language, styling, testing, and deployment assumptions',
+      'Define the expected file structure and key implementation milestones',
+      'Include acceptance criteria and verification commands',
+      'Tell the coding agent to keep changes minimal, consistent, and fully tested',
+    ],
+    tone: 'technical',
+    outputFormat: 'markdown',
+  },
+  {
+    id: 'coding-agent-task',
+    label: 'Coding Agent Task',
+    category: 'agent',
+    role: 'a technical lead writing a scoped implementation prompt for a coding agent',
+    context:
+      'You are preparing a task prompt for Claude Code, Codex, Cursor, or another coding agent working in an existing repository.',
+    task: 'Write a coding-agent prompt that explains the desired change, relevant context, files or areas to inspect, constraints, success criteria, and verification steps.',
+    constraints: [
+      'State assumptions and open questions before implementation',
+      'Keep the requested change surgical and avoid unrelated refactors',
+      'Define expected behavior and edge cases',
+      'Require tests or verification appropriate to the risk',
+      'Ask for a concise implementation summary with changed files',
     ],
     tone: 'technical',
     outputFormat: 'markdown',

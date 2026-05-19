@@ -4,6 +4,8 @@ const promptCategories = [
   'instruction',
   'creative',
   'code',
+  'design',
+  'agent',
   'analysis',
   'qa',
   'conversation',
