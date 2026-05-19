@@ -2,8 +2,22 @@ import { eq, desc } from 'drizzle-orm'
 import { getDb } from '@/lib/db'
 import { prompts } from '@/lib/db/schema'
 import { validateApiToken } from '@/lib/actions/api-tokens'
+import { rateLimit } from '@/lib/rate-limit'
+import { getClientIp } from '@/lib/request'
 
 export async function GET(req: Request) {
+  const { success } = await rateLimit({
+    key: `api:v1:prompts:${getClientIp(req)}`,
+    limit: 60,
+    windowMs: 60_000,
+  })
+  if (!success) {
+    return Response.json(
+      { error: 'Too many requests. Please wait a moment.' },
+      { status: 429 },
+    )
+  }
+
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.replace('Bearer ', '')
 

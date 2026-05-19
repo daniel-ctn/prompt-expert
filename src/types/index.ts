@@ -4,6 +4,8 @@ export type PromptCategory =
   | 'instruction'
   | 'creative'
   | 'code'
+  | 'design'
+  | 'agent'
   | 'analysis'
   | 'qa'
   | 'conversation'

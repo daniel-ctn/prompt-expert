@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ApiKeyManager } from '@/components/settings/api-key-manager'
 import { ApiTokenManager } from '@/components/settings/api-token-manager'
 import { BillingSection } from '@/components/settings/billing-section'
+import { AccountDataSection } from '@/components/settings/account-data-section'
 
 export const metadata: Metadata = {
   title: 'Settings',
@@ -74,6 +75,7 @@ export default async function SettingsPage() {
         ) : null}
         <ApiKeyManager savedProviders={savedProviders} />
         <ApiTokenManager initialTokens={tokens} />
+        <AccountDataSection />
       </section>
     </div>
   )

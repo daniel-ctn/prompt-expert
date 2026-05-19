@@ -12,6 +12,16 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -22,6 +32,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createApiToken, deleteApiToken } from '@/lib/actions/api-tokens'
+import { deleteAllApiTokens } from '@/lib/actions/api-tokens'
 
 interface Token {
   id: string
@@ -40,6 +51,7 @@ export function ApiTokenManager({ initialTokens }: Props) {
   const [name, setName] = useState('')
   const [newToken, setNewToken] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
   const handleCreate = async () => {
     if (!name.trim()) return
@@ -69,6 +81,17 @@ export function ApiTokenManager({ initialTokens }: Props) {
     } catch {
       toast.error('Failed to delete token')
     }
+  }
+
+  const handleDeleteAll = async () => {
+    try {
+      await deleteAllApiTokens()
+      setTokens([])
+      toast.success('All API tokens deleted')
+    } catch {
+      toast.error('Failed to delete API tokens')
+    }
+    setClearDialogOpen(false)
   }
 
   const handleCopyToken = async () => {
@@ -109,6 +132,17 @@ export function ApiTokenManager({ initialTokens }: Props) {
               <Plus className="h-4 w-4" />
               New token
             </Button>
+            {tokens.length > 0 ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setClearDialogOpen(true)}
+                className="text-destructive rounded-full"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete all
+              </Button>
+            ) : null}
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -238,6 +272,27 @@ export function ApiTokenManager({ initialTokens }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete all API tokens?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This revokes every API token for your account. Integrations using
+              these tokens will stop working immediately.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAll}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete all
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

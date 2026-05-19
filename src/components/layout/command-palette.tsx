@@ -12,8 +12,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   ArrowRight,
   Clock3,
-  CreditCard,
   FileText,
+  Gauge,
   LayoutDashboard,
   Library,
   Search,
@@ -104,12 +104,12 @@ const BASE_ITEMS: PaletteItem[] = [
     icon: Settings,
   },
   {
-    id: 'pricing',
-    label: 'Pricing',
-    description: 'Review plans, credits, and upgrade paths.',
+    id: 'usage',
+    label: 'Usage',
+    description: 'Review hosted credits, BYO keys, and support options.',
     href: '/pricing',
-    keywords: ['billing', 'plan', 'credits', 'upgrade'],
-    icon: CreditCard,
+    keywords: ['billing', 'limits', 'credits', 'usage', 'support'],
+    icon: Gauge,
   },
 ]
 
@@ -279,7 +279,7 @@ export function CommandPalette() {
               <div className="border-border/80 bg-surface-1/70 rounded-2xl border border-dashed px-4 py-10 text-center">
                 <p className="text-sm font-medium">No matching results</p>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Try searching for builder, pricing, gallery, or settings.
+                  Try searching for builder, usage, gallery, or settings.
                 </p>
               </div>
             )}

@@ -1,18 +1,8 @@
-const requests = new Map<string, { count: number; resetAt: number }>()
+import { sql } from 'drizzle-orm'
+import { getDb } from '@/lib/db'
+import { rateLimits } from '@/lib/db/schema'
 
-const CLEANUP_INTERVAL = 60_000
-let lastCleanup = Date.now()
-
-function cleanup() {
-  const now = Date.now()
-  if (now - lastCleanup < CLEANUP_INTERVAL) return
-  lastCleanup = now
-  for (const [key, val] of requests) {
-    if (val.resetAt < now) requests.delete(key)
-  }
-}
-
-export function rateLimit({
+export async function rateLimit({
   key,
   limit = 20,
   windowMs = 60_000,
@@ -20,21 +10,34 @@ export function rateLimit({
   key: string
   limit?: number
   windowMs?: number
-}): { success: boolean; remaining: number } {
-  cleanup()
-
+}): Promise<{ success: boolean; remaining: number }> {
+  const db = getDb()
   const now = Date.now()
-  const entry = requests.get(key)
+  const resetAt = new Date(now + windowMs)
 
-  if (!entry || entry.resetAt < now) {
-    requests.set(key, { count: 1, resetAt: now + windowMs })
-    return { success: true, remaining: limit - 1 }
+  const [entry] = await db
+    .insert(rateLimits)
+    .values({
+      key,
+      count: 1,
+      resetAt,
+      updatedAt: new Date(now),
+    })
+    .onConflictDoUpdate({
+      target: rateLimits.key,
+      set: {
+        count: sql<number>`case when ${rateLimits.resetAt} < ${new Date(now)} then 1 else ${rateLimits.count} + 1 end`,
+        resetAt: sql<Date>`case when ${rateLimits.resetAt} < ${new Date(now)} then ${resetAt} else ${rateLimits.resetAt} end`,
+        updatedAt: new Date(now),
+      },
+    })
+    .returning({
+      count: rateLimits.count,
+    })
+
+  const count = entry?.count ?? limit + 1
+  return {
+    success: count <= limit,
+    remaining: Math.max(limit - count, 0),
   }
-
-  if (entry.count >= limit) {
-    return { success: false, remaining: 0 }
-  }
-
-  entry.count++
-  return { success: true, remaining: limit - entry.count }
 }

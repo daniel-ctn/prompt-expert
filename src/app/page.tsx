@@ -28,8 +28,8 @@ const stats = [
   },
   {
     value: '50+',
-    label: 'Free monthly credits',
-    detail: 'Enough to validate real prompt iterations.',
+    label: 'Hosted monthly credits',
+    detail: 'A small allowance for real prompt iterations.',
   },
   {
     value: '1 click',
@@ -69,7 +69,7 @@ const examples = [
   },
   {
     label: 'Support workflow',
-    title: 'Give teams a prompt they can actually reuse',
+    title: 'Give collaborators a prompt they can actually reuse',
     before: 'Help the customer with their issue politely.',
     after:
       'Act as a SaaS support specialist. Acknowledge the issue, summarize the likely cause, provide the next 3 actions, and close with a confirmation question. Keep the tone concise and reassuring.',
@@ -77,9 +77,9 @@ const examples = [
 ]
 
 const trustPoints = [
-  'Built on a modern Next.js and React stack with fast route transitions.',
+  'Built as a free community-oriented prompt workflow utility.',
   'Supports prompt drafting, testing, versioning, sharing, and chained workflows.',
-  'Balances polish with restraint so the UI feels sharp without getting in the way.',
+  'Supports BYO provider keys for heavier usage without paid feature gates.',
 ]
 
 export default function HomePage() {
@@ -87,9 +87,9 @@ export default function HomePage() {
     <div className="pb-10">
       <div className="page-shell space-y-8 pt-8 sm:pt-10">
         <PageIntro
-          eyebrow="Refined prompt workflows"
-          title="Sharper prompts, calmer workflow, better AI output."
-          description="Prompt Expert gives you a structured workspace for drafting, optimizing, testing, and organizing prompts without the usual copy-paste chaos."
+          eyebrow="Community prompt workflows"
+          title="Build, test, save, share, and fork better prompts."
+          description="Prompt Expert is a free prompt workflow tool for builders who want structured prompting without payment tiers or locked collaboration features."
           actions={
             <>
               <Button
@@ -276,7 +276,8 @@ export default function HomePage() {
                 </h2>
                 <p className="text-muted-foreground mx-auto max-w-2xl text-sm leading-6 sm:text-base">
                   Start free, save your best prompts, and verify the experience
-                  against real workflow use before you scale up.
+                  against real workflow use. Hosted AI is limited, and BYO keys
+                  are available for heavier use.
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -299,11 +300,35 @@ export default function HomePage() {
                   render={<AppLink href="/pricing" />}
                   className="rounded-full px-5"
                 >
-                  Review pricing
+                  Review usage
                 </Button>
               </div>
             </CardContent>
           </Card>
+        </FadeIn>
+      </section>
+
+      <section className="page-shell pt-0">
+        <FadeIn>
+          <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <p className="section-label">Why non-profit</p>
+              <h2 className="font-display mt-2 text-3xl font-semibold tracking-tight">
+                Prompt workflows should stay useful without paid gates.
+              </h2>
+            </div>
+            <div className="text-muted-foreground space-y-4 text-sm leading-6 sm:text-base">
+              <p>
+                Prompt Expert is shaped as a community utility: the core
+                builder, library, gallery, sharing, and BYO-key workflows remain
+                free to use.
+              </p>
+              <p>
+                Hosted AI usage is limited to control operating cost, but those
+                limits are usage safeguards rather than subscription tiers.
+              </p>
+            </div>
+          </div>
         </FadeIn>
       </section>
     </div>

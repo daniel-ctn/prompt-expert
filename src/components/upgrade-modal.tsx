@@ -1,6 +1,6 @@
 'use client'
 
-import { Sparkles, Coins, ArrowRight } from 'lucide-react'
+import { ArrowRight, Coins, KeyRound } from 'lucide-react'
 import { AppLink } from '@/components/ui/app-link'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,23 +25,28 @@ export function UpgradeModal() {
             <Coins className="text-primary h-6 w-6" />
           </div>
           <DialogTitle className="text-center">
-            You&apos;re out of credits
+            Hosted credit limit reached
           </DialogTitle>
           <DialogDescription className="text-center">
-            You&apos;ve used all your AI credits for this period. Upgrade to Pro
-            for {PLANS.pro.credits.toLocaleString()} credits per month.
+            You&apos;ve used your hosted AI allowance for this period. You can
+            keep building prompts or connect your own provider key in Settings.
           </DialogDescription>
         </DialogHeader>
 
         <div className="border-primary/20 bg-primary/5 rounded-lg border p-4">
           <div className="mb-3 flex items-center gap-2">
-            <Sparkles className="text-primary h-4 w-4" />
+            <KeyRound className="text-primary h-4 w-4" />
             <span className="text-sm font-semibold">
-              Pro Plan — ${PLANS.pro.price}/month
+              {PLANS.free.credits} hosted credits per month
             </span>
           </div>
           <ul className="text-muted-foreground space-y-1.5 text-sm">
-            {PLANS.pro.features.slice(0, 4).map((feature) => (
+            {[
+              'Prompt builder remains available',
+              'Saved prompts and public gallery remain available',
+              'BYO provider keys can continue AI calls',
+              'No payment is required',
+            ].map((feature) => (
               <li key={feature} className="flex items-center gap-2">
                 <span className="text-primary">+</span>
                 {feature}
@@ -56,7 +61,7 @@ export function UpgradeModal() {
             className="bg-primary w-full gap-2"
             onClick={close}
           >
-            View Plans
+            Review usage options
             <ArrowRight className="h-4 w-4" />
           </Button>
           <Button variant="ghost" className="w-full" onClick={close}>

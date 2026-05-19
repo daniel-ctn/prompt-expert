@@ -4,6 +4,7 @@ const apiRouteMocks = vi.hoisted(() => ({
   auth: vi.fn(),
   getUserCredits: vi.fn(),
   validateApiToken: vi.fn(),
+  rateLimit: vi.fn(),
   getDb: vi.fn(),
   eq: vi.fn(),
   desc: vi.fn(),
@@ -19,6 +20,10 @@ vi.mock('@/lib/credits', () => ({
 
 vi.mock('@/lib/actions/api-tokens', () => ({
   validateApiToken: apiRouteMocks.validateApiToken,
+}))
+
+vi.mock('@/lib/rate-limit', () => ({
+  rateLimit: apiRouteMocks.rateLimit,
 }))
 
 vi.mock('@/lib/db', () => ({
@@ -60,6 +65,7 @@ describe('API route handlers', () => {
       plan: 'pro',
     })
     apiRouteMocks.validateApiToken.mockResolvedValue('user-1')
+    apiRouteMocks.rateLimit.mockResolvedValue({ success: true, remaining: 59 })
     apiRouteMocks.eq.mockReturnValue('eq-condition')
     apiRouteMocks.desc.mockReturnValue('desc-condition')
   })
@@ -98,6 +104,30 @@ describe('API route handlers', () => {
       expect(response.status).toBe(401)
       expect(await response.json()).toEqual({
         error: 'Missing Authorization header. Use: Bearer pe_...',
+      })
+      expect(apiRouteMocks.validateApiToken).not.toHaveBeenCalled()
+    })
+
+    it('returns 429 when the client IP hits the route limit', async () => {
+      apiRouteMocks.rateLimit.mockResolvedValue({
+        success: false,
+        remaining: 0,
+      })
+
+      const response = await getPromptsRoute(
+        new Request('http://localhost/api/v1/prompts', {
+          headers: { 'x-forwarded-for': '203.0.113.10' },
+        }),
+      )
+
+      expect(apiRouteMocks.rateLimit).toHaveBeenCalledWith({
+        key: 'api:v1:prompts:203.0.113.10',
+        limit: 60,
+        windowMs: 60_000,
+      })
+      expect(response.status).toBe(429)
+      expect(await response.json()).toEqual({
+        error: 'Too many requests. Please wait a moment.',
       })
       expect(apiRouteMocks.validateApiToken).not.toHaveBeenCalled()
     })

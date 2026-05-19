@@ -53,6 +53,15 @@ export async function deleteApiKey(provider: string) {
   revalidatePath('/settings')
 }
 
+export async function deleteAllApiKeys() {
+  const userId = await getAuthenticatedUserId()
+  const db = getDb()
+
+  await db.delete(userApiKeys).where(eq(userApiKeys.userId, userId))
+
+  revalidatePath('/settings')
+}
+
 export async function getUserApiKeyProviders(): Promise<string[]> {
   const userId = await getAuthenticatedUserId()
   const db = getDb()

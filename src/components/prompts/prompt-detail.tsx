@@ -2,8 +2,26 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Check, Copy, GitCompareArrows, Save } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  Eye,
+  EyeOff,
+  GitCompareArrows,
+  Save,
+} from 'lucide-react'
 import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -86,6 +104,9 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
   const [copied, setCopied] = useState(false)
   const [diffLeft, setDiffLeft] = useState<string | null>(null)
   const [diffRight, setDiffRight] = useState<string | null>(null)
+  const [isPublic, setIsPublic] = useState(prompt.isPublic)
+  const [visibilitySaving, setVisibilitySaving] = useState(false)
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false)
 
   const diffResult = useMemo(() => {
     if (!diffLeft || !diffRight || diffLeft === diffRight) return null
@@ -130,6 +151,24 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleVisibilityChange = async (nextPublic: boolean) => {
+    setVisibilitySaving(true)
+    try {
+      await updatePrompt({
+        id: prompt.id,
+        isPublic: nextPublic,
+      })
+      setIsPublic(nextPublic)
+      toast.success(nextPublic ? 'Prompt published' : 'Prompt unpublished')
+      router.refresh()
+    } catch {
+      toast.error('Failed to update visibility')
+    } finally {
+      setVisibilitySaving(false)
+      setPublishDialogOpen(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <Card className="page-frame bg-transparent">
@@ -164,7 +203,7 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
                   {prompt.category}
                 </Badge>
                 <Badge variant="outline" className="rounded-full px-3 py-1">
-                  {prompt.isPublic ? 'Public' : 'Private'}
+                  {isPublic ? 'Public' : 'Private'}
                 </Badge>
                 {prompt.tags.map((tag) => (
                   <Badge
@@ -179,6 +218,29 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              {isPublic ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleVisibilityChange(false)}
+                  disabled={visibilitySaving}
+                  className="rounded-full"
+                >
+                  <EyeOff className="h-4 w-4" />
+                  {visibilitySaving ? 'Saving...' : 'Unpublish'}
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPublishDialogOpen(true)}
+                  disabled={visibilitySaving}
+                  className="rounded-full"
+                >
+                  <Eye className="h-4 w-4" />
+                  Publish
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -400,6 +462,31 @@ export function PromptDetail({ prompt, versions }: PromptDetailProps) {
           ) : null}
         </TabsContent>
       </Tabs>
+
+      <AlertDialog open={publishDialogOpen} onOpenChange={setPublishDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Publish this prompt?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Public prompts can appear in the gallery and may be visible to
+              anyone with access to the app. Review the content for secrets,
+              private context, customer data, and anything you do not have
+              permission to share.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={visibilitySaving}>
+              Keep private
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={visibilitySaving}
+              onClick={() => handleVisibilityChange(true)}
+            >
+              {visibilitySaving ? 'Publishing...' : 'Publish prompt'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

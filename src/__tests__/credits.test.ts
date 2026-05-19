@@ -3,6 +3,7 @@ import { PLANS } from '@/config/plans'
 
 const creditMocks = vi.hoisted(() => ({
   getDb: vi.fn(),
+  and: vi.fn(),
   eq: vi.fn(),
   sql: vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => ({
     strings,
@@ -15,12 +16,14 @@ vi.mock('@/lib/db', () => ({
 }))
 
 vi.mock('drizzle-orm', () => ({
+  and: creditMocks.and,
   eq: creditMocks.eq,
   sql: creditMocks.sql,
 }))
 
 vi.mock('@/lib/db/schema', () => ({
   creditBalances: {
+    id: 'creditBalances.id',
     userId: 'creditBalances.userId',
     monthlyCredits: 'creditBalances.monthlyCredits',
     bonusCredits: 'creditBalances.bonusCredits',
@@ -44,7 +47,8 @@ function createDbMock() {
   const findSubscription = vi.fn()
   const insertValues = vi.fn().mockResolvedValue(undefined)
   const insert = vi.fn(() => ({ values: insertValues }))
-  const updateWhere = vi.fn().mockResolvedValue(undefined)
+  const updateReturning = vi.fn().mockResolvedValue([{ id: 'balance-1' }])
+  const updateWhere = vi.fn(() => ({ returning: updateReturning }))
   const updateSet = vi.fn(() => ({ where: updateWhere }))
   const update = vi.fn(() => ({ set: updateSet }))
 
@@ -69,6 +73,7 @@ function createDbMock() {
       update,
       updateSet,
       updateWhere,
+      updateReturning,
     },
   }
 }
@@ -76,6 +81,7 @@ function createDbMock() {
 describe('credits helpers', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    creditMocks.and.mockReturnValue('and-condition')
     creditMocks.eq.mockReturnValue('eq-condition')
   })
 
@@ -135,56 +141,38 @@ describe('credits helpers', () => {
 
   it('does not deduct credits when the user has insufficient balance', async () => {
     const { db, spies } = createDbMock()
-    spies.findCreditBalance
-      .mockResolvedValueOnce({
-        monthlyCredits: 1,
-        bonusCredits: 0,
-      })
-      .mockResolvedValueOnce({
-        monthlyCredits: 1,
-        bonusCredits: 0,
-      })
+    spies.findCreditBalance.mockResolvedValueOnce({
+      monthlyCredits: 1,
+      bonusCredits: 0,
+    })
+    spies.updateReturning.mockResolvedValueOnce([])
     creditMocks.getDb.mockReturnValue(db)
 
     const result = await deductCredit('user-1', 2, 'Optimize prompt')
 
     expect(result).toBe(false)
-    expect(spies.update).not.toHaveBeenCalled()
+    expect(spies.update).toHaveBeenCalled()
     expect(spies.insertValues).not.toHaveBeenCalled()
   })
 
   it('deducts monthly credits before bonus credits and records the transaction', async () => {
     const { db, spies } = createDbMock()
-    spies.findCreditBalance
-      .mockResolvedValueOnce({
-        monthlyCredits: 2,
-        bonusCredits: 3,
-      })
-      .mockResolvedValueOnce({
-        monthlyCredits: 2,
-        bonusCredits: 3,
-      })
+    spies.findCreditBalance.mockResolvedValueOnce({
+      monthlyCredits: 2,
+      bonusCredits: 3,
+    })
     creditMocks.getDb.mockReturnValue(db)
 
     const result = await deductCredit('user-1', 4, 'Optimize prompt')
 
     expect(result).toBe(true)
-    expect(creditMocks.sql).toHaveBeenNthCalledWith(
-      1,
-      expect.any(Array),
-      'creditBalances.monthlyCredits',
-      2,
-    )
-    expect(creditMocks.sql).toHaveBeenNthCalledWith(
-      2,
-      expect.any(Array),
-      'creditBalances.bonusCredits',
-      2,
-    )
     expect(spies.updateSet).toHaveBeenCalledWith({
       monthlyCredits: expect.any(Object),
       bonusCredits: expect.any(Object),
       updatedAt: expect.any(Date),
+    })
+    expect(spies.updateReturning).toHaveBeenCalledWith({
+      id: 'creditBalances.id',
     })
     expect(spies.insertValues).toHaveBeenCalledWith({
       userId: 'user-1',

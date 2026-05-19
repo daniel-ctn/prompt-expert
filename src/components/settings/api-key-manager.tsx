@@ -6,6 +6,16 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import {
   Card,
   CardContent,
   CardDescription,
@@ -14,7 +24,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { deleteApiKey, saveApiKey } from '@/lib/actions/api-keys'
+import {
+  deleteAllApiKeys,
+  deleteApiKey,
+  saveApiKey,
+} from '@/lib/actions/api-keys'
 
 const PROVIDERS = [
   {
@@ -46,6 +60,7 @@ export function ApiKeyManager({ savedProviders }: Props) {
   const [values, setValues] = useState<Record<string, string>>({})
   const [visible, setVisible] = useState<Set<string>>(new Set())
   const [saving, setSaving] = useState<string | null>(null)
+  const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
   const handleSave = async (providerId: string) => {
     const key = values[providerId]
@@ -79,109 +94,159 @@ export function ApiKeyManager({ savedProviders }: Props) {
     }
   }
 
-  return (
-    <Card className="bg-background/84">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Key className="h-5 w-5" />
-          Provider API keys
-        </CardTitle>
-        <CardDescription className="leading-6">
-          Add your own provider keys if you want direct quota control. Keys are
-          encrypted at rest and can replace the shared server defaults.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {PROVIDERS.map((provider) => (
-          <div
-            key={provider.id}
-            className="border-border/70 bg-surface-1/75 rounded-3xl border p-4"
-          >
-            <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
-              <div className="space-y-1">
-                <Label
-                  htmlFor={`key-${provider.id}`}
-                  className="text-sm font-medium"
-                >
-                  {provider.name}
-                </Label>
-                <p className="text-muted-foreground text-sm">
-                  {provider.description}
-                </p>
-              </div>
-              {saved.has(provider.id) ? (
-                <Badge variant="secondary" className="rounded-full px-3 py-1">
-                  <Check className="h-3 w-3" />
-                  Configured
-                </Badge>
-              ) : null}
-            </div>
+  const handleDeleteAll = async () => {
+    try {
+      await deleteAllApiKeys()
+      setSaved(new Set())
+      toast.success('All provider keys removed')
+    } catch {
+      toast.error('Failed to remove provider keys')
+    }
+    setClearDialogOpen(false)
+  }
 
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <div className="relative flex-1">
-                <Input
-                  id={`key-${provider.id}`}
-                  type={visible.has(provider.id) ? 'text' : 'password'}
-                  value={values[provider.id] ?? ''}
-                  onChange={(event) =>
-                    setValues((prev) => ({
-                      ...prev,
-                      [provider.id]: event.target.value,
-                    }))
-                  }
-                  placeholder={
-                    saved.has(provider.id)
-                      ? '•••••••• (replace existing)'
-                      : provider.placeholder
-                  }
-                  className="border-border/70 bg-background/84 h-11 rounded-2xl pr-10 font-mono text-sm"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-1 right-1 h-9 w-9 rounded-full"
-                  onClick={() =>
-                    setVisible((prev) => {
-                      const next = new Set(prev)
-                      if (next.has(provider.id)) {
-                        next.delete(provider.id)
-                      } else {
-                        next.add(provider.id)
-                      }
-                      return next
-                    })
-                  }
-                >
-                  {visible.has(provider.id) ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-              <Button
-                onClick={() => handleSave(provider.id)}
-                disabled={
-                  !values[provider.id]?.trim() || saving === provider.id
-                }
-                className="rounded-full"
-              >
-                {saving === provider.id ? 'Saving...' : 'Save key'}
-              </Button>
-              {saved.has(provider.id) ? (
-                <Button
-                  variant="outline"
-                  className="rounded-full"
-                  onClick={() => handleDelete(provider.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Remove
-                </Button>
-              ) : null}
+  return (
+    <>
+      <Card className="bg-background/84">
+        <CardHeader>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="space-y-1">
+              <CardTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5" />
+                Provider API keys
+              </CardTitle>
+              <CardDescription className="leading-6">
+                Add your own provider keys if you want direct quota control.
+                Keys are encrypted at rest and can replace the shared server
+                defaults.
+              </CardDescription>
             </div>
+            {saved.size > 0 ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setClearDialogOpen(true)}
+                className="text-destructive rounded-full"
+              >
+                <Trash2 className="h-4 w-4" />
+                Remove all
+              </Button>
+            ) : null}
           </div>
-        ))}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {PROVIDERS.map((provider) => (
+            <div
+              key={provider.id}
+              className="border-border/70 bg-surface-1/75 rounded-3xl border p-4"
+            >
+              <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <Label
+                    htmlFor={`key-${provider.id}`}
+                    className="text-sm font-medium"
+                  >
+                    {provider.name}
+                  </Label>
+                  <p className="text-muted-foreground text-sm">
+                    {provider.description}
+                  </p>
+                </div>
+                {saved.has(provider.id) ? (
+                  <Badge variant="secondary" className="rounded-full px-3 py-1">
+                    <Check className="h-3 w-3" />
+                    Configured
+                  </Badge>
+                ) : null}
+              </div>
+
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative flex-1">
+                  <Input
+                    id={`key-${provider.id}`}
+                    type={visible.has(provider.id) ? 'text' : 'password'}
+                    value={values[provider.id] ?? ''}
+                    onChange={(event) =>
+                      setValues((prev) => ({
+                        ...prev,
+                        [provider.id]: event.target.value,
+                      }))
+                    }
+                    placeholder={
+                      saved.has(provider.id)
+                        ? '•••••••• (replace existing)'
+                        : provider.placeholder
+                    }
+                    className="border-border/70 bg-background/84 h-11 rounded-2xl pr-10 font-mono text-sm"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-1 right-1 h-9 w-9 rounded-full"
+                    onClick={() =>
+                      setVisible((prev) => {
+                        const next = new Set(prev)
+                        if (next.has(provider.id)) {
+                          next.delete(provider.id)
+                        } else {
+                          next.add(provider.id)
+                        }
+                        return next
+                      })
+                    }
+                  >
+                    {visible.has(provider.id) ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                <Button
+                  onClick={() => handleSave(provider.id)}
+                  disabled={
+                    !values[provider.id]?.trim() || saving === provider.id
+                  }
+                  className="rounded-full"
+                >
+                  {saving === provider.id ? 'Saving...' : 'Save key'}
+                </Button>
+                {saved.has(provider.id) ? (
+                  <Button
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => handleDelete(provider.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Remove
+                  </Button>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove all provider keys?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This deletes every saved provider key for your account. BYO-key AI
+              calls will stop until you save new keys.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAll}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove all
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

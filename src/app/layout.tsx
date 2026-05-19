@@ -26,26 +26,26 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Prompt Expert - Build Better AI Prompts',
+    default: 'Prompt Expert - Free Community Prompt Workflows',
     template: '%s | Prompt Expert',
   },
   description:
-    'Create efficient, optimized prompts for any AI model. Adjust tone, format, constraints, and more with an intuitive builder.',
+    'Create, test, improve, save, share, and fork prompts with a free community-oriented prompt workflow tool.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? 'https://prompt-expert.vercel.app',
   ),
   openGraph: {
-    title: 'Prompt Expert - Build Better AI Prompts',
+    title: 'Prompt Expert - Free Community Prompt Workflows',
     description:
-      'Create efficient, optimized prompts for any AI model with an intuitive builder.',
+      'Create, test, improve, save, share, and fork prompts without payment tiers.',
     siteName: 'Prompt Expert',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Prompt Expert - Build Better AI Prompts',
+    title: 'Prompt Expert - Free Community Prompt Workflows',
     description:
-      'Create efficient, optimized prompts for any AI model with an intuitive builder.',
+      'Create, test, improve, save, share, and fork prompts without payment tiers.',
   },
   robots: { index: true, follow: true },
 }
