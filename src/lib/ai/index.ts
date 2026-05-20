@@ -5,8 +5,14 @@ import type { AIModel, AIProvider } from '@/types'
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; modelId: string }> = {
   'gpt-5.4-mini': { provider: 'openai', modelId: 'gpt-5.4-mini' },
-  'gemini-2.5-flash': { provider: 'google', modelId: 'gemini-2.5-flash' },
-  'claude-sonnet-4-6': { provider: 'anthropic', modelId: 'claude-sonnet-4-6' },
+  'gemini-3-flash-preview': {
+    provider: 'google',
+    modelId: 'gemini-3-flash-preview',
+  },
+  'claude-haiku-4-5-20251001': {
+    provider: 'anthropic',
+    modelId: 'claude-haiku-4-5-20251001',
+  },
 }
 
 function getProviderInstance(

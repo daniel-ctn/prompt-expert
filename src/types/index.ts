@@ -26,7 +26,10 @@ export type OutputFormat =
   | 'code'
   | 'table'
 
-export type AIModel = 'gpt-5.4-mini' | 'gemini-2.5-flash' | 'claude-sonnet-4-6'
+export type AIModel =
+  | 'gpt-5.4-mini'
+  | 'gemini-3-flash-preview'
+  | 'claude-haiku-4-5-20251001'
 
 export type AIProvider = 'openai' | 'google' | 'anthropic'
 

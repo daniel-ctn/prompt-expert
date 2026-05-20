@@ -19,7 +19,11 @@ const testRequestSchema = z.object({
     .min(1, 'Prompt is required')
     .max(HOSTED_AI_LIMITS.maxPromptInputLength, 'Prompt is too long'),
   model: z
-    .enum(['gpt-5.4-mini', 'gemini-2.5-flash', 'claude-sonnet-4-6'])
+    .enum([
+      'gpt-5.4-mini',
+      'gemini-3-flash-preview',
+      'claude-haiku-4-5-20251001',
+    ])
     .default('gpt-5.4-mini'),
   temperature: z.number().min(0).max(2).default(0.7),
 })

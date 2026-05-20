@@ -129,7 +129,7 @@ export function ModelComparison({ prompt, disabled }: ModelComparisonProps) {
   const [open, setOpen] = useState(false)
   const [models, setModels] = useState<[AIModel, AIModel]>([
     'gpt-5.4-mini',
-    'gemini-2.5-flash',
+    'gemini-3-flash-preview',
   ])
   return (
     <Dialog open={open} onOpenChange={setOpen}>

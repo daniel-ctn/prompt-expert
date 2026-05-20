@@ -16,10 +16,14 @@ export const AI_MODELS: {
   provider: AIProvider
 }[] = [
   { value: 'gpt-5.4-mini', label: 'GPT-5.4 Mini', provider: 'openai' },
-  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', provider: 'google' },
   {
-    value: 'claude-sonnet-4-6',
-    label: 'Claude Sonnet 4.6',
+    value: 'gemini-3-flash-preview',
+    label: 'Gemini 3 Flash',
+    provider: 'google',
+  },
+  {
+    value: 'claude-haiku-4-5-20251001',
+    label: 'Claude Haiku 4.5',
     provider: 'anthropic',
   },
 ]
@@ -98,23 +102,23 @@ export const MODEL_RECOMMENDATIONS: Record<
     reason: 'Fast and precise for step-by-step instructions',
   },
   creative: {
-    model: 'claude-sonnet-4-6',
-    reason: 'Excellent at creative writing and nuanced language',
+    model: 'claude-haiku-4-5-20251001',
+    reason: 'Fast and cost-efficient for creative writing',
   },
   code: {
     model: 'gpt-5.4-mini',
     reason: 'Top-tier code generation and understanding',
   },
   design: {
-    model: 'claude-sonnet-4-6',
-    reason: 'Strong at product direction, UI language, and creative briefs',
+    model: 'claude-haiku-4-5-20251001',
+    reason: 'Fast at product direction, UI language, and creative briefs',
   },
   agent: {
     model: 'gpt-5.4-mini',
     reason: 'Strong at structured project plans and coding-agent instructions',
   },
   analysis: {
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3-flash-preview',
     reason: 'Strong analytical reasoning with large context',
   },
   qa: {
@@ -122,7 +126,7 @@ export const MODEL_RECOMMENDATIONS: Record<
     reason: 'Fast, accurate responses for Q&A tasks',
   },
   conversation: {
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3-flash-preview',
     reason: 'Natural, empathetic conversational tone',
   },
 }

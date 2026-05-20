@@ -252,24 +252,27 @@ describe('AI route handlers', () => {
       const response = await optimizePOST(
         createPostRequest('/api/ai/optimize', {
           prompt: 'Make this prompt clearer',
-          model: 'gemini-2.5-flash',
+          model: 'gemini-3-flash-preview',
         }),
       )
 
       expect(routeMocks.getProviderForModel).toHaveBeenCalledWith(
-        'gemini-2.5-flash',
+        'gemini-3-flash-preview',
       )
       expect(routeMocks.getUserApiKey).toHaveBeenCalledWith('user-1', 'google')
-      expect(routeMocks.getModel).toHaveBeenCalledWith('gemini-2.5-flash', {})
+      expect(routeMocks.getModel).toHaveBeenCalledWith(
+        'gemini-3-flash-preview',
+        {},
+      )
       expect(routeMocks.deductCredit).toHaveBeenCalledWith(
         'user-1',
         CREDIT_COSTS.optimize,
-        'Optimize prompt (gemini-2.5-flash)',
+        'Optimize prompt (gemini-3-flash-preview)',
       )
       expect(routeMocks.trackUsage).toHaveBeenCalledWith(
         'user-1',
         'optimize',
-        'gemini-2.5-flash',
+        'gemini-3-flash-preview',
       )
 
       const options = routeMocks.streamText.mock.calls[0][0]
@@ -278,7 +281,7 @@ describe('AI route handlers', () => {
       expect(routeMocks.savePromptHistory).toHaveBeenCalledWith('user-1', {
         promptContent: 'Make this prompt clearer',
         output: 'streamed completion',
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         endpoint: 'optimize',
       })
       expect(response.status).toBe(200)
@@ -289,13 +292,13 @@ describe('AI route handlers', () => {
       await optimizePOST(
         createPostRequest('/api/ai/optimize', {
           prompt: 'Optimize this for Claude',
-          model: 'claude-sonnet-4-6',
+          model: 'claude-haiku-4-5-20251001',
         }),
       )
 
       const options = routeMocks.streamText.mock.calls[0][0]
       expect(routeMocks.getProviderForModel).toHaveBeenCalledWith(
-        'claude-sonnet-4-6',
+        'claude-haiku-4-5-20251001',
       )
       expect(options).not.toHaveProperty('temperature')
     })
@@ -367,7 +370,7 @@ describe('AI route handlers', () => {
       await testPromptPOST(
         createPostRequest('/api/ai/test', {
           prompt: 'Test this prompt',
-          model: 'claude-sonnet-4-6',
+          model: 'claude-haiku-4-5-20251001',
           temperature: 1.4,
         }),
       )

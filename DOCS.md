@@ -670,12 +670,12 @@ Models are defined in three places that must stay in sync:
 
 | Model               | Provider  |
 | ------------------- | --------- |
-| `gpt-4.1`           | OpenAI    |
-| `gpt-4.1-mini`      | OpenAI    |
-| `claude-opus-4-6`   | Anthropic |
-| `claude-sonnet-4-6` | Anthropic |
-| `gemini-2.5-pro`    | Google    |
-| `gemini-2.5-flash`  | Google    |
+| `gpt-4.1`                   | OpenAI    |
+| `gpt-4.1-mini`              | OpenAI    |
+| `claude-opus-4-6`           | Anthropic |
+| `claude-haiku-4-5-20251001` | Anthropic |
+| `gemini-2.5-pro`            | Google    |
+| `gemini-3-flash-preview`    | Google    |
 
 ### How AI Calls Work
 

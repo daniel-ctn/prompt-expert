@@ -41,8 +41,8 @@ import { assemblePrompt, getModel, getProviderForModel } from '@/lib/ai'
 describe('getProviderForModel', () => {
   it.each([
     ['gpt-5.4-mini', 'openai'],
-    ['gemini-2.5-flash', 'google'],
-    ['claude-sonnet-4-6', 'anthropic'],
+    ['gemini-3-flash-preview', 'google'],
+    ['claude-haiku-4-5-20251001', 'anthropic'],
   ] as const)('returns %s provider as %s', (model, provider) => {
     expect(getProviderForModel(model)).toBe(provider)
   })
@@ -77,7 +77,7 @@ describe('getModel', () => {
   it('prefers a user-supplied Google key over the environment key', () => {
     process.env.GOOGLE_GENERATIVE_AI_API_KEY = 'google-env-key'
 
-    const model = getModel('gemini-2.5-flash', {
+    const model = getModel('gemini-3-flash-preview', {
       google: 'google-user-key',
     })
 
@@ -85,28 +85,28 @@ describe('getModel', () => {
       apiKey: 'google-user-key',
     })
     expect(providerMocks.googleProvider).toHaveBeenCalledWith(
-      'gemini-2.5-flash',
+      'gemini-3-flash-preview',
     )
     expect(model).toEqual({
       provider: 'google',
-      modelId: 'gemini-2.5-flash',
+      modelId: 'gemini-3-flash-preview',
     })
   })
 
   it('uses the Anthropic environment key for Claude models', () => {
     process.env.ANTHROPIC_API_KEY = 'anthropic-env-key'
 
-    const model = getModel('claude-sonnet-4-6')
+    const model = getModel('claude-haiku-4-5-20251001')
 
     expect(providerMocks.createAnthropic).toHaveBeenCalledWith({
       apiKey: 'anthropic-env-key',
     })
     expect(providerMocks.anthropicProvider).toHaveBeenCalledWith(
-      'claude-sonnet-4-6',
+      'claude-haiku-4-5-20251001',
     )
     expect(model).toEqual({
       provider: 'anthropic',
-      modelId: 'claude-sonnet-4-6',
+      modelId: 'claude-haiku-4-5-20251001',
     })
   })
 })

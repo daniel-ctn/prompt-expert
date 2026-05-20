@@ -41,13 +41,13 @@ const PROVIDERS = [
     id: 'google',
     name: 'Google AI',
     placeholder: 'AIza...',
-    description: 'Use your own key for Gemini 2.5 Flash requests.',
+    description: 'Use your own key for Gemini 3 Flash requests.',
   },
   {
     id: 'anthropic',
     name: 'Anthropic',
     placeholder: 'sk-ant-...',
-    description: 'Use your own key for Claude Sonnet 4.6 runs.',
+    description: 'Use your own key for Claude Haiku 4.5 runs.',
   },
 ] as const
 
