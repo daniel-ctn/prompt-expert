@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
-import { DM_Sans, Geist_Mono, Sora } from 'next/font/google'
+import { Fraunces, Geist_Mono, Inter } from 'next/font/google'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageTransitionShell } from '@/components/layout/page-transition-shell'
 import { Providers } from '@/components/providers'
 import './globals.css'
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 })
@@ -18,10 +18,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-const sora = Sora({
-  variable: '--font-sora',
+const fraunces = Fraunces({
+  variable: '--font-fraunces',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  axes: ['SOFT', 'WONK', 'opsz'],
 })
 
 export const metadata: Metadata = {
@@ -59,14 +59,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${dmSans.variable} ${geistMono.variable} ${sora.variable} antialiased`}
+        className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       >
         <Providers>
           <div className="app-shell relative flex min-h-screen flex-col">
             <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-              <div className="bg-grid-mask absolute inset-0 opacity-60" />
-              <div className="bg-radial-spot absolute top-[-8rem] left-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full" />
-              <div className="bg-radial-spot-secondary absolute top-[24rem] right-[-8rem] h-[22rem] w-[22rem] rounded-full" />
+              <div className="bg-radial-spot absolute top-[-10rem] left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full" />
+              <div className="bg-radial-spot-secondary absolute right-[-6rem] bottom-[-8rem] h-[26rem] w-[26rem] rounded-full" />
             </div>
             <Header />
             <PageTransitionShell>{children}</PageTransitionShell>

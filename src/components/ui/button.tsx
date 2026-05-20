@@ -6,21 +6,21 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button relative inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[transform,box-shadow,background-color,border-color,color] duration-150 outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-white shadow-xs hover:bg-primary/92 [a]:hover:bg-primary/92',
+          'border-foreground bg-foreground text-background shadow-[var(--shadow-paper-sm)] hover:-translate-y-px hover:shadow-[var(--shadow-paper)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
         outline:
-          'border-border/80 bg-background/88 shadow-xs hover:border-border-strong hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
+          'border-foreground bg-background text-foreground shadow-[var(--shadow-paper-sm)] hover:-translate-y-px hover:bg-[color-mix(in_oklch,var(--marigold)_14%,var(--background))] hover:shadow-[var(--shadow-paper)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
+          'border-border-strong bg-secondary text-secondary-foreground shadow-[var(--shadow-paper-sm)] hover:-translate-y-px hover:bg-accent active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
         ghost:
-          'hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground dark:hover:bg-accent/50',
+          'hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground active:translate-y-px',
         destructive:
-          'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'border-foreground bg-[color-mix(in_oklch,var(--rust)_92%,var(--ink))] text-background shadow-[var(--shadow-paper-sm)] hover:-translate-y-px hover:shadow-[var(--shadow-paper)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+        link: 'text-foreground underline-offset-4 hover:underline decoration-[var(--marigold)] decoration-2',
       },
       size: {
         default:

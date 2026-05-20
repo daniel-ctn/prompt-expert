@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
-import { Compass, Home } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'Page Not Found',
@@ -11,22 +10,22 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <div className="page-shell-compact flex min-h-[calc(100vh-10rem)] items-center">
-      <Card className="page-frame w-full bg-transparent">
-        <CardContent className="flex flex-col items-center gap-5 py-14 text-center">
-          <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-3xl">
-            <Compass className="h-6 w-6" />
-          </div>
-          <div className="space-y-2">
-            <p className="section-label">404</p>
-            <h1 className="font-display text-4xl font-semibold tracking-tight">
-              That page could not be found
-            </h1>
-            <p className="text-muted-foreground mx-auto max-w-xl text-sm leading-6">
-              The link may be outdated, the page may have moved, or the route
-              may no longer exist.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="paper-edge bg-card relative w-full overflow-hidden px-6 py-14 text-center sm:px-10">
+        {/* Big editorial 404 */}
+        <p className="font-display nums text-foreground/15 absolute -top-3 -right-2 text-[12rem] leading-none font-medium tracking-tighter select-none sm:text-[16rem]">
+          404
+        </p>
+        <div className="relative space-y-4">
+          <p className="chapter-mark justify-center">№ — Page not found</p>
+          <h1 className="font-display text-4xl leading-[1] font-medium tracking-[-0.02em] text-balance sm:text-6xl">
+            This page got <span className="italic">lost</span> in the margin.
+          </h1>
+          <p className="text-muted-foreground mx-auto max-w-xl text-[14.5px] leading-7">
+            The link may be outdated, the page may have moved, or the route may
+            no longer exist.
+          </p>
+          <div className="hand-rule mx-auto mt-6 max-w-[14rem] opacity-70" />
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Button
               variant="outline"
               render={
@@ -35,7 +34,7 @@ export default function NotFound() {
                   transitionTypes={appLinkTransitionTypes.back}
                 />
               }
-              className="rounded-full"
+              className="rounded-sm"
             >
               <Home className="h-4 w-4" />
               Go home
@@ -47,13 +46,13 @@ export default function NotFound() {
                   transitionTypes={appLinkTransitionTypes.builder}
                 />
               }
-              className="rounded-full"
+              className="rounded-sm"
             >
-              Open builder
+              Open the builder
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

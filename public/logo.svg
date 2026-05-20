@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none" role="img" aria-label="Prompt Expert">
+  <title>Prompt Expert</title>
+  <!-- Square mark -->
+  <g transform="translate(8 8)">
+    <rect width="64" height="64" fill="#1B2240"/>
+    <rect x="3" y="3" width="58" height="58" fill="none" stroke="#F4ECDD" stroke-opacity="0.08" stroke-width="0.75"/>
+    <g font-family="'Fraunces', 'Source Serif Pro', ui-serif, Georgia, serif" font-weight="500" text-anchor="middle" dominant-baseline="central">
+      <text x="32" y="34" font-size="36" fill="#F4ECDD" letter-spacing="-1">P<tspan fill="#E0A23A" dx="-1">·</tspan>E</text>
+    </g>
+    <g fill="#F4ECDD" fill-opacity="0.4">
+      <rect x="4" y="4" width="3" height="1"/>
+      <rect x="4" y="4" width="1" height="3"/>
+      <rect x="57" y="4" width="3" height="1"/>
+      <rect x="59" y="4" width="1" height="3"/>
+      <rect x="4" y="59" width="3" height="1"/>
+      <rect x="4" y="57" width="1" height="3"/>
+      <rect x="57" y="59" width="3" height="1"/>
+      <rect x="59" y="57" width="1" height="3"/>
+    </g>
+  </g>
+  <!-- Wordmark + tagline -->
+  <g transform="translate(88 0)">
+    <text x="0" y="42" font-family="'Fraunces', 'Source Serif Pro', ui-serif, Georgia, serif" font-weight="500" font-size="34" fill="#1B2240" letter-spacing="-0.8">Prompt Expert</text>
+    <!-- Hairline rule -->
+    <line x1="0" y1="52" x2="220" y2="52" stroke="#1B2240" stroke-width="1"/>
+    <text x="0" y="66" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', monospace" font-size="9.5" fill="#1B2240" fill-opacity="0.65" letter-spacing="2.2">PROMPT WORKFLOWS · V2</text>
+  </g>
+</svg>

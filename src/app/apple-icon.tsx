@@ -3,30 +3,59 @@ import { ImageResponse } from 'next/og'
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
-export default function AppleIcon() {
+async function loadFraunces() {
+  const res = await fetch(
+    'https://fonts.googleapis.com/css2?family=Fraunces:wght@600&display=swap',
+  )
+  const css = await res.text()
+  const fontUrl = css.match(/url\((https:\/\/[^)]+\.woff2)\)/)?.[1]
+  if (!fontUrl) return null
+  const fontRes = await fetch(fontUrl)
+  return await fontRes.arrayBuffer()
+}
+
+export default async function AppleIcon() {
+  const font = await loadFraunces().catch(() => null)
+
   return new ImageResponse(
     <div
       style={{
         width: 180,
         height: 180,
-        borderRadius: 36,
-        background: 'linear-gradient(135deg, #0E7490, #0D9488)',
+        background: '#1B2240',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        color: '#F4ECDD',
+        fontFamily: 'Fraunces, serif',
+        fontWeight: 600,
+        fontSize: 112,
+        letterSpacing: -3,
+        position: 'relative',
       }}
     >
-      <svg
-        width="100"
-        height="100"
-        viewBox="0 0 24 24"
-        fill="white"
-        stroke="none"
-      >
-        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-        <path d="M19 2.5l-.38 1.157a.6.6 0 0 1-.383.383L17.08 4.42l1.157.38a.6.6 0 0 1 .383.383L19 6.34l.38-1.157a.6.6 0 0 1 .383-.383l1.157-.38-1.157-.38a.6.6 0 0 1-.383-.383L19 2.5Z" />
-      </svg>
+      {/* Inner registration frame */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 12,
+          left: 12,
+          right: 12,
+          bottom: 12,
+          border: '1px solid rgba(244, 236, 221, 0.08)',
+        }}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <span>P</span>
+        <span style={{ color: '#E0A23A', margin: '0 -8px' }}>·</span>
+        <span>E</span>
+      </div>
     </div>,
-    { ...size },
+    {
+      ...size,
+      fonts: font
+        ? [{ name: 'Fraunces', data: font, weight: 600, style: 'normal' }]
+        : undefined,
+    },
   )
 }

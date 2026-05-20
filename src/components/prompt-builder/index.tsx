@@ -34,20 +34,20 @@ function BuilderStage({
   children: React.ReactNode
 }) {
   return (
-    <section className="border-border/70 bg-surface-1/75 rounded-[calc(var(--radius-3xl)+2px)] border p-4 sm:p-5">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="section-label">{eyebrow}</p>
-          <h2 className="font-display text-xl font-semibold tracking-tight">
+    <section className="border-foreground/85 bg-background relative border p-4 shadow-[var(--shadow-paper-sm)] sm:p-5">
+      <span className="border-foreground/85 bg-card absolute -top-2.5 left-4 inline-flex h-5 items-center border px-1.5 font-mono text-[9.5px] font-medium tracking-[0.22em] uppercase">
+        {eyebrow}
+      </span>
+      <div className="mt-1 mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="space-y-1.5">
+          <h2 className="font-display text-xl font-medium tracking-tight">
             {title}
           </h2>
-          <p className="text-muted-foreground text-sm leading-6">
+          <p className="text-muted-foreground text-[13.5px] leading-6">
             {description}
           </p>
         </div>
-        <Badge variant="secondary" className="rounded-full px-3 py-1">
-          {status}
-        </Badge>
+        <Badge variant="secondary">{status}</Badge>
       </div>
       {children}
     </section>
@@ -81,49 +81,64 @@ export function PromptBuilder({
     <div className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(24rem,1.05fr)]">
       <div className="space-y-4">
         <div className="grid gap-3 md:grid-cols-3">
-          <Card className="bg-background/84">
+          <Card>
             <CardContent className="space-y-2 py-4">
-              <p className="section-label">Setup</p>
-              <p className="font-display text-2xl font-semibold">Ready</p>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                01 · Setup
+              </p>
+              <p className="font-display nums text-2xl font-medium tracking-tight">
+                Ready
+              </p>
+              <p className="text-muted-foreground text-[12.5px] leading-snug">
                 Model, category, tone, and output format have sensible defaults.
               </p>
             </CardContent>
           </Card>
-          <Card className="bg-background/84">
+          <Card>
             <CardContent className="space-y-2 py-4">
-              <p className="section-label">Briefing</p>
-              <p className="font-display text-2xl font-semibold">
-                {briefingCount}/3
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                02 · Briefing
               </p>
-              <p className="text-muted-foreground text-sm">
+              <p className="font-display nums text-2xl font-medium tracking-tight">
+                {briefingCount}
+                <span className="text-muted-foreground">/3</span>
+              </p>
+              <p className="text-muted-foreground text-[12.5px] leading-snug">
                 Role, context, and task shape the core of the prompt.
               </p>
             </CardContent>
           </Card>
-          <Card className="bg-background/84">
+          <Card>
             <CardContent className="space-y-2 py-4">
-              <p className="section-label">Guardrails</p>
-              <p className="font-display text-2xl font-semibold">
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                03 · Guardrails
+              </p>
+              <p className="font-display nums text-2xl font-medium tracking-tight">
                 {guardrailCount}
               </p>
-              <p className="text-muted-foreground text-sm">
-                Constraints and advanced settings keep responses consistent.
+              <p className="text-muted-foreground text-[12.5px] leading-snug">
+                Constraints and settings keep responses consistent.
               </p>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="bg-background/84">
-          <CardHeader className="border-border/70 gap-4 border-b pb-4">
+        <Card>
+          <CardHeader className="border-foreground/40 gap-4 border-b pb-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-1">
-                <p className="section-label">Builder workflow</p>
-                <CardTitle className="font-display text-2xl font-semibold tracking-tight">
-                  Draft the brief, then refine the output
+              <div className="space-y-1.5">
+                <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
+                  Builder workflow
+                </p>
+                <CardTitle className="font-display text-2xl font-medium tracking-tight">
+                  Draft the brief, then refine.
                 </CardTitle>
-                <p className="text-muted-foreground text-sm leading-6">
-                  Progress: {completedStages}/3 stages meaningfully configured.
+                <p className="text-muted-foreground text-[13px] leading-6">
+                  Progress:{' '}
+                  <span className="nums text-foreground font-medium">
+                    {completedStages}/3
+                  </span>{' '}
+                  stages meaningfully configured.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -132,7 +147,7 @@ export function PromptBuilder({
                   variant="ghost"
                   size="sm"
                   onClick={reset}
-                  className="text-muted-foreground hover:text-foreground rounded-full"
+                  className="text-muted-foreground hover:text-foreground rounded-sm"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   Reset
@@ -140,8 +155,8 @@ export function PromptBuilder({
                 <SavePromptDialog />
               </div>
             </div>
-            <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
-              <Wand2 className="text-primary h-4 w-4" />
+            <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-[12.5px]">
+              <Wand2 className="text-foreground/70 h-3.5 w-3.5" />
               Fill the task first. Save polished prompts after you test or
               optimize.
             </div>

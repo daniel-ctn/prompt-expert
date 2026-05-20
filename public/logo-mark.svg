@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Prompt Expert">
+  <title>Prompt Expert</title>
+  <!-- Ink knockout block -->
+  <rect width="64" height="64" fill="#1B2240"/>
+  <!-- Subtle paper-tactile inner border -->
+  <rect x="3" y="3" width="58" height="58" fill="none" stroke="#F4ECDD" stroke-opacity="0.08" stroke-width="0.75"/>
+  <!-- "P·E" serif monogram -->
+  <g font-family="'Fraunces', 'Source Serif Pro', ui-serif, Georgia, 'Times New Roman', serif" font-weight="500" text-anchor="middle" dominant-baseline="central">
+    <text x="32" y="34" font-size="36" fill="#F4ECDD" letter-spacing="-1">P<tspan fill="#E0A23A" dx="-1">·</tspan>E</text>
+  </g>
+  <!-- Corner registration ticks -->
+  <g fill="#F4ECDD" fill-opacity="0.4">
+    <rect x="4" y="4" width="3" height="1"/>
+    <rect x="4" y="4" width="1" height="3"/>
+    <rect x="57" y="4" width="3" height="1"/>
+    <rect x="59" y="4" width="1" height="3"/>
+    <rect x="4" y="59" width="3" height="1"/>
+    <rect x="4" y="57" width="1" height="3"/>
+    <rect x="57" y="59" width="3" height="1"/>
+    <rect x="59" y="57" width="1" height="3"/>
+  </g>
+</svg>

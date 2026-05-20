@@ -1,18 +1,16 @@
 'use client'
 
-import { ArrowRight, Coins, KeyRound } from 'lucide-react'
-import { AppLink } from '@/components/ui/app-link'
+import { Coins } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { useUpgradeModal } from '@/stores/upgrade-modal'
-import { PLANS } from '@/config/plans'
 
 export function UpgradeModal() {
   const { isOpen, close } = useUpgradeModal()
@@ -21,51 +19,42 @@ export function UpgradeModal() {
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent>
         <DialogHeader>
-          <div className="bg-primary/10 mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full">
-            <Coins className="text-primary h-6 w-6" />
+          <div className="border-foreground mx-auto mb-2 flex h-12 w-12 items-center justify-center border bg-[color-mix(in_oklch,var(--marigold)_32%,var(--background))] shadow-[var(--shadow-paper-sm)]">
+            <Coins className="h-5 w-5" />
           </div>
-          <DialogTitle className="text-center">
-            Hosted credit limit reached
+          <DialogTitle className="font-display text-center text-2xl font-medium tracking-tight">
+            You&apos;ve hit the monthly cap
           </DialogTitle>
-          <DialogDescription className="text-center">
-            You&apos;ve used your hosted AI allowance for this period. You can
-            keep building prompts or connect your own provider key in Settings.
+          <DialogDescription className="text-center text-[14px] leading-6">
+            You&apos;ve used all of this period&apos;s free credits. They reset
+            at the start of the next month — your saved prompts, history, and
+            workspace stay exactly where you left them.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="border-primary/20 bg-primary/5 rounded-lg border p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <KeyRound className="text-primary h-4 w-4" />
-            <span className="text-sm font-semibold">
-              {PLANS.free.credits} hosted credits per month
-            </span>
-          </div>
-          <ul className="text-muted-foreground space-y-1.5 text-sm">
-            {[
-              'Prompt builder remains available',
-              'Saved prompts and public gallery remain available',
-              'BYO provider keys can continue AI calls',
-              'No payment is required',
-            ].map((feature) => (
-              <li key={feature} className="flex items-center gap-2">
-                <span className="text-primary">+</span>
-                {feature}
-              </li>
-            ))}
+        <div className="border-foreground/85 bg-background mt-2 border p-4">
+          <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
+            What you can still do
+          </p>
+          <ul className="mt-3 space-y-2 text-[13.5px] leading-6">
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-[var(--marigold)]">+</span>
+              Open and edit prompts in the builder
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-[var(--marigold)]">+</span>
+              Browse the gallery, fork templates, organize your library
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-[var(--marigold)]">+</span>
+              Bring your own provider keys in Settings to bypass the cap
+            </li>
           </ul>
         </div>
 
-        <DialogFooter className="flex-col gap-2 sm:flex-col">
-          <Button
-            render={<AppLink href="/pricing" />}
-            className="bg-primary w-full gap-2"
-            onClick={close}
-          >
-            Review usage options
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" className="w-full" onClick={close}>
-            Maybe later
+        <DialogFooter>
+          <Button onClick={close} className="w-full">
+            Got it
           </Button>
         </DialogFooter>
       </DialogContent>

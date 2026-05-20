@@ -1,21 +1,13 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import {
-  ArrowRight,
-  CheckCircle2,
-  Github,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ArrowRight, Github, ShieldCheck } from 'lucide-react'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/components/ui/reveal'
 
 const benefits = [
   'Save prompts and versions across projects',
   'Fork community prompts into your own library',
-  'Store system prompts, keys, and workflow history in one place',
+  'Store system prompts, keys, and history in one place',
 ]
 
 function ProviderButton({
@@ -30,74 +22,69 @@ function ProviderButton({
   icon: React.ReactNode
 }) {
   return (
-    <Button
-      variant="outline"
-      className="h-11 w-full justify-between rounded-2xl px-4 text-sm"
+    <button
+      type="button"
       onClick={() => signIn(provider, { callbackUrl })}
+      className="group border-foreground bg-background flex h-12 w-full items-center justify-between border px-4 text-sm font-medium shadow-[var(--shadow-paper-sm)] transition-[transform,box-shadow] hover:-translate-y-px hover:bg-[color-mix(in_oklch,var(--marigold)_14%,var(--background))] hover:shadow-[var(--shadow-paper)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
     >
       <span className="inline-flex items-center gap-3">
-        <span className="bg-background flex h-8 w-8 items-center justify-center rounded-full">
+        <span className="border-foreground/85 bg-card flex h-7 w-7 items-center justify-center border">
           {icon}
         </span>
         {label}
       </span>
-      <ArrowRight className="text-muted-foreground h-4 w-4" />
-    </Button>
+      <ArrowRight className="text-muted-foreground group-hover:text-foreground h-4 w-4" />
+    </button>
   )
 }
 
 export default function LoginPage() {
   return (
-    <div className="page-shell flex min-h-[calc(100dvh-9rem)] items-center py-8">
-      <div className="grid w-full gap-5 lg:grid-cols-[1.02fr_0.98fr]">
+    <div className="page-shell flex min-h-[calc(100dvh-9rem)] items-center py-10">
+      <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <FadeIn>
-          <Card className="page-frame bg-transparent">
-            <CardContent className="space-y-6 py-8">
-              <div className="space-y-4">
-                <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-3xl">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div className="space-y-3">
-                  <p className="section-label">Welcome back</p>
-                  <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-                    Sign in and keep your best prompt workflows close.
-                  </h1>
-                  <p className="page-copy">
-                    Your saved prompts, system fragments, tests, and settings
-                    are all here. Sign in once and keep moving.
-                  </p>
-                </div>
-              </div>
+          <div className="space-y-6">
+            <p className="chapter-mark">№ — Sign in</p>
+            <h1 className="font-display text-5xl leading-[0.96] font-medium tracking-[-0.025em] text-balance sm:text-6xl">
+              Welcome <span className="italic">back</span>. Pick up where you{' '}
+              <span className="marker-highlight">left off</span>.
+            </h1>
+            <p className="page-copy">
+              Your saved prompts, system fragments, tests, and settings are all
+              here. Sign in once and keep moving.
+            </p>
 
-              <div className="border-border/70 bg-background/84 rounded-3xl border p-5">
-                <div className="border-border/70 bg-surface-1/75 text-muted-foreground mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs">
-                  <ShieldCheck className="text-primary h-3.5 w-3.5" />
-                  Secure account access via OAuth
-                </div>
-                <StaggerGroup className="space-y-3">
-                  {benefits.map((benefit) => (
-                    <StaggerItem key={benefit}>
-                      <div className="text-muted-foreground flex items-start gap-3 text-sm">
-                        <CheckCircle2 className="text-primary mt-0.5 h-4 w-4" />
-                        <span>{benefit}</span>
-                      </div>
-                    </StaggerItem>
-                  ))}
-                </StaggerGroup>
+            <div className="paper-edge bg-card p-5">
+              <div className="border-foreground/80 bg-background text-muted-foreground inline-flex items-center gap-2 border px-2 py-1 font-mono text-[10px] tracking-[0.18em] uppercase">
+                <ShieldCheck className="text-foreground/70 h-3 w-3" />
+                Secure OAuth
               </div>
-            </CardContent>
-          </Card>
+              <StaggerGroup className="mt-4 space-y-2.5">
+                {benefits.map((b) => (
+                  <StaggerItem key={b}>
+                    <div className="text-foreground/85 flex items-start gap-3 text-[13.5px] leading-6">
+                      <span className="mt-0.5 leading-none font-bold text-[var(--marigold)]">
+                        +
+                      </span>
+                      <span>{b}</span>
+                    </div>
+                  </StaggerItem>
+                ))}
+              </StaggerGroup>
+            </div>
+          </div>
         </FadeIn>
 
         <FadeIn delay={0.08}>
-          <Card className="bg-background/88">
-            <CardHeader className="border-border/70 border-b pb-5">
-              <p className="section-label">Choose a provider</p>
-              <CardTitle className="font-display text-2xl font-semibold">
-                Continue in under a minute
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 py-5">
+          <div className="paper-edge bg-card -rotate-[0.5deg] p-6 transition-transform hover:rotate-0 sm:p-8">
+            <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
+              Choose a provider
+            </p>
+            <h2 className="font-display mt-2 text-2xl font-medium tracking-tight">
+              Continue in under a <span className="italic">minute</span>.
+            </h2>
+
+            <div className="mt-6 space-y-3">
               <ProviderButton
                 provider="google"
                 label="Continue with Google"
@@ -129,13 +116,15 @@ export default function LoginPage() {
                 callbackUrl="/prompts"
                 icon={<Github className="h-4 w-4" />}
               />
-              <div className="border-border/70 bg-surface-1/75 text-muted-foreground rounded-2xl border p-4 text-sm">
-                New here? Signing in creates your account and unlocks prompt
-                saving, gallery forking, history, and settings sync
-                automatically.
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            <div className="border-foreground/40 text-muted-foreground mt-6 border-t pt-4 text-[12.5px] leading-6">
+              New here? Signing in creates your account and unlocks prompt
+              saving, gallery forking, history, and settings sync.
+            </div>
+
+            <div className="hand-rule mt-4 opacity-50" />
+          </div>
         </FadeIn>
       </div>
     </div>

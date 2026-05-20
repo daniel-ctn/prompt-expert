@@ -85,34 +85,32 @@ export function PromptCard({ prompt }: PromptCardProps) {
   }
 
   return (
-    <Card className={isDeleting ? 'opacity-50' : 'bg-background/84'}>
-      <CardHeader className="border-border/70 gap-4 border-b pb-4">
+    <Card className={isDeleting ? 'opacity-50' : ''}>
+      <CardHeader className="border-foreground/40 gap-4 border-b pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="rounded-full px-3 py-1">
-                {prompt.category}
-              </Badge>
-              <Badge variant="outline" className="rounded-full px-3 py-1">
+              <Badge variant="secondary">{prompt.category}</Badge>
+              <Badge variant="outline">
                 {prompt.isPublic ? (
                   <>
-                    <Globe className="mr-1 h-3.5 w-3.5" />
+                    <Globe className="mr-1 h-3 w-3" />
                     Public
                   </>
                 ) : (
                   <>
-                    <Lock className="mr-1 h-3.5 w-3.5" />
+                    <Lock className="mr-1 h-3 w-3" />
                     Private
                   </>
                 )}
               </Badge>
             </div>
             <div className="space-y-1">
-              <CardTitle className="font-display text-xl leading-tight font-semibold">
+              <CardTitle className="font-display text-xl leading-tight font-medium tracking-tight">
                 {prompt.title}
               </CardTitle>
               {prompt.description ? (
-                <CardDescription className="line-clamp-2 text-sm leading-6">
+                <CardDescription className="line-clamp-2 text-[13px] leading-6">
                   {prompt.description}
                 </CardDescription>
               ) : null}
@@ -125,7 +123,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="shrink-0 rounded-full"
+                  className="shrink-0 rounded-sm"
                 />
               }
             >
@@ -172,7 +170,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
           </DropdownMenu>
         </div>
 
-        <div className="text-muted-foreground flex items-center justify-between gap-3 text-sm">
+        <div className="text-muted-foreground flex items-center justify-between gap-3 font-mono text-[10.5px] tracking-wider uppercase">
           <span>Updated {new Date(prompt.updatedAt).toLocaleDateString()}</span>
           <span>
             {prompt.tags.length} tag{prompt.tags.length !== 1 ? 's' : ''}
@@ -181,24 +179,18 @@ export function PromptCard({ prompt }: PromptCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4 py-5">
-        <pre className="border-border/70 bg-surface-1/75 text-foreground/80 line-clamp-6 rounded-3xl border p-4 font-mono text-xs leading-6 whitespace-pre-wrap">
+        <pre className="border-foreground/80 bg-background text-foreground/85 line-clamp-6 border p-4 font-mono text-[11.5px] leading-6 whitespace-pre-wrap">
           {prompt.content}
         </pre>
 
         <div className="flex flex-wrap gap-2">
           {prompt.tags.slice(0, 3).map((tag) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className="rounded-full px-3 py-1"
-            >
+            <Badge key={tag} variant="outline">
               {tag}
             </Badge>
           ))}
           {prompt.tags.length > 3 ? (
-            <Badge variant="outline" className="rounded-full px-3 py-1">
-              +{prompt.tags.length - 3} more
-            </Badge>
+            <Badge variant="outline">+{prompt.tags.length - 3} more</Badge>
           ) : null}
         </div>
 
@@ -211,25 +203,25 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 transitionTypes={appLinkTransitionTypes.promptDetail}
               />
             }
-            className="rounded-full"
+            className="rounded-sm"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="h-3.5 w-3.5" />
             Open editor
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="rounded-full"
+            className="rounded-sm"
             onClick={handleCopy}
           >
-            <Copy className="h-4 w-4" />
+            <Copy className="h-3.5 w-3.5" />
             Copy
           </Button>
           {prompt.isPublic ? (
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full"
+              className="rounded-sm"
               onClick={async () => {
                 await navigator.clipboard.writeText(
                   `${window.location.origin}/share/${prompt.id}`,
@@ -238,7 +230,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 toast.success('Share link copied')
               }}
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="h-3.5 w-3.5" />
               Share
             </Button>
           ) : null}

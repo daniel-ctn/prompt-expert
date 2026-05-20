@@ -13,7 +13,6 @@ import {
   ArrowRight,
   Clock3,
   FileText,
-  Gauge,
   LayoutDashboard,
   Library,
   Search,
@@ -98,18 +97,10 @@ const BASE_ITEMS: PaletteItem[] = [
   {
     id: 'settings',
     label: 'Settings',
-    description: 'Manage keys, tokens, billing, and preferences.',
+    description: 'Manage provider keys, tokens, and preferences.',
     href: '/settings',
-    keywords: ['preferences', 'keys', 'billing', 'account'],
+    keywords: ['preferences', 'keys', 'account'],
     icon: Settings,
-  },
-  {
-    id: 'usage',
-    label: 'Usage',
-    description: 'Review hosted credits, BYO keys, and support options.',
-    href: '/pricing',
-    keywords: ['billing', 'limits', 'credits', 'usage', 'support'],
-    icon: Gauge,
   },
 ]
 
@@ -279,7 +270,7 @@ export function CommandPalette() {
               <div className="border-border/80 bg-surface-1/70 rounded-2xl border border-dashed px-4 py-10 text-center">
                 <p className="text-sm font-medium">No matching results</p>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Try searching for builder, usage, gallery, or settings.
+                  Try searching for builder, gallery, prompts, or settings.
                 </p>
               </div>
             )}

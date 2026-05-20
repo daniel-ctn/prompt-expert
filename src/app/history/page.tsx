@@ -1,8 +1,5 @@
 import type { Metadata } from 'next'
-import { BarChart3, Clock3 } from 'lucide-react'
 import { getUserPromptHistory } from '@/lib/actions/prompt-history'
-import { PageIntro } from '@/components/layout/page-intro'
-import { Card, CardContent } from '@/components/ui/card'
 import { HistoryList } from '@/components/history/history-list'
 
 export const metadata: Metadata = {
@@ -17,39 +14,48 @@ export default async function HistoryPage() {
   ).length
 
   return (
-    <div className="space-y-8 pb-8">
-      <div className="page-shell-narrow pt-8 sm:pt-10">
-        <PageIntro
-          eyebrow="Run history"
-          title="Review the prompt experiments you have already paid for."
-          description="Use history to compare test runs, revisit good outputs, and understand which prompts were worth keeping."
-          aside={
-            <div className="grid gap-3 md:w-[22rem]">
-              <Card className="bg-background/84">
-                <CardContent className="space-y-2 py-4">
-                  <Clock3 className="text-primary h-4 w-4" />
-                  <p className="font-display text-2xl font-semibold">
-                    {history.length}
-                  </p>
-                  <p className="text-muted-foreground text-sm">logged runs</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-background/84">
-                <CardContent className="space-y-2 py-4">
-                  <BarChart3 className="text-primary h-4 w-4" />
-                  <p className="font-display text-2xl font-semibold">
-                    {optimizeRuns}
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    optimization runs in history
-                  </p>
-                </CardContent>
-              </Card>
+    <div className="pb-12">
+      <section className="page-shell-narrow pt-10 sm:pt-14">
+        <div className="grid gap-8 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] md:items-end">
+          <div className="space-y-5">
+            <p className="chapter-mark">№ — Run history</p>
+            <h1 className="font-display text-4xl leading-[0.98] font-medium tracking-[-0.025em] text-balance sm:text-5xl">
+              The experiments you&apos;ve{' '}
+              <span className="italic">already</span> run.
+            </h1>
+            <p className="page-copy">
+              Compare test runs, revisit good outputs, and understand which
+              prompts were worth keeping.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
+            <div className="paper-edge bg-card -rotate-[1.2deg] px-4 py-4 transition-transform hover:rotate-0">
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                Logged
+              </p>
+              <p className="font-display nums mt-2 text-3xl leading-none font-medium tracking-tight">
+                {history.length}
+              </p>
+              <p className="text-muted-foreground mt-1.5 text-[12px] leading-snug">
+                total runs in history
+              </p>
             </div>
-          }
-        />
-      </div>
-      <section className="page-shell-narrow pt-0">
+            <div className="paper-edge rotate-[0.8deg] bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
+              <p className="font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                Optimized
+              </p>
+              <p className="font-display nums mt-2 text-3xl leading-none font-medium tracking-tight">
+                {optimizeRuns}
+              </p>
+              <p className="text-muted-foreground mt-1.5 text-[12px] leading-snug">
+                refinement passes
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="hand-rule mt-10 opacity-70" />
+      </section>
+      <section className="page-shell-narrow pt-2">
         <HistoryList initialHistory={history} />
       </section>
     </div>

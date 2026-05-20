@@ -8,7 +8,6 @@ import {
   Coins,
   Command,
   FileText,
-  Gauge,
   History,
   LayoutDashboard,
   LogOut,
@@ -16,7 +15,6 @@ import {
   Moon,
   Search,
   Settings,
-  Sparkles,
   Sun,
 } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -40,7 +38,6 @@ const navItems = [
   { href: '/chain', label: 'Chain' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/prompts', label: 'My Prompts' },
-  { href: '/pricing', label: 'Usage' },
 ]
 
 function NavLinks({
@@ -61,22 +58,19 @@ function NavLinks({
             key={item.href}
             href={item.href}
             className={cn(
-              'group/nav relative text-sm font-medium transition-colors',
+              'group/nav relative font-mono text-[11px] font-medium tracking-[0.2em] uppercase transition-colors',
               mobile
-                ? 'rounded-2xl border border-transparent px-3 py-3'
-                : 'rounded-full px-3 py-2',
+                ? 'border-foreground/85 bg-background rounded-sm border px-3 py-3 shadow-[var(--shadow-paper-sm)]'
+                : 'px-3 py-2',
               isActive
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground',
-              mobile &&
-                isActive &&
-                'border-primary/25 bg-primary/8 text-foreground',
             )}
           >
             {!mobile && isActive ? (
               <motion.span
                 layoutId="active-nav-pill"
-                className="border-primary/20 bg-primary/8 absolute inset-0 -z-10 rounded-full border"
+                className="border-foreground absolute inset-0 -z-10 border bg-[color-mix(in_oklch,var(--marigold)_22%,var(--background))]"
                 transition={{ type: 'spring', stiffness: 340, damping: 32 }}
               />
             ) : null}
@@ -95,7 +89,7 @@ function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="text-muted-foreground h-9 w-9 rounded-full"
+      className="text-muted-foreground hover:text-foreground h-9 w-9 rounded-sm"
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       <Sun className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
@@ -123,8 +117,8 @@ function CreditsBadge() {
     return () => window.removeEventListener('credits:updated', handler)
   }, [fetchCredits])
 
-  if (credits === null) return <span>...</span>
-  return <span>{credits} credits</span>
+  if (credits === null) return <span className="nums">···</span>
+  return <span className="nums">{credits}</span>
 }
 
 export function Header() {
@@ -132,60 +126,55 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full px-3 pt-3 sm:px-4">
-      <div className="surface-raised mx-auto flex h-16 max-w-7xl items-center justify-between rounded-[calc(var(--radius-3xl)+2px)] px-3 sm:px-4">
+      <div className="border-foreground bg-card mx-auto flex h-16 max-w-7xl items-center justify-between border px-3 shadow-[var(--shadow-paper-sm)] sm:px-4">
         <AppLink href="/" className="group flex items-center gap-3">
-          <div className="bg-primary/92 shadow-soft border-primary/20 flex h-9 w-9 items-center justify-center rounded-2xl border text-white transition-transform group-hover:-translate-y-0.5">
-            <Sparkles className="h-3.5 w-3.5 text-white" />
+          <div className="border-foreground bg-foreground text-background flex h-10 w-10 items-center justify-center border shadow-[var(--shadow-paper-sm)] transition-transform group-hover:-translate-y-0.5 group-hover:rotate-[-3deg]">
+            <span className="font-display text-lg leading-none font-medium">
+              P<span className="text-[var(--marigold)]">·</span>E
+            </span>
           </div>
           <div className="space-y-0.5">
-            <span className="font-display block text-base font-semibold tracking-tight">
+            <span className="font-display block text-base font-medium tracking-tight">
               {APP_NAME}
             </span>
-            <span className="text-muted-foreground hidden text-[11px] sm:block">
-              Prompt workflows with sharper control
+            <span className="text-muted-foreground hidden font-mono text-[10px] tracking-[0.18em] uppercase sm:block">
+              Prompt workflows · v2
             </span>
           </div>
         </AppLink>
 
-        <NavLinks className="bg-surface-1/75 hidden items-center gap-1.5 rounded-full p-1 md:flex" />
+        <NavLinks className="hidden items-center gap-1 md:flex" />
 
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setCommandPaletteOpen(true)}
-            className="border-border/70 bg-surface-1/80 text-muted-foreground hidden min-w-[11rem] justify-between rounded-full px-3 md:flex"
+            className="text-muted-foreground hidden min-w-[11rem] justify-between rounded-sm md:flex"
           >
             <span className="inline-flex items-center gap-2">
               <Search className="h-3.5 w-3.5" />
               Search
             </span>
-            <span className="border-border/70 bg-background/85 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px]">
-              <Command className="h-3 w-3" />K
+            <span className="border-foreground/70 bg-background inline-flex items-center gap-1 border px-1.5 py-0.5 font-mono text-[10px]">
+              <Command className="h-2.5 w-2.5" />K
             </span>
           </Button>
 
           <ThemeToggle />
 
           {status === 'loading' ? (
-            <div className="bg-muted h-9 w-9 animate-pulse rounded-full" />
+            <div className="bg-muted h-9 w-9 animate-pulse rounded-sm" />
           ) : session?.user ? (
-            <AppLink
-              href="/pricing"
-              className="border-border/70 bg-surface-1/80 text-muted-foreground hover:border-primary/35 hover:text-foreground hidden items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors sm:flex"
-            >
-              <span className="bg-primary/10 text-primary flex h-7 w-7 items-center justify-center rounded-full">
-                <Coins className="h-3.5 w-3.5" />
+            <div className="border-foreground/85 bg-background text-muted-foreground hidden items-center gap-2 border px-2 py-1.5 sm:flex">
+              <Coins className="text-foreground/70 h-3.5 w-3.5" />
+              <span className="font-mono text-[10px] tracking-[0.18em] uppercase">
+                Credits
               </span>
-              <span className="inline-flex flex-col">
-                <span className="text-[10px] tracking-[0.18em] uppercase">
-                  Credits
-                </span>
-                <span className="text-foreground text-xs">
-                  <CreditsBadge />
-                </span>
+              <span className="text-foreground font-mono text-xs">
+                <CreditsBadge />
               </span>
-            </AppLink>
+            </div>
           ) : null}
           {status === 'loading' ? null : session?.user ? (
             <DropdownMenu>
@@ -193,16 +182,16 @@ export function Header() {
                 render={
                   <Button
                     variant="ghost"
-                    className="relative h-9 w-9 rounded-full"
+                    className="hover:border-foreground/85 relative h-9 w-9 rounded-sm border border-transparent"
                   />
                 }
               >
-                <Avatar className="ring-border h-9 w-9 ring-2">
+                <Avatar className="border-foreground/85 h-9 w-9 border">
                   <AvatarImage
                     src={session.user.image ?? ''}
                     alt={session.user.name ?? ''}
                   />
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                  <AvatarFallback className="text-foreground font-display bg-[color-mix(in_oklch,var(--marigold)_24%,var(--background))] text-xs font-medium">
                     {session.user.name?.charAt(0).toUpperCase() ?? 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -233,10 +222,6 @@ export function Header() {
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<AppLink href="/pricing" />}>
-                  <Gauge className="mr-2 h-4 w-4" />
-                  Usage & Credits
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -246,10 +231,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={() => signIn()}
-              className="border-primary/35 bg-primary/8 text-primary hover:bg-primary hover:text-primary-foreground rounded-full px-4"
+              className="rounded-sm px-4"
             >
               Sign in
             </Button>
@@ -259,9 +244,9 @@ export function Header() {
             <SheetTrigger
               render={
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="h-9 w-9 rounded-full md:hidden"
+                  className="h-9 w-9 rounded-sm md:hidden"
                 />
               }
             >
@@ -269,48 +254,48 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="border-border/80 bg-background/96 w-[min(24rem,100vw)] border-l px-4"
+              className="border-foreground bg-card w-[min(24rem,100vw)] border-l px-4"
             >
               <div className="mt-8 space-y-6">
                 <div className="space-y-1">
-                  <p className="font-display text-lg font-semibold">
+                  <p className="text-muted-foreground font-mono text-[10px] tracking-[0.24em] uppercase">
+                    Menu
+                  </p>
+                  <p className="font-display text-2xl font-medium tracking-tight">
                     {APP_NAME}
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    Navigate builders, prompts, and account tools quickly.
+                    Navigate builders, prompts, and account tools.
                   </p>
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full justify-between rounded-full"
+                  className="w-full justify-between rounded-sm"
                   onClick={() => setCommandPaletteOpen(true)}
                 >
                   <span className="inline-flex items-center gap-2">
                     <Search className="h-4 w-4" />
-                    Open command palette
+                    Command palette
                   </span>
-                  <span className="border-border/70 rounded-full border px-2 py-0.5 text-[11px]">
+                  <span className="border-foreground/70 rounded-sm border px-2 py-0.5 font-mono text-[10px]">
                     /
                   </span>
                 </Button>
                 <NavLinks className="flex flex-col gap-2" mobile />
                 {session?.user ? (
-                  <AppLink
-                    href="/pricing"
-                    className="border-border/80 bg-surface-1 flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm"
-                  >
-                    <span className="bg-primary/10 text-primary flex h-9 w-9 items-center justify-center rounded-2xl">
+                  <div className="border-foreground/85 bg-background flex items-center gap-3 border px-3 py-3 text-sm">
+                    <span className="border-foreground flex h-9 w-9 items-center justify-center border bg-[color-mix(in_oklch,var(--marigold)_24%,var(--background))]">
                       <Coins className="h-4 w-4" />
                     </span>
                     <span className="inline-flex flex-col">
-                      <span className="text-muted-foreground text-[11px] tracking-[0.18em] uppercase">
+                      <span className="text-muted-foreground font-mono text-[10px] tracking-[0.18em] uppercase">
                         Credits
                       </span>
                       <span className="text-foreground font-medium">
                         <CreditsBadge />
                       </span>
                     </span>
-                  </AppLink>
+                  </div>
                 ) : null}
               </div>
             </SheetContent>

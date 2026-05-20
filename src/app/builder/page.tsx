@@ -1,8 +1,5 @@
 import type { Metadata } from 'next'
-import { Command, Sparkles, Wand2 } from 'lucide-react'
 import { getUserPromptPresets } from '@/lib/actions/prompt'
-import { PageIntro } from '@/components/layout/page-intro'
-import { Card, CardContent } from '@/components/ui/card'
 import { BuilderClient } from './builder-client'
 
 export const metadata: Metadata = {
@@ -15,63 +12,65 @@ export default async function BuilderPage() {
   const savedPresets = await getUserPromptPresets()
 
   return (
-    <div className="space-y-8 pb-8">
-      <div className="page-shell pt-8 sm:pt-10">
-        <PageIntro
-          eyebrow="Prompt builder"
-          title="Shape the prompt once, then iterate with structure."
-          description="Build around role, context, task, constraints, and output format. Optimize only after the brief is clear, not before."
-          aside={
-            <div className="grid gap-3 md:w-[24rem]">
-              <Card className="bg-background/84">
-                <CardContent className="space-y-3 py-4">
-                  <p className="section-label">Saved presets</p>
-                  <p className="font-display text-3xl font-semibold">
-                    {savedPresets.length}
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    Reusable starting points already available in your template
-                    menu.
-                  </p>
-                </CardContent>
-              </Card>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Card className="bg-background/84">
-                  <CardContent className="space-y-2 py-4">
-                    <Command className="text-primary h-4 w-4" />
-                    <p className="text-sm font-medium">Keyboard flow</p>
-                    <p className="text-muted-foreground text-sm">
-                      <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
-                        Ctrl
-                      </kbd>{' '}
-                      +{' '}
-                      <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
-                        Enter
-                      </kbd>{' '}
-                      optimizes the prompt.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-background/84">
-                  <CardContent className="space-y-2 py-4">
-                    <Sparkles className="text-primary h-4 w-4" />
-                    <p className="text-sm font-medium">Suggested flow</p>
-                    <p className="text-muted-foreground text-sm">
-                      Define the brief first, then test, then optimize.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+    <div className="pb-12">
+      <section className="page-shell pt-10 sm:pt-14">
+        <div className="grid gap-8 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] md:items-end">
+          <div className="space-y-5">
+            <p className="chapter-mark">№ — The builder</p>
+            <h1 className="font-display text-4xl leading-[0.98] font-medium tracking-[-0.025em] text-balance sm:text-5xl lg:text-6xl">
+              Shape the prompt <span className="italic">once</span>, then
+              iterate with structure.
+            </h1>
+            <p className="page-copy">
+              Build around role, context, task, constraints, and output format.
+              Optimize only after the brief is clear — not before.
+            </p>
+            <div className="text-muted-foreground flex flex-wrap items-center gap-3 pt-1 font-mono text-[11px] tracking-wider uppercase">
+              <span className="border-foreground/70 bg-background inline-flex items-center gap-1 border px-2 py-1">
+                <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+              </span>
+              <span>optimizes the prompt</span>
             </div>
-          }
-        />
-      </div>
-      <section className="page-shell pt-0">
-        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm">
-          <Wand2 className="text-primary h-4 w-4" />
-          The builder now groups work into setup, briefing, and guardrails so
-          the output stays easier to reason about.
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-1">
+            <div className="paper-edge bg-card -rotate-[1.5deg] px-4 py-4 transition-transform hover:rotate-0">
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                Saved presets
+              </p>
+              <p className="font-display nums mt-2 text-3xl leading-none font-medium tracking-tight">
+                {savedPresets.length}
+              </p>
+              <p className="text-muted-foreground mt-2 text-[12px] leading-snug">
+                Reusable starting points in your template menu.
+              </p>
+            </div>
+            <div className="paper-edge bg-card rotate-[1deg] px-4 py-4 transition-transform hover:rotate-0">
+              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                Suggested flow
+              </p>
+              <p className="font-display mt-2 text-lg leading-snug font-medium tracking-tight">
+                Brief → test → optimize.
+              </p>
+              <p className="text-muted-foreground mt-2 text-[12px] leading-snug">
+                Resist optimizing too early.
+              </p>
+            </div>
+            <div className="paper-edge -rotate-[0.6deg] bg-[color-mix(in_oklch,var(--marigold)_18%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
+              <p className="font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
+                Tip
+              </p>
+              <p className="font-display mt-2 text-lg leading-snug font-medium tracking-tight">
+                Fill the task <span className="italic">first</span>.
+              </p>
+              <p className="text-muted-foreground mt-2 text-[12px] leading-snug">
+                Then save polished prompts.
+              </p>
+            </div>
+          </div>
         </div>
+        <div className="hand-rule mt-10 opacity-70" />
+      </section>
+      <section className="page-shell pt-2">
         <BuilderClient savedPresets={savedPresets} />
       </section>
     </div>
