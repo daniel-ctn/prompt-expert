@@ -275,6 +275,13 @@ export function PromptChainBuilder() {
                 Keep each step narrow and pass output forward only when it
                 materially improves the next stage.
               </p>
+              <p className="text-muted-foreground text-sm leading-6">
+                Add{' '}
+                <code className="border-border/70 bg-surface-1/75 rounded border px-1.5 py-0.5 font-mono text-xs">
+                  {'{{previous_output}}'}
+                </code>{' '}
+                to any step to feed it the result of the step before it.
+              </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Button

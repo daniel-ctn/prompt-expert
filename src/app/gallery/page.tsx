@@ -30,7 +30,7 @@ export default async function GalleryPage({
       <section className="page-shell pt-10 sm:pt-14">
         <div className="grid gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-end">
           <div className="space-y-5">
-            <p className="chapter-mark">№ — Community gallery</p>
+            <p className="chapter-mark">Community gallery</p>
             <h1 className="font-display text-4xl leading-[0.98] font-medium tracking-[-0.025em] text-balance sm:text-5xl lg:text-6xl">
               Prompts other teams are already{' '}
               <span className="italic">using</span> in the wild.

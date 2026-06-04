@@ -25,7 +25,7 @@ export default async function SettingsPage() {
   return (
     <div className="pb-12">
       <section className="page-shell-narrow pt-10 sm:pt-14">
-        <p className="chapter-mark">№ — Settings</p>
+        <p className="chapter-mark">Settings</p>
         <h1 className="font-display mt-3 text-4xl leading-[1] font-medium tracking-[-0.02em] text-balance sm:text-5xl">
           Provider keys, tokens, <span className="italic">preferences</span>.
         </h1>

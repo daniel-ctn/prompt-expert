@@ -18,7 +18,7 @@ export default async function HistoryPage() {
       <section className="page-shell-narrow pt-10 sm:pt-14">
         <div className="grid gap-8 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] md:items-end">
           <div className="space-y-5">
-            <p className="chapter-mark">№ — Run history</p>
+            <p className="chapter-mark">Run history</p>
             <h1 className="font-display text-4xl leading-[0.98] font-medium tracking-[-0.025em] text-balance sm:text-5xl">
               The experiments you&apos;ve{' '}
               <span className="italic">already</span> run.

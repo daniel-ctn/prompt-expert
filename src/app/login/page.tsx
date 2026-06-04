@@ -44,7 +44,7 @@ export default function LoginPage() {
       <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <FadeIn>
           <div className="space-y-6">
-            <p className="chapter-mark">№ — Sign in</p>
+            <p className="chapter-mark">Sign in</p>
             <h1 className="font-display text-5xl leading-[0.96] font-medium tracking-[-0.025em] text-balance sm:text-6xl">
               Welcome <span className="italic">back</span>. Pick up where you{' '}
               <span className="marker-highlight">left off</span>.

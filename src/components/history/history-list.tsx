@@ -6,10 +6,12 @@ import {
   ChevronDown,
   ChevronUp,
   Copy,
+  History as HistoryIcon,
   Search,
   Trash2,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -77,14 +79,24 @@ export function HistoryList({ initialHistory }: Props) {
 
   if (entries.length === 0) {
     return (
-      <Card className="bg-background/84">
-        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <p className="text-sm font-medium">No history yet.</p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Test or optimize prompts to see run history appear here.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="page-frame flex flex-col items-center justify-center rounded-[calc(var(--radius-3xl)+2px)] border-dashed p-12 text-center">
+        <HistoryIcon className="text-muted-foreground/50 mb-4 h-10 w-10" />
+        <h3 className="mb-2 text-lg font-semibold">No history yet</h3>
+        <p className="text-muted-foreground mb-4 max-w-sm text-sm">
+          Test or optimize a prompt in the builder and your runs will show up
+          here so you can compare them later.
+        </p>
+        <Button
+          render={
+            <AppLink
+              href="/builder"
+              transitionTypes={appLinkTransitionTypes.builder}
+            />
+          }
+        >
+          Go to the builder
+        </Button>
+      </div>
     )
   }
 
