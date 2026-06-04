@@ -1,10 +1,12 @@
 'use client'
 
-import { RotateCcw, Wand2 } from 'lucide-react'
+import { ChevronDown, RotateCcw, Wand2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { PROMPT_TEMPLATES } from '@/config/constants'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 import type { SavedPromptPreset } from '@/types'
 import { AdvancedSettings } from './advanced-settings'
@@ -17,36 +19,75 @@ import { PromptPreview } from './prompt-preview'
 import { RoleInput } from './role-input'
 import { SavePromptDialog } from './save-prompt-dialog'
 import { TaskInput } from './task-input'
-import { TemplateSelector } from './template-selector'
+import { TemplateSelector, templateToPreset } from './template-selector'
 import { ToneSelector } from './tone-selector'
+
+const FEATURED_TEMPLATE_IDS = [
+  'blog-post',
+  'code-review',
+  'customer-support',
+  'data-analysis',
+  'qa-assistant',
+]
 
 function BuilderStage({
   eyebrow,
   title,
   description,
   status,
+  collapsible = false,
+  defaultOpen = true,
   children,
 }: {
   eyebrow: string
   title: string
   description: string
   status: string
+  collapsible?: boolean
+  defaultOpen?: boolean
   children: React.ReactNode
 }) {
+  const eyebrowBadge = (
+    <span className="border-foreground/85 bg-card absolute -top-2.5 left-4 inline-flex h-5 items-center border px-1.5 font-mono text-[9.5px] font-medium tracking-[0.22em] uppercase">
+      {eyebrow}
+    </span>
+  )
+
+  const heading = (
+    <div className="space-y-1.5">
+      <h2 className="font-display text-xl font-medium tracking-tight">
+        {title}
+      </h2>
+      <p className="text-muted-foreground text-[13.5px] leading-6">
+        {description}
+      </p>
+    </div>
+  )
+
+  if (collapsible) {
+    return (
+      <details
+        className="border-foreground/85 bg-background relative border shadow-[var(--shadow-paper-sm)]"
+        open={defaultOpen}
+      >
+        {eyebrowBadge}
+        <summary className="flex cursor-pointer list-none items-start justify-between gap-3 p-4 sm:p-5 [&::-webkit-details-marker]:hidden">
+          {heading}
+          <span className="flex shrink-0 items-center gap-2">
+            <Badge variant="secondary">{status}</Badge>
+            <ChevronDown className="text-muted-foreground h-4 w-4 transition-transform [[open]_&]:rotate-180" />
+          </span>
+        </summary>
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5">{children}</div>
+      </details>
+    )
+  }
+
   return (
     <section className="border-foreground/85 bg-background relative border p-4 shadow-[var(--shadow-paper-sm)] sm:p-5">
-      <span className="border-foreground/85 bg-card absolute -top-2.5 left-4 inline-flex h-5 items-center border px-1.5 font-mono text-[9.5px] font-medium tracking-[0.22em] uppercase">
-        {eyebrow}
-      </span>
+      {eyebrowBadge}
       <div className="mt-1 mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1.5">
-          <h2 className="font-display text-xl font-medium tracking-tight">
-            {title}
-          </h2>
-          <p className="text-muted-foreground text-[13.5px] leading-6">
-            {description}
-          </p>
-        </div>
+        {heading}
         <Badge variant="secondary">{status}</Badge>
       </div>
       {children}
@@ -60,85 +101,41 @@ export function PromptBuilder({
   savedPresets?: SavedPromptPreset[]
 }) {
   const reset = usePromptBuilderStore((state) => state.reset)
-  const role = usePromptBuilderStore((state) => state.role)
-  const context = usePromptBuilderStore((state) => state.context)
+  const loadPreset = usePromptBuilderStore((state) => state.loadPreset)
   const task = usePromptBuilderStore((state) => state.task)
   const constraints = usePromptBuilderStore((state) => state.constraints)
   const settings = usePromptBuilderStore((state) => state.settings)
 
-  const briefingCount = [role, context, task].filter((value) =>
-    value.trim(),
-  ).length
-  const guardrailCount =
-    constraints.filter((value) => value.trim()).length +
-    (settings.includeExamples ? 1 : 0)
-  const completedStages =
-    1 +
-    (task.trim() ? 1 : 0) +
-    (constraints.length > 0 || settings.includeExamples ? 1 : 0)
+  const taskReady = task.trim().length > 0
+  const rulesConfigured =
+    constraints.some((value) => value.trim()) || settings.includeExamples
+
+  const featuredTemplates = FEATURED_TEMPLATE_IDS.map((id) =>
+    PROMPT_TEMPLATES.find((template) => template.id === id),
+  ).filter((template) => template !== undefined)
+
+  const applyExample = (template: (typeof PROMPT_TEMPLATES)[number]) => {
+    loadPreset(templateToPreset(template))
+    toast.success(`Example "${template.label}" loaded`)
+  }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(24rem,1.05fr)]">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(24rem,1.05fr)]">
       <div className="space-y-4">
-        <div className="grid gap-3 md:grid-cols-3">
-          <Card>
-            <CardContent className="space-y-2 py-4">
-              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
-                01 · Setup
-              </p>
-              <p className="font-display nums text-2xl font-medium tracking-tight">
-                Ready
-              </p>
-              <p className="text-muted-foreground text-[12.5px] leading-snug">
-                Model, category, tone, and output format have sensible defaults.
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="space-y-2 py-4">
-              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
-                02 · Briefing
-              </p>
-              <p className="font-display nums text-2xl font-medium tracking-tight">
-                {briefingCount}
-                <span className="text-muted-foreground">/3</span>
-              </p>
-              <p className="text-muted-foreground text-[12.5px] leading-snug">
-                Role, context, and task shape the core of the prompt.
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="space-y-2 py-4">
-              <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
-                03 · Guardrails
-              </p>
-              <p className="font-display nums text-2xl font-medium tracking-tight">
-                {guardrailCount}
-              </p>
-              <p className="text-muted-foreground text-[12.5px] leading-snug">
-                Constraints and settings keep responses consistent.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
         <Card>
           <CardHeader className="border-foreground/40 gap-4 border-b pb-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-1.5">
-                <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
-                  Builder workflow
-                </p>
+                <p className="section-label">Builder</p>
                 <CardTitle className="font-display text-2xl font-medium tracking-tight">
-                  Draft the brief, then refine.
+                  {taskReady
+                    ? 'Looking good — refine on the right'
+                    : 'Start by describing your task'}
                 </CardTitle>
                 <p className="text-muted-foreground text-[13px] leading-6">
-                  Progress:{' '}
-                  <span className="nums text-foreground font-medium">
-                    {completedStages}/3
-                  </span>{' '}
-                  stages meaningfully configured.
+                  {taskReady
+                    ? 'Your prompt is assembling live. Test it or optimize it in the preview.'
+                    : 'Write what you want the AI to do — everything else is optional.'}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -155,18 +152,44 @@ export function PromptBuilder({
                 <SavePromptDialog />
               </div>
             </div>
-            <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-[12.5px]">
-              <Wand2 className="text-foreground/70 h-3.5 w-3.5" />
-              Fill the task first. Save polished prompts after you test or
-              optimize.
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground inline-flex items-center gap-1.5 text-[12.5px]">
+                <Wand2 className="text-foreground/70 h-3.5 w-3.5" />
+                New here? Try an example:
+              </span>
+              {featuredTemplates.map((template) => (
+                <Badge
+                  key={template.id}
+                  variant="outline"
+                  className="hover:bg-primary/80 hover:text-primary-foreground cursor-pointer transition-colors"
+                  onClick={() => applyExample(template)}
+                >
+                  {template.label}
+                </Badge>
+              ))}
             </div>
           </CardHeader>
           <CardContent className="space-y-4 py-5">
             <BuilderStage
-              eyebrow="Stage 1"
-              title="Setup the output target"
-              description="Choose the model and the kind of answer you want before you start writing the prompt brief."
-              status="Ready"
+              eyebrow="Step 1"
+              title="Tell the AI what to do"
+              description="The task is the only required part. Add a role and context to sharpen the result."
+              status={taskReady ? 'Ready' : 'Required'}
+            >
+              <div className="grid gap-4">
+                <TaskInput />
+                <RoleInput />
+                <ContextInput />
+              </div>
+            </BuilderStage>
+
+            <BuilderStage
+              eyebrow="Step 2 · optional"
+              title="Fine-tune the output"
+              description="Pick the model and the kind of answer you want. Sensible defaults are already set."
+              status="Defaults set"
+              collapsible
+              defaultOpen={false}
             >
               <div className="grid gap-4 sm:grid-cols-2">
                 <ModelSelector />
@@ -179,27 +202,12 @@ export function PromptBuilder({
             </BuilderStage>
 
             <BuilderStage
-              eyebrow="Stage 2"
-              title="Write the brief"
-              description="Define who the AI should be, the context it should know, and the exact task it should complete."
-              status={task.trim() ? 'In progress' : 'Needs task'}
-            >
-              <div className="grid gap-4">
-                <RoleInput />
-                <ContextInput />
-                <TaskInput />
-              </div>
-            </BuilderStage>
-
-            <BuilderStage
-              eyebrow="Stage 3"
-              title="Add guardrails"
-              description="Use constraints and advanced settings to improve repeatability without making the prompt bloated."
-              status={
-                constraints.length > 0 || settings.includeExamples
-                  ? 'Configured'
-                  : 'Optional'
-              }
+              eyebrow="Step 3 · optional"
+              title="Add rules"
+              description="Constraints and settings keep answers consistent across runs."
+              status={rulesConfigured ? 'Configured' : 'Optional'}
+              collapsible
+              defaultOpen={false}
             >
               <div className="grid gap-4">
                 <ConstraintsInput />
@@ -211,7 +219,7 @@ export function PromptBuilder({
         </Card>
       </div>
 
-      <div className="xl:sticky xl:top-24">
+      <div className="lg:sticky lg:top-24">
         <PromptPreview />
       </div>
     </div>

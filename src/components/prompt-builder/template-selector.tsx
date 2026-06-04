@@ -13,8 +13,26 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { DEFAULT_PROMPT_SETTINGS, PROMPT_TEMPLATES } from '@/config/constants'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
+import type { PromptBuilderInput } from '@/lib/validators/prompt'
 import type { SavedPromptPreset } from '@/types'
 import { toast } from 'sonner'
+
+type PromptTemplate = (typeof PROMPT_TEMPLATES)[number]
+
+export function templateToPreset(template: PromptTemplate): PromptBuilderInput {
+  return {
+    role: template.role,
+    context: template.context,
+    task: template.task,
+    constraints: template.constraints,
+    settings: {
+      ...DEFAULT_PROMPT_SETTINGS,
+      category: template.category,
+      tone: template.tone,
+      outputFormat: template.outputFormat,
+    },
+  }
+}
 
 export function TemplateSelector({
   savedPresets = [],
@@ -27,18 +45,7 @@ export function TemplateSelector({
     const template = PROMPT_TEMPLATES.find((t) => t.id === templateId)
     if (!template) return
 
-    loadPreset({
-      role: template.role,
-      context: template.context,
-      task: template.task,
-      constraints: template.constraints,
-      settings: {
-        ...DEFAULT_PROMPT_SETTINGS,
-        category: template.category,
-        tone: template.tone,
-        outputFormat: template.outputFormat,
-      },
-    })
+    loadPreset(templateToPreset(template))
 
     toast.success(`Template "${template.label}" applied`)
   }

@@ -17,22 +17,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { PROMPT_TEMPLATES } from '@/config/constants'
 import { assemblePrompt } from '@/lib/ai'
 import { usePromptBuilderStore } from '@/stores/prompt-builder'
 import { useUpgradeModal } from '@/stores/upgrade-modal'
+import { toast } from 'sonner'
 import { ModelComparison } from './model-comparison'
 import { PromptAnalysis } from './prompt-analysis'
+import { templateToPreset } from './template-selector'
 import {
   VariableFiller,
   extractVariables,
   resolveVariables,
 } from './variable-filler'
 
-function EmptyPreviewState() {
+function EmptyPreviewState({ onTryExample }: { onTryExample: () => void }) {
   const items = [
-    'Choose model, category, tone, and format.',
-    'Write the task and enough context for the AI to act well.',
-    'Test the prompt before you decide to optimize it.',
+    'Describe your task on the left — that is all you need to start.',
+    'Watch your prompt assemble here, live.',
+    'Test it on a model, then optimize when it is close.',
   ]
 
   return (
@@ -43,11 +46,11 @@ function EmptyPreviewState() {
         </div>
         <div className="space-y-2">
           <p className="font-display text-2xl font-semibold">
-            The live prompt will appear here
+            Your prompt will appear here
           </p>
           <p className="text-muted-foreground text-sm leading-6">
-            Once the task is defined, this panel becomes your workspace for
-            previewing, testing, copying, and optimizing.
+            Once you describe a task, this panel becomes your workspace for
+            previewing, testing, and optimizing.
           </p>
         </div>
         <div className="grid gap-2 text-left">
@@ -63,6 +66,15 @@ function EmptyPreviewState() {
             </div>
           ))}
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-full"
+          onClick={onTryExample}
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Start from an example
+        </Button>
       </div>
     </div>
   )
@@ -80,6 +92,7 @@ export function PromptPreview() {
     isOptimizing,
     setIsOptimizing,
     validate,
+    loadPreset,
   } = usePromptBuilderStore()
 
   const upgradeModal = useUpgradeModal()
@@ -204,6 +217,13 @@ export function PromptPreview() {
 
   const hasContent = assembledPrompt.trim().length > 0
 
+  const handleTryExample = useCallback(() => {
+    const template =
+      PROMPT_TEMPLATES.find((t) => t.id === 'blog-post') ?? PROMPT_TEMPLATES[0]
+    loadPreset(templateToPreset(template))
+    toast.success(`Example "${template.label}" loaded`)
+  }, [loadPreset])
+
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
@@ -222,13 +242,13 @@ export function PromptPreview() {
       <CardHeader className="border-border/70 gap-4 border-b pb-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
-            <p className="section-label">Live workstation</p>
+            <p className="section-label">Live preview</p>
             <CardTitle className="font-display text-2xl font-semibold tracking-tight">
               Prompt preview
             </CardTitle>
             <p className="text-muted-foreground text-sm leading-6">
-              Assemble the prompt live, test it, and optimize only when the
-              brief is stable.
+              Your prompt assembles here as you type. Test it, then optimize
+              when it feels close.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -258,33 +278,41 @@ export function PromptPreview() {
             </Button>
           </div>
         </div>
-        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
-          <Badge variant="secondary" className="rounded-full px-3 py-1">
-            {settings.model}
-          </Badge>
-          <Badge variant="outline" className="rounded-full px-3 py-1">
-            {resolvedPrompt.length || 0} characters
-          </Badge>
-          <Badge variant="outline" className="rounded-full px-3 py-1">
-            <TextCursorInput className="mr-1 h-3 w-3" />
-            {variables.length} variables
-          </Badge>
-          <span>
-            Shortcut:{' '}
-            <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
-              Ctrl
-            </kbd>{' '}
-            +{' '}
-            <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
-              Enter
-            </kbd>{' '}
-            optimizes the current prompt.
-          </span>
+        <div className="space-y-2">
+          <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
+            <Badge variant="secondary" className="rounded-full px-3 py-1">
+              {settings.model}
+            </Badge>
+            <Badge variant="outline" className="rounded-full px-3 py-1">
+              {resolvedPrompt.length || 0} characters
+            </Badge>
+            <Badge variant="outline" className="rounded-full px-3 py-1">
+              <TextCursorInput className="mr-1 h-3 w-3" />
+              {variables.length} variables
+            </Badge>
+          </div>
+          <p className="text-muted-foreground text-xs leading-5">
+            <span className="text-foreground font-medium">Test</span> runs your
+            prompt on the model.{' '}
+            <span className="text-foreground font-medium">Optimize</span>{' '}
+            rewrites it to be clearer and more effective.{' '}
+            <span className="whitespace-nowrap">
+              Shortcut{' '}
+              <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
+                Ctrl
+              </kbd>{' '}
+              +{' '}
+              <kbd className="border-border/80 rounded border px-1.5 py-0.5 text-[11px]">
+                Enter
+              </kbd>
+              .
+            </span>
+          </p>
         </div>
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col gap-4 py-5">
         {!hasContent ? (
-          <EmptyPreviewState />
+          <EmptyPreviewState onTryExample={handleTryExample} />
         ) : (
           <>
             <Tabs
