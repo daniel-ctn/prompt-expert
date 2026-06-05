@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { LogoMark } from '@/components/layout/logo-mark'
 import { APP_NAME } from '@/config/constants'
 import { setCommandPaletteOpen } from '@/lib/command-palette'
 import { cn } from '@/lib/utils'
@@ -129,9 +130,7 @@ export function Header() {
       <div className="border-foreground bg-card mx-auto flex h-16 max-w-7xl items-center justify-between border px-3 shadow-[var(--shadow-paper-sm)] sm:px-4">
         <AppLink href="/" className="group flex items-center gap-3">
           <div className="border-foreground bg-foreground text-background flex h-10 w-10 items-center justify-center border shadow-[var(--shadow-paper-sm)] transition-transform group-hover:-translate-y-0.5 group-hover:rotate-[-3deg]">
-            <span className="font-display text-lg leading-none font-medium">
-              P<span className="text-[var(--marigold)]">·</span>E
-            </span>
+            <LogoMark className="h-6 w-6" />
           </div>
           <div className="space-y-0.5">
             <span className="font-display block text-base font-medium tracking-tight">

@@ -3,59 +3,30 @@ import { ImageResponse } from 'next/og'
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
-async function loadFraunces() {
-  const res = await fetch(
-    'https://fonts.googleapis.com/css2?family=Fraunces:wght@600&display=swap',
-  )
-  const css = await res.text()
-  const fontUrl = css.match(/url\((https:\/\/[^)]+\.woff2)\)/)?.[1]
-  if (!fontUrl) return null
-  const fontRes = await fetch(fontUrl)
-  return await fontRes.arrayBuffer()
-}
+const mark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" fill="#1B2240"/>
+  <rect x="3" y="3" width="58" height="58" fill="none" stroke="#F4ECDD" stroke-opacity="0.08" stroke-width="0.75"/>
+  <polyline points="18,18 35,32 18,46" fill="none" stroke="#F4ECDD" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="40" y="23" width="7" height="18" fill="#E0A23A"/>
+  <g fill="#F4ECDD" fill-opacity="0.4">
+    <rect x="4" y="4" width="3" height="1"/><rect x="4" y="4" width="1" height="3"/>
+    <rect x="57" y="4" width="3" height="1"/><rect x="59" y="4" width="1" height="3"/>
+    <rect x="4" y="59" width="3" height="1"/><rect x="4" y="57" width="1" height="3"/>
+    <rect x="57" y="59" width="3" height="1"/><rect x="59" y="57" width="1" height="3"/>
+  </g>
+</svg>`
 
-export default async function AppleIcon() {
-  const font = await loadFraunces().catch(() => null)
-
+export default function AppleIcon() {
   return new ImageResponse(
-    <div
-      style={{
-        width: 180,
-        height: 180,
-        background: '#1B2240',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#F4ECDD',
-        fontFamily: 'Fraunces, serif',
-        fontWeight: 600,
-        fontSize: 112,
-        letterSpacing: -3,
-        position: 'relative',
-      }}
-    >
-      {/* Inner registration frame */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 12,
-          left: 12,
-          right: 12,
-          bottom: 12,
-          border: '1px solid rgba(244, 236, 221, 0.08)',
-        }}
+    <div style={{ display: 'flex', width: 180, height: 180 }}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- next/og (Satori) renders a raw <img>, not next/image */}
+      <img
+        alt=""
+        width={180}
+        height={180}
+        src={`data:image/svg+xml;base64,${Buffer.from(mark).toString('base64')}`}
       />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-        <span>P</span>
-        <span style={{ color: '#E0A23A', margin: '0 -8px' }}>·</span>
-        <span>E</span>
-      </div>
     </div>,
-    {
-      ...size,
-      fonts: font
-        ? [{ name: 'Fraunces', data: font, weight: 600, style: 'normal' }]
-        : undefined,
-    },
+    size,
   )
 }

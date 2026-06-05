@@ -57,7 +57,8 @@ async function main() {
   <g transform="translate(220 195) scale(3.75)">
     <rect width="64" height="64" fill="#1B2240"/>
     <rect x="3" y="3" width="58" height="58" fill="none" stroke="#F4ECDD" stroke-opacity="0.08" stroke-width="0.75"/>
-    <text x="32" y="34" font-family="'Fraunces', 'Source Serif Pro', Georgia, serif" font-weight="500" font-size="36" fill="#F4ECDD" text-anchor="middle" dominant-baseline="central" letter-spacing="-1">P<tspan fill="#E0A23A" dx="-1">·</tspan>E</text>
+    <polyline points="18,18 35,32 18,46" fill="none" stroke="#F4ECDD" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="40" y="23" width="7" height="18" fill="#E0A23A"/>
   </g>
   <g transform="translate(560 240)">
     <text x="0" y="40" font-family="'Fraunces', 'Source Serif Pro', Georgia, serif" font-weight="500" font-size="72" fill="#1B2240" letter-spacing="-2">Prompt Expert</text>

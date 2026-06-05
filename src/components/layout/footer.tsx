@@ -2,6 +2,7 @@
 
 import { ArrowUpRight, Command } from 'lucide-react'
 import { AppLink } from '@/components/ui/app-link'
+import { LogoMark } from '@/components/layout/logo-mark'
 import { APP_NAME } from '@/config/constants'
 import { Button } from '@/components/ui/button'
 import { setCommandPaletteOpen } from '@/lib/command-palette'
@@ -14,9 +15,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="border-foreground bg-foreground text-background flex h-11 w-11 items-center justify-center border shadow-[var(--shadow-paper-sm)]">
-                <span className="font-display text-lg leading-none font-medium">
-                  P<span className="text-[var(--marigold)]">·</span>E
-                </span>
+                <LogoMark className="h-6 w-6" />
               </div>
               <div>
                 <p className="font-display text-lg font-medium">{APP_NAME}</p>

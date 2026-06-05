@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" fill="#1B2240"/>
-  <g font-family="'Fraunces', 'Source Serif Pro', ui-serif, Georgia, 'Times New Roman', serif" font-weight="500" text-anchor="middle" dominant-baseline="central">
-    <text x="16" y="17" font-size="18" fill="#F4ECDD" letter-spacing="-0.5">P<tspan fill="#E0A23A" dx="-0.5">·</tspan>E</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" fill="#1B2240"/>
+  <polyline points="18,18 35,32 18,46" fill="none" stroke="#F4ECDD" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="40" y="23" width="7" height="18" fill="#E0A23A"/>
 </svg>
