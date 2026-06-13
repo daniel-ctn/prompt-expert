@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
-import { Fraunces, Geist_Mono, Inter } from 'next/font/google'
+import { Geist_Mono, Inter } from 'next/font/google'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageTransitionShell } from '@/components/layout/page-transition-shell'
@@ -16,12 +16,6 @@ const inter = Inter({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
-})
-
-const fraunces = Fraunces({
-  variable: '--font-fraunces',
-  subsets: ['latin'],
-  axes: ['SOFT', 'WONK', 'opsz'],
 })
 
 export const metadata: Metadata = {
@@ -59,7 +53,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+        className={`${inter.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
           <div className="app-shell relative flex min-h-screen flex-col">

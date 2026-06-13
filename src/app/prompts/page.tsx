@@ -59,7 +59,7 @@ export default async function PromptsPage({
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3 md:grid-cols-1 md:gap-4">
-            <div className="paper-edge bg-card -rotate-[1.4deg] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
               <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 In view
               </p>
@@ -70,7 +70,7 @@ export default async function PromptsPage({
                 prompts in this filter
               </p>
             </div>
-            <div className="paper-edge bg-card rotate-[1deg] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
               <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Public
               </p>
@@ -81,7 +81,7 @@ export default async function PromptsPage({
                 currently shared
               </p>
             </div>
-            <div className="paper-edge -rotate-[0.5deg] bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge  bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
               <p className="font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Tagged
               </p>

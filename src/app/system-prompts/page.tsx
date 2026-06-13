@@ -27,7 +27,7 @@ export default async function SystemPromptsPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1 md:gap-4">
-            <div className="paper-edge bg-card -rotate-[1.1deg] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
               <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Saved
               </p>
@@ -38,7 +38,7 @@ export default async function SystemPromptsPage() {
                 system prompt fragments
               </p>
             </div>
-            <div className="paper-edge rotate-[0.6deg] bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge  bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
               <p className="font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Use cases
               </p>
