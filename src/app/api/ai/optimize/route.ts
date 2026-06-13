@@ -5,12 +5,16 @@ import { rateLimit } from '@/lib/rate-limit'
 import { trackUsage } from '@/lib/track-usage'
 import { getUserApiKey } from '@/lib/actions/api-keys'
 import { savePromptHistory } from '@/lib/actions/prompt-history'
-import { SYSTEM_PROMPT_OPTIMIZER } from '@/config/prompts'
+import {
+  SYSTEM_PROMPT_OPTIMIZER,
+  buildOptimizeUserMessage,
+} from '@/config/prompts'
+import { AI_MODELS, PROMPT_CATEGORIES } from '@/config/constants'
 import { logAiRequest } from '@/lib/ai/logging'
 import { readJsonBodyWithLimit } from '@/lib/ai/request-body'
 import { authorizeAiUsage } from '@/lib/ai/usage-policy'
 import { CREDIT_COSTS, HOSTED_AI_LIMITS } from '@/config/plans'
-import type { AIModel, AIProvider } from '@/types'
+import type { AIModel, AIProvider, PromptCategory } from '@/types'
 import { z } from 'zod'
 
 const optimizeRequestSchema = z.object({
@@ -26,6 +30,18 @@ const optimizeRequestSchema = z.object({
       'claude-haiku-4-5-20251001',
     ])
     .default('gpt-5.4-mini'),
+  category: z
+    .enum([
+      'instruction',
+      'creative',
+      'code',
+      'design',
+      'agent',
+      'analysis',
+      'qa',
+      'conversation',
+    ])
+    .optional(),
 })
 
 export async function POST(req: Request) {
@@ -60,7 +76,11 @@ export async function POST(req: Request) {
     )
   }
 
-  const { prompt, model } = parsed.data as { prompt: string; model: AIModel }
+  const { prompt, model, category } = parsed.data as {
+    prompt: string
+    model: AIModel
+    category?: PromptCategory
+  }
   const provider = getProviderForModel(model)
   const userKey = await getUserApiKey(session.user.id, provider)
   const userKeys: Partial<Record<AIProvider, string>> = {}
@@ -99,11 +119,20 @@ export async function POST(req: Request) {
   trackUsage(userId, 'optimize', model)
 
   const isClaudeModel = model.startsWith('claude-')
+  const categoryMeta = category
+    ? PROMPT_CATEGORIES.find((c) => c.value === category)
+    : undefined
+  const targetModelLabel = AI_MODELS.find((m) => m.value === model)?.label
 
   const result = streamText({
     model: getModel(model, userKeys),
     system: SYSTEM_PROMPT_OPTIMIZER,
-    prompt: `Optimize this prompt:\n\n${prompt}`,
+    prompt: buildOptimizeUserMessage({
+      prompt,
+      categoryLabel: categoryMeta?.label,
+      categoryHint: categoryMeta?.description,
+      targetModelLabel,
+    }),
     maxOutputTokens: HOSTED_AI_LIMITS.maxOutputTokens.optimize,
     ...(isClaudeModel ? {} : { temperature: 0.7 }),
     onFinish: ({ text }) => {

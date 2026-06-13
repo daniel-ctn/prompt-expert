@@ -7,8 +7,10 @@ import {
   Copy,
   Loader2,
   Play,
+  RefreshCw,
   Sparkles,
   TextCursorInput,
+  Undo2,
   Wand2,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -120,23 +122,26 @@ export function PromptPreview() {
     [role, context, task, constraints, settings],
   )
 
-  const { complete: completeOptimize, isLoading: isOptimizeLoading } =
-    useCompletion({
-      api: '/api/ai/optimize',
-      id: 'optimize',
-      streamProtocol: 'text',
-      onFinish: (_prompt, completion) => {
-        setOptimizedPrompt(completion)
-        setIsOptimizing(false)
-        window.dispatchEvent(new Event('credits:updated'))
-      },
-      onError: (error) => {
-        setIsOptimizing(false)
-        if (error.message.includes('insufficient_credits')) {
-          upgradeModal.open()
-        }
-      },
-    })
+  const {
+    completion: optimizeCompletion,
+    complete: completeOptimize,
+    isLoading: isOptimizeLoading,
+  } = useCompletion({
+    api: '/api/ai/optimize',
+    id: 'optimize',
+    streamProtocol: 'text',
+    onFinish: (_prompt, completion) => {
+      setOptimizedPrompt(completion)
+      setIsOptimizing(false)
+      window.dispatchEvent(new Event('credits:updated'))
+    },
+    onError: (error) => {
+      setIsOptimizing(false)
+      if (error.message.includes('insufficient_credits')) {
+        upgradeModal.open()
+      }
+    },
+  })
 
   const {
     completion: testOutput,
@@ -156,23 +161,44 @@ export function PromptPreview() {
     },
   })
 
+  const runOptimize = useCallback(
+    (source: string) => {
+      if (!source.trim()) return
+      setActiveTab('optimized')
+      setIsOptimizing(true)
+      setOptimizedPrompt('')
+      completeOptimize(source, {
+        body: {
+          prompt: source,
+          model: settings.model,
+          category: settings.category,
+        },
+      })
+    },
+    [
+      settings.model,
+      settings.category,
+      completeOptimize,
+      setIsOptimizing,
+      setOptimizedPrompt,
+    ],
+  )
+
   const handleOptimize = useCallback(() => {
     if (!validate()) return
-    if (!assembledPrompt.trim()) return
-    setIsOptimizing(true)
-    setOptimizedPrompt('')
-    completeOptimize(assembledPrompt, {
-      body: { prompt: assembledPrompt, model: settings.model },
-    })
-  }, [
-    assembledPrompt,
-    settings.model,
-    completeOptimize,
-    setIsOptimizing,
-    setOptimizedPrompt,
-    validate,
-  ])
+    runOptimize(assembledPrompt)
+  }, [validate, runOptimize, assembledPrompt])
 
+  const handleRefine = useCallback(() => {
+    runOptimize(optimizedPrompt)
+  }, [runOptimize, optimizedPrompt])
+
+  const handleDiscardOptimization = useCallback(() => {
+    setOptimizedPrompt('')
+    setActiveTab('assembled')
+  }, [setOptimizedPrompt])
+
+  const optimizedDisplay = optimizeCompletion || optimizedPrompt
   const currentPrompt = optimizedPrompt || assembledPrompt
   const variables = useMemo(
     () => extractVariables(currentPrompt),
@@ -356,28 +382,78 @@ export function PromptPreview() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="optimized" className="min-h-0 flex-1">
-                <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
+              <TabsContent
+                value="optimized"
+                className="flex min-h-0 flex-1 flex-col gap-3"
+              >
+                <div className="border-border/70 bg-background/85 relative flex min-h-0 flex-1 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
                   <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
+                    {isOptimizeLoading && !optimizeCompletion ? (
+                      <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Optimizing your prompt...
+                      </div>
+                    ) : null}
+                    {!optimizedDisplay && !isOptimizeLoading ? (
+                      <p className="text-muted-foreground text-sm leading-6">
+                        Click{' '}
+                        <span className="text-foreground font-medium">
+                          Optimize
+                        </span>{' '}
+                        to rewrite your assembled prompt into a clearer, more
+                        effective version. Your placeholders stay intact.
+                      </p>
+                    ) : null}
                     <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
-                      {optimizedPrompt}
+                      {optimizedDisplay}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute top-5 right-5">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      onClick={() => handleCopy(optimizedPrompt, 'optimized')}
-                    >
-                      {copied === 'optimized' ? (
-                        <Check className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                  {optimizedDisplay ? (
+                    <div className="absolute top-5 right-5">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        onClick={() =>
+                          handleCopy(optimizedDisplay, 'optimized')
+                        }
+                      >
+                        {copied === 'optimized' ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
+                {optimizedPrompt && !isOptimizeLoading ? (
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                    <p className="text-muted-foreground text-xs leading-5">
+                      Test, Analyze, and Save now use this optimized version.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-foreground rounded-full"
+                        onClick={handleDiscardOptimization}
+                      >
+                        <Undo2 className="h-3.5 w-3.5" />
+                        Discard
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full"
+                        onClick={handleRefine}
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                        Refine again
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
               </TabsContent>
 
               <TabsContent value="test" className="min-h-0 flex-1">
