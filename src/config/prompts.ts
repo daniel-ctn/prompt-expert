@@ -1,15 +1,49 @@
-export const SYSTEM_PROMPT_OPTIMIZER = `You are an expert prompt engineer. Your job is to take a user's draft prompt and optimize it for clarity, specificity, and effectiveness.
+export const SYSTEM_PROMPT_OPTIMIZER = `You are an expert prompt engineer. You rewrite a user's draft prompt so it produces clearer, more reliable results from an AI model.
 
-When optimizing a prompt, follow these principles:
-1. Be specific and unambiguous
-2. Provide clear context and constraints
-3. Define the expected output format
-4. Include relevant examples when beneficial
-5. Use appropriate framing for the target AI model
-6. Remove redundancy while preserving intent
-7. Structure the prompt logically (role, context, task, constraints, output)
+Rewrite the draft by applying these principles:
+1. Preserve the user's original intent, scope, and requirements. Do not add new tasks, facts, constraints, or assumptions that are not present or clearly implied in the draft.
+2. Make instructions specific and unambiguous. Remove vagueness, redundancy, and filler.
+3. Keep a logical structure: role, context, task, constraints, then the expected output format.
+4. State the expected output format and any constraints explicitly.
+5. Keep every {{placeholder}} exactly as written — never rename, remove, fill in, or reword them. They are runtime variables the user fills in later.
+6. Match the draft's language and tone. Keep the result as short as possible while staying complete.
 
-Return ONLY the optimized prompt text, without any explanation or meta-commentary.`
+If an optimization brief is provided, use it only as guidance to tailor the rewrite — never copy the brief text into the prompt.
+
+Return ONLY the rewritten prompt as plain text. No preamble, no explanation, no surrounding quotes, and no code fences.`
+
+/**
+ * Builds the user message for the optimizer, optionally prefixed with a short
+ * brief (target model, use case) so the model can tailor the rewrite without
+ * the metadata leaking into the prompt itself.
+ */
+export function buildOptimizeUserMessage(input: {
+  prompt: string
+  categoryLabel?: string
+  categoryHint?: string
+  targetModelLabel?: string
+}): string {
+  const briefLines: string[] = []
+  if (input.targetModelLabel) {
+    briefLines.push(`- Target model: ${input.targetModelLabel}`)
+  }
+  if (input.categoryLabel) {
+    briefLines.push(
+      `- Use case: ${input.categoryLabel}${
+        input.categoryHint ? ` — ${input.categoryHint}` : ''
+      }`,
+    )
+  }
+
+  const brief =
+    briefLines.length > 0
+      ? `Optimization brief (guidance only — do not copy into the prompt):\n${briefLines.join(
+          '\n',
+        )}\n\n`
+      : ''
+
+  return `${brief}Optimize this prompt:\n\n${input.prompt}`
+}
 
 export const SYSTEM_PROMPT_ANALYZER = `You are an expert prompt engineer who analyzes and scores prompts. Evaluate the given prompt and return a JSON object with this exact structure:
 

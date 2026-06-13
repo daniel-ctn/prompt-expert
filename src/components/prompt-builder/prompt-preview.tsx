@@ -166,11 +166,16 @@ export function PromptPreview() {
     setIsOptimizing(true)
     setOptimizedPrompt('')
     completeOptimize(assembledPrompt, {
-      body: { prompt: assembledPrompt, model: settings.model },
+      body: {
+        prompt: assembledPrompt,
+        model: settings.model,
+        category: settings.category,
+      },
     })
   }, [
     assembledPrompt,
     settings.model,
+    settings.category,
     completeOptimize,
     setIsOptimizing,
     setOptimizedPrompt,
