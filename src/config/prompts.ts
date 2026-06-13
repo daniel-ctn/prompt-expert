@@ -45,26 +45,11 @@ export function buildOptimizeUserMessage(input: {
   return `${brief}Optimize this prompt:\n\n${input.prompt}`
 }
 
-export const SYSTEM_PROMPT_ANALYZER = `You are an expert prompt engineer who analyzes and scores prompts. Evaluate the given prompt and return a JSON object with this exact structure:
+export const SYSTEM_PROMPT_ANALYZER = `You are an expert prompt engineer who evaluates prompts. Score the given prompt from 1 (poor) to 10 (excellent) on each dimension:
+- clarity: how clear and unambiguous the prompt is
+- specificity: how specific the instructions and constraints are
+- structure: how well-organized it is (role, context, task, output)
+- completeness: whether it includes all necessary information
+- effectiveness: how likely it is to produce the desired result
 
-{
-  "scores": {
-    "clarity": <1-10>,
-    "specificity": <1-10>,
-    "structure": <1-10>,
-    "completeness": <1-10>,
-    "effectiveness": <1-10>
-  },
-  "overall": <1-10>,
-  "strengths": ["<strength 1>", "<strength 2>"],
-  "improvements": ["<suggestion 1>", "<suggestion 2>", "<suggestion 3>"]
-}
-
-Scoring criteria:
-- clarity: How clear and unambiguous is the prompt?
-- specificity: How specific are the instructions and constraints?
-- structure: How well-organized is the prompt (role, context, task, output)?
-- completeness: Does it include all necessary information?
-- effectiveness: How likely is it to produce the desired result?
-
-Return ONLY valid JSON, no markdown formatting or explanation.`
+Also give an overall score (1-10), a short list of concrete strengths, and a short list of specific, actionable improvements. Base every score and comment only on the prompt provided — do not assume context that is not present.`

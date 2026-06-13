@@ -12,7 +12,7 @@ const routeMocks = vi.hoisted(() => ({
   getModel: vi.fn(),
   getProviderForModel: vi.fn(),
   streamText: vi.fn(),
-  generateText: vi.fn(),
+  generateObject: vi.fn(),
 }))
 
 vi.mock('@/lib/auth', () => ({
@@ -50,7 +50,7 @@ vi.mock('@/lib/ai', () => ({
 
 vi.mock('ai', () => ({
   streamText: routeMocks.streamText,
-  generateText: routeMocks.generateText,
+  generateObject: routeMocks.generateObject,
 }))
 
 import { POST as analyzePOST } from '@/app/api/ai/analyze/route'
@@ -97,8 +97,19 @@ describe('AI route handlers', () => {
         toTextStreamResponse: () => createStreamResponse(),
       }
     })
-    routeMocks.generateText.mockResolvedValue({
-      text: JSON.stringify({ overall: 8, strengths: [], improvements: [] }),
+    routeMocks.generateObject.mockResolvedValue({
+      object: {
+        scores: {
+          clarity: 8,
+          specificity: 8,
+          structure: 8,
+          completeness: 8,
+          effectiveness: 8,
+        },
+        overall: 8,
+        strengths: [],
+        improvements: [],
+      },
     })
   })
 
@@ -157,7 +168,7 @@ describe('AI route handlers', () => {
           'Hosted AI is temporarily unavailable. You can keep building prompts and use your own provider key from Settings.',
       })
       expect(routeMocks.deductCredit).not.toHaveBeenCalled()
-      expect(routeMocks.generateText).not.toHaveBeenCalled()
+      expect(routeMocks.generateObject).not.toHaveBeenCalled()
     })
 
     it('returns 400 when the prompt is blank', async () => {
@@ -181,15 +192,21 @@ describe('AI route handlers', () => {
       expect(routeMocks.deductCredit).not.toHaveBeenCalled()
     })
 
-    it('analyzes a prompt with the saved OpenAI key and returns parsed JSON', async () => {
+    it('analyzes a prompt with the saved OpenAI key and returns the structured result', async () => {
       routeMocks.getUserApiKey.mockResolvedValue('user-openai-key')
-      routeMocks.generateText.mockResolvedValue({
-        text: JSON.stringify({
-          overall: 9,
-          strengths: ['Clear task'],
-          improvements: ['Add constraints'],
-        }),
-      })
+      const analysis = {
+        scores: {
+          clarity: 9,
+          specificity: 8,
+          structure: 9,
+          completeness: 7,
+          effectiveness: 9,
+        },
+        overall: 9,
+        strengths: ['Clear task'],
+        improvements: ['Add constraints'],
+      }
+      routeMocks.generateObject.mockResolvedValue({ object: analysis })
 
       const response = await analyzePOST(
         createPostRequest('/api/ai/analyze', { prompt: 'Analyze this prompt' }),
@@ -206,15 +223,11 @@ describe('AI route handlers', () => {
         'gpt-5.4-mini',
       )
       expect(response.status).toBe(200)
-      expect(await response.json()).toEqual({
-        overall: 9,
-        strengths: ['Clear task'],
-        improvements: ['Add constraints'],
-      })
+      expect(await response.json()).toEqual(analysis)
     })
 
-    it('returns 500 when the model does not return valid JSON', async () => {
-      routeMocks.generateText.mockResolvedValue({ text: 'not json' })
+    it('returns 500 when structured generation fails', async () => {
+      routeMocks.generateObject.mockRejectedValue(new Error('no object'))
 
       const response = await analyzePOST(
         createPostRequest('/api/ai/analyze', { prompt: 'Analyze this prompt' }),
@@ -222,7 +235,7 @@ describe('AI route handlers', () => {
 
       expect(response.status).toBe(500)
       expect(await response.json()).toEqual({
-        error: 'Failed to parse analysis',
+        error: 'Failed to analyze prompt',
       })
     })
   })

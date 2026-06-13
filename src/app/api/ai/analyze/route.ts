@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { generateObject } from 'ai'
 import { getModel } from '@/lib/ai'
 import { auth } from '@/lib/auth'
 import { rateLimit } from '@/lib/rate-limit'
@@ -18,6 +18,21 @@ const analyzeRequestSchema = z.object({
     .trim()
     .min(1, 'Prompt is required')
     .max(HOSTED_AI_LIMITS.maxPromptInputLength, 'Prompt is too long'),
+})
+
+const score = z.number().int().min(1).max(10)
+
+const analysisSchema = z.object({
+  scores: z.object({
+    clarity: score,
+    specificity: score,
+    structure: score,
+    completeness: score,
+    effectiveness: score,
+  }),
+  overall: score,
+  strengths: z.array(z.string()).max(6),
+  improvements: z.array(z.string()).max(6),
 })
 
 export async function POST(req: Request) {
@@ -88,18 +103,17 @@ export async function POST(req: Request) {
   })
   trackUsage(session.user.id, 'analyze', 'gpt-5.4-mini')
 
-  const { text } = await generateText({
-    model: getModel('gpt-5.4-mini', userKeys),
-    system: SYSTEM_PROMPT_ANALYZER,
-    prompt: `Analyze this prompt:\n\n${prompt}`,
-    maxOutputTokens: HOSTED_AI_LIMITS.maxOutputTokens.analyze,
-    temperature: 0.3,
-  })
-
   try {
-    const analysis = JSON.parse(text)
-    return Response.json(analysis)
+    const { object } = await generateObject({
+      model: getModel('gpt-5.4-mini', userKeys),
+      schema: analysisSchema,
+      system: SYSTEM_PROMPT_ANALYZER,
+      prompt: `Analyze this prompt:\n\n${prompt}`,
+      maxOutputTokens: HOSTED_AI_LIMITS.maxOutputTokens.analyze,
+      temperature: 0.3,
+    })
+    return Response.json(object)
   } catch {
-    return Response.json({ error: 'Failed to parse analysis' }, { status: 500 })
+    return Response.json({ error: 'Failed to analyze prompt' }, { status: 500 })
   }
 }
