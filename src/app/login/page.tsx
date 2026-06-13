@@ -76,7 +76,7 @@ export default function LoginPage() {
         </FadeIn>
 
         <FadeIn delay={0.08}>
-          <div className="paper-edge bg-card -rotate-[0.5deg] p-6 transition-transform hover:rotate-0 sm:p-8">
+          <div className="paper-edge bg-card  p-6 transition-transform hover:rotate-0 sm:p-8">
             <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
               Choose a provider
             </p>

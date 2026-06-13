@@ -35,7 +35,7 @@ export default async function SettingsPage() {
         </p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="paper-edge bg-card -rotate-[0.8deg] px-4 py-4 transition-transform hover:rotate-0">
+          <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
             <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
               Credits
             </p>
@@ -46,7 +46,7 @@ export default async function SettingsPage() {
               Used for AI testing &amp; optimization.
             </p>
           </div>
-          <div className="paper-edge bg-card rotate-[0.6deg] px-4 py-4 transition-transform hover:rotate-0">
+          <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
             <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
               Provider keys
             </p>
@@ -57,7 +57,7 @@ export default async function SettingsPage() {
               Bring your own OpenAI / Anthropic / Google keys.
             </p>
           </div>
-          <div className="paper-edge bg-card -rotate-[0.4deg] px-4 py-4 transition-transform hover:rotate-0">
+          <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
             <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
               API tokens
             </p>

@@ -29,7 +29,7 @@ export default async function HistoryPage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
-            <div className="paper-edge bg-card -rotate-[1.2deg] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge bg-card  px-4 py-4 transition-transform hover:rotate-0">
               <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Logged
               </p>
@@ -40,7 +40,7 @@ export default async function HistoryPage() {
                 total runs in history
               </p>
             </div>
-            <div className="paper-edge rotate-[0.8deg] bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
+            <div className="paper-edge  bg-[color-mix(in_oklch,var(--marigold)_16%,var(--background))] px-4 py-4 transition-transform hover:rotate-0">
               <p className="font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
                 Optimized
               </p>
