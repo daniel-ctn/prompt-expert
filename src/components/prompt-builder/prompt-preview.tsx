@@ -120,23 +120,26 @@ export function PromptPreview() {
     [role, context, task, constraints, settings],
   )
 
-  const { complete: completeOptimize, isLoading: isOptimizeLoading } =
-    useCompletion({
-      api: '/api/ai/optimize',
-      id: 'optimize',
-      streamProtocol: 'text',
-      onFinish: (_prompt, completion) => {
-        setOptimizedPrompt(completion)
-        setIsOptimizing(false)
-        window.dispatchEvent(new Event('credits:updated'))
-      },
-      onError: (error) => {
-        setIsOptimizing(false)
-        if (error.message.includes('insufficient_credits')) {
-          upgradeModal.open()
-        }
-      },
-    })
+  const {
+    completion: optimizeCompletion,
+    complete: completeOptimize,
+    isLoading: isOptimizeLoading,
+  } = useCompletion({
+    api: '/api/ai/optimize',
+    id: 'optimize',
+    streamProtocol: 'text',
+    onFinish: (_prompt, completion) => {
+      setOptimizedPrompt(completion)
+      setIsOptimizing(false)
+      window.dispatchEvent(new Event('credits:updated'))
+    },
+    onError: (error) => {
+      setIsOptimizing(false)
+      if (error.message.includes('insufficient_credits')) {
+        upgradeModal.open()
+      }
+    },
+  })
 
   const {
     completion: testOutput,
@@ -159,6 +162,7 @@ export function PromptPreview() {
   const handleOptimize = useCallback(() => {
     if (!validate()) return
     if (!assembledPrompt.trim()) return
+    setActiveTab('optimized')
     setIsOptimizing(true)
     setOptimizedPrompt('')
     completeOptimize(assembledPrompt, {
@@ -173,6 +177,7 @@ export function PromptPreview() {
     validate,
   ])
 
+  const optimizedDisplay = optimizeCompletion || optimizedPrompt
   const currentPrompt = optimizedPrompt || assembledPrompt
   const variables = useMemo(
     () => extractVariables(currentPrompt),
@@ -359,24 +364,44 @@ export function PromptPreview() {
               <TabsContent value="optimized" className="min-h-0 flex-1">
                 <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
                   <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
+                    {isOptimizeLoading && !optimizeCompletion ? (
+                      <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Optimizing your prompt...
+                      </div>
+                    ) : null}
+                    {!optimizedDisplay && !isOptimizeLoading ? (
+                      <p className="text-muted-foreground text-sm leading-6">
+                        Click{' '}
+                        <span className="text-foreground font-medium">
+                          Optimize
+                        </span>{' '}
+                        to rewrite your assembled prompt into a clearer, more
+                        effective version. Your placeholders stay intact.
+                      </p>
+                    ) : null}
                     <pre className="text-foreground/88 font-mono text-sm leading-7 whitespace-pre-wrap">
-                      {optimizedPrompt}
+                      {optimizedDisplay}
                     </pre>
                   </ScrollArea>
-                  <div className="absolute top-5 right-5">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      onClick={() => handleCopy(optimizedPrompt, 'optimized')}
-                    >
-                      {copied === 'optimized' ? (
-                        <Check className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                  {optimizedDisplay ? (
+                    <div className="absolute top-5 right-5">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        onClick={() =>
+                          handleCopy(optimizedDisplay, 'optimized')
+                        }
+                      >
+                        {copied === 'optimized' ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
               </TabsContent>
 
