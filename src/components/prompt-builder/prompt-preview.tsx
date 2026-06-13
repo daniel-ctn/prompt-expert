@@ -7,8 +7,10 @@ import {
   Copy,
   Loader2,
   Play,
+  RefreshCw,
   Sparkles,
   TextCursorInput,
+  Undo2,
   Wand2,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -159,28 +161,42 @@ export function PromptPreview() {
     },
   })
 
+  const runOptimize = useCallback(
+    (source: string) => {
+      if (!source.trim()) return
+      setActiveTab('optimized')
+      setIsOptimizing(true)
+      setOptimizedPrompt('')
+      completeOptimize(source, {
+        body: {
+          prompt: source,
+          model: settings.model,
+          category: settings.category,
+        },
+      })
+    },
+    [
+      settings.model,
+      settings.category,
+      completeOptimize,
+      setIsOptimizing,
+      setOptimizedPrompt,
+    ],
+  )
+
   const handleOptimize = useCallback(() => {
     if (!validate()) return
-    if (!assembledPrompt.trim()) return
-    setActiveTab('optimized')
-    setIsOptimizing(true)
+    runOptimize(assembledPrompt)
+  }, [validate, runOptimize, assembledPrompt])
+
+  const handleRefine = useCallback(() => {
+    runOptimize(optimizedPrompt)
+  }, [runOptimize, optimizedPrompt])
+
+  const handleDiscardOptimization = useCallback(() => {
     setOptimizedPrompt('')
-    completeOptimize(assembledPrompt, {
-      body: {
-        prompt: assembledPrompt,
-        model: settings.model,
-        category: settings.category,
-      },
-    })
-  }, [
-    assembledPrompt,
-    settings.model,
-    settings.category,
-    completeOptimize,
-    setIsOptimizing,
-    setOptimizedPrompt,
-    validate,
-  ])
+    setActiveTab('assembled')
+  }, [setOptimizedPrompt])
 
   const optimizedDisplay = optimizeCompletion || optimizedPrompt
   const currentPrompt = optimizedPrompt || assembledPrompt
@@ -366,8 +382,11 @@ export function PromptPreview() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="optimized" className="min-h-0 flex-1">
-                <div className="border-border/70 bg-background/85 relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
+              <TabsContent
+                value="optimized"
+                className="flex min-h-0 flex-1 flex-col gap-3"
+              >
+                <div className="border-border/70 bg-background/85 relative flex min-h-0 flex-1 flex-col rounded-[calc(var(--radius-3xl)+2px)] border p-3">
                   <ScrollArea className="border-border/70 bg-surface-1/75 h-[420px] rounded-[calc(var(--radius-2xl)+2px)] border p-4 xl:h-full">
                     {isOptimizeLoading && !optimizeCompletion ? (
                       <div className="text-muted-foreground flex items-center gap-2 text-sm">
@@ -408,6 +427,33 @@ export function PromptPreview() {
                     </div>
                   ) : null}
                 </div>
+                {optimizedPrompt && !isOptimizeLoading ? (
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                    <p className="text-muted-foreground text-xs leading-5">
+                      Test, Analyze, and Save now use this optimized version.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-foreground rounded-full"
+                        onClick={handleDiscardOptimization}
+                      >
+                        <Undo2 className="h-3.5 w-3.5" />
+                        Discard
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full"
+                        onClick={handleRefine}
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                        Refine again
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
               </TabsContent>
 
               <TabsContent value="test" className="min-h-0 flex-1">
