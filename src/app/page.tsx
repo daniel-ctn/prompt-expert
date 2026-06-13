@@ -1,305 +1,406 @@
-import { ArrowRight, ArrowUpRight, PenLine, Sparkles } from 'lucide-react'
-import { BuilderSnapshot } from '@/components/home/builder-snapshot'
+import {
+  ArrowRight,
+  BookMarked,
+  Boxes,
+  Check,
+  FlaskConical,
+  GitFork,
+  History,
+  KeyRound,
+  Sparkles,
+  Wand2,
+  Workflow,
+} from 'lucide-react'
 import { AppLink, appLinkTransitionTypes } from '@/components/ui/app-link'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/components/ui/reveal'
 
+const models = ['Claude', 'GPT-4o', 'Gemini']
+
 const stats = [
-  {
-    value: '03',
-    label: 'Core workflows',
-    detail: 'Build, test, refine — one place.',
-    tilt: '-rotate-[2deg]',
-  },
-  {
-    value: '50',
-    suffix: '/mo',
-    label: 'Free credits',
-    detail: 'Enough to validate real iterations.',
-    tilt: 'rotate-[1.5deg]',
-  },
-  {
-    value: '1',
-    suffix: '-click',
-    label: 'Prompt refinement',
-    detail: 'Clearer language, same structure.',
-    tilt: '-rotate-[1deg]',
-  },
+  { value: '50', label: 'free credits / month' },
+  { value: '3', label: 'model providers' },
+  { value: '1-click', label: 'optimize · test · analyze' },
+  { value: '$0', label: 'to start — BYO keys' },
 ]
 
-const workflows = [
+const heroPrompt = [
+  { label: 'ROLE', text: 'Senior staff engineer reviewing a pull request.' },
+  { label: 'TASK', text: 'Audit the diff for correctness, security, and perf.' },
+  { label: 'RULES', text: 'Rank findings by severity · cite the exact line.' },
+  { label: 'FORMAT', text: 'Markdown table — issue · severity · fix.' },
+]
+
+const steps = [
   {
     n: '01',
-    title: 'From rough idea to usable prompt',
-    body: 'Builder defaults, templates, and guided sections start you with structure instead of a blank page.',
-    tilt: '-rotate-[1.4deg]',
+    icon: Boxes,
+    title: 'Build with structure',
+    body: 'Structured controls for model, role, context, constraints, tone, and output format. Start from templates instead of a blank chat box.',
   },
   {
     n: '02',
-    title: 'Chain prompts into repeatable flows',
-    body: 'Model step-to-step reasoning, reuse prior outputs, and test multi-stage sequences without leaving the workspace.',
-    tilt: 'rotate-[1deg]',
+    icon: Wand2,
+    title: 'Optimize & test',
+    body: 'One click rewrites for clarity, then runs the prompt against real models and scores its quality — so you ship on evidence, not vibes.',
   },
   {
     n: '03',
-    title: 'Turn experiments into reusable assets',
-    body: 'Save prompts, publish shareable versions, keep a growing library of proven building blocks.',
-    tilt: '-rotate-[0.8deg]',
+    icon: GitFork,
+    title: 'Save, version & share',
+    body: 'Keep a searchable library, track every revision, publish to the public gallery, and fork the community’s best into your own.',
   },
 ]
 
-const examples = [
+type DiffLine =
+  | { kind: 'del'; text: string }
+  | { kind: 'add'; text: string }
+  | { kind: 'gap' }
+
+const diff: DiffLine[] = [
+  { kind: 'del', text: 'Write a blog post about our new feature.' },
+  { kind: 'gap' },
+  { kind: 'add', text: '## Role' },
+  { kind: 'add', text: 'Product marketing writer for a developer tool.' },
+  { kind: 'add', text: '' },
+  { kind: 'add', text: '## Task' },
+  { kind: 'add', text: 'Write a 600-word launch post for prompt versioning.' },
+  { kind: 'add', text: '' },
+  { kind: 'add', text: '## Audience' },
+  { kind: 'add', text: 'Senior engineers. Skeptical, time-poor.' },
+  { kind: 'add', text: '' },
+  { kind: 'add', text: '## Must include' },
+  { kind: 'add', text: '- A concrete before / after example' },
+  { kind: 'add', text: '- One code snippet · a clear call to action' },
+  { kind: 'add', text: '' },
+  { kind: 'add', text: '## Tone' },
+  { kind: 'add', text: 'Direct, technical, no hype.' },
+]
+
+const features = [
   {
-    label: 'Code review',
-    title: 'From rough intent to review-ready prompt',
-    before: 'Review this pull request and tell me what is wrong.',
-    after:
-      'Review the provided pull request for correctness, security, performance, and maintainability. Prioritize findings by severity, cite the concrete issue, and suggest fixes with code where useful.',
+    icon: Boxes,
+    title: 'Multi-model',
+    body: 'Target OpenAI, Anthropic, and Google models from one place.',
   },
   {
-    label: 'Support workflow',
-    title: 'A prompt teams can actually reuse',
-    before: 'Help the customer with their issue politely.',
-    after:
-      'Act as a SaaS support specialist. Acknowledge the issue, summarize the likely cause, provide the next 3 actions, and close with a confirmation question. Keep the tone concise and reassuring.',
+    icon: BookMarked,
+    title: 'Prompt library',
+    body: 'Save, tag, search, and organize everything you write.',
+  },
+  {
+    icon: GitFork,
+    title: 'Public gallery',
+    body: 'Publish prompts and fork the community’s best into yours.',
+  },
+  {
+    icon: History,
+    title: 'Version history',
+    body: 'Track every change across iterations and roll back safely.',
+  },
+  {
+    icon: Workflow,
+    title: 'Prompt chains',
+    body: 'Pipe outputs into repeatable, multi-step reasoning flows.',
+  },
+  {
+    icon: KeyRound,
+    title: 'Bring your own keys',
+    body: 'Use your own provider keys, encrypted, for heavier runs.',
   },
 ]
 
-function HandRule({
-  className = '',
-  width = 'full',
-}: {
-  className?: string
-  width?: 'full' | 'sm'
-}) {
+function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      aria-hidden
-      className={`hand-rule ${width === 'sm' ? 'max-w-[14rem]' : ''} ${className}`}
-    />
+    <span className="text-muted-foreground inline-flex items-center gap-2.5 font-mono text-[11px] font-medium tracking-[0.3em] uppercase">
+      <span className="bg-signal h-1.5 w-1.5 rounded-full" />
+      {children}
+    </span>
   )
 }
 
-function ChapterMark({ label }: { label: string }) {
-  return <p className="chapter-mark">{label}</p>
+function TerminalChrome({ label }: { label: string }) {
+  return (
+    <div className="term-bar flex items-center gap-2 px-4 py-3">
+      <span className="h-3 w-3 rounded-full bg-[oklch(0.64_0.17_28)]" />
+      <span className="h-3 w-3 rounded-full bg-[oklch(0.82_0.15_85)]" />
+      <span className="h-3 w-3 rounded-full bg-[oklch(0.82_0.17_140)]" />
+      <span className="ml-2 font-mono text-[11px] text-[var(--t-muted)]">
+        {label}
+      </span>
+    </div>
+  )
 }
 
 export default function HomePage() {
   return (
-    <div className="pb-16">
-      {/* ── № 01 — HERO ─────────────────────────────────────────────── */}
-      <section className="page-shell pt-10 sm:pt-14">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-end">
-          <div className="space-y-6">
-            <FadeIn delay={0.02}>
-              <ChapterMark label="№ 01 — A workspace for prompt work" />
-            </FadeIn>
-            <FadeIn delay={0.06}>
-              <h1 className="font-display text-[2.6rem] leading-[0.96] tracking-[-0.025em] text-balance sm:text-6xl lg:text-[4.5rem]">
-                Sharper prompts,
-                <br />
-                <span className="italic">calmer</span> workflow,
-                <br />
-                <span className="marker-highlight">better</span> AI output.
-              </h1>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <p className="page-copy text-pretty">
-                Prompt Expert is a structured workspace for drafting,
-                optimizing, testing, and organizing prompts — without the usual
-                copy-paste chaos. Built like a notebook, not a chat.
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.14}>
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Button
-                  render={
-                    <AppLink
-                      href="/builder"
-                      transitionTypes={appLinkTransitionTypes.builder}
-                    />
-                  }
-                  size="lg"
-                  className="rounded-md px-4 py-2.5 text-[0.95rem]"
-                >
-                  Open the builder
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  render={<AppLink href="/gallery" />}
-                  className="rounded-md px-4 py-2.5 text-[0.95rem]"
-                >
-                  Browse the gallery
-                </Button>
-                <div className="text-muted-foreground flex items-center gap-2 pl-1 font-mono text-[12px] tracking-wide">
-                  <span>or press</span>
-                  <kbd className="border-foreground/70 bg-background rounded-sm border px-1.5 py-0.5 text-[10.5px] shadow-[var(--shadow-paper-sm)]">
-                    Ctrl
-                  </kbd>
-                  <span>+</span>
-                  <kbd className="border-foreground/70 bg-background rounded-sm border px-1.5 py-0.5 text-[10.5px] shadow-[var(--shadow-paper-sm)]">
-                    K
-                  </kbd>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Sticky-note stats stack */}
-          <div className="relative grid gap-5 sm:grid-cols-3 md:grid-cols-1">
-            {stats.map((stat, i) => (
-              <FadeIn key={stat.label} delay={0.16 + i * 0.06}>
-                <div
-                  className={`paper-edge group bg-card relative px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5 hover:rotate-0 ${stat.tilt}`}
-                >
-                  <div className="font-display nums flex items-baseline gap-1 text-4xl leading-none font-medium tracking-tight">
-                    {stat.value}
-                    {stat.suffix ? (
-                      <span className="text-muted-foreground font-mono text-[11px] font-normal tracking-[0.18em] uppercase">
-                        {stat.suffix}
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="mt-2 font-mono text-[10px] font-medium tracking-[0.22em] uppercase">
-                    {stat.label}
-                  </p>
-                  <p className="text-muted-foreground mt-1.5 text-[13px] leading-snug">
-                    {stat.detail}
-                  </p>
-                  <span className="bg-foreground absolute -top-1.5 left-4 h-1.5 w-1.5 rounded-full" />
-                  <span className="bg-foreground absolute -top-1.5 right-4 h-1.5 w-1.5 rounded-full" />
-                </div>
+    <div className="relative overflow-clip pb-24">
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <section className="relative">
+        <div
+          aria-hidden
+          className="tech-grid grid-mask-fade pointer-events-none absolute inset-0 -z-10 opacity-70"
+        />
+        <div className="mx-auto w-full max-w-6xl px-5 pt-12 sm:px-6 sm:pt-16 lg:pt-20">
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.94fr)]">
+            {/* Left: pitch */}
+            <div>
+              <FadeIn>
+                <Eyebrow>Prompt workflow · free &amp; open</Eyebrow>
               </FadeIn>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-muted-foreground mt-14 flex items-center gap-6">
-          <HandRule className="flex-1 opacity-80" />
-          <Sparkles className="text-foreground/70 h-4 w-4" />
-          <HandRule className="flex-1 opacity-80" />
-        </div>
-      </section>
-
-      {/* ── № 02 — BUILDER SNAPSHOT ─────────────────────────────────── */}
-      <section className="page-shell pt-2">
-        <FadeIn>
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-2">
-              <ChapterMark label="№ 02 — The workspace" />
-              <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-                A notebook for prompts, not a chat window.
-              </h2>
-            </div>
-            <Badge variant="secondary" className="self-start sm:self-end">
-              <PenLine className="h-3 w-3" /> live preview
-            </Badge>
-          </div>
-        </FadeIn>
-        <BuilderSnapshot />
-      </section>
-
-      {/* ── № 03 — WORKFLOWS ─────────────────────────────────────────── */}
-      <section className="page-shell">
-        <FadeIn>
-          <div className="mb-8 max-w-3xl space-y-3">
-            <ChapterMark label="№ 03 — How it actually works" />
-            <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-              Three habits that make prompt work feel{' '}
-              <span className="hand-underline">deliberate</span>.
-            </h2>
-            <p className="page-copy">
-              Instead of jumping between notes, chat windows, and docs — shape
-              prompts, test outputs, compare model behavior, and save the
-              winners in one flow.
-            </p>
-          </div>
-        </FadeIn>
-
-        <StaggerGroup className="grid gap-7 md:grid-cols-3">
-          {workflows.map((wf) => (
-            <StaggerItem key={wf.n}>
-              <div
-                className={`paper-edge group bg-card relative px-5 py-6 transition-transform duration-200 hover:-translate-y-0.5 hover:rotate-0 ${wf.tilt}`}
-              >
-                <div className="border-foreground/85 bg-background absolute -top-3 left-4 inline-flex h-6 items-center border px-2 font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
-                  № {wf.n}
-                </div>
-                <div className="font-display nums mb-3 text-5xl leading-none font-medium tracking-tight">
-                  {wf.n}
-                </div>
-                <h3 className="font-display text-xl leading-tight font-medium tracking-tight">
-                  {wf.title}
-                </h3>
-                <p className="text-muted-foreground mt-3 text-[14px] leading-6">
-                  {wf.body}
+              <FadeIn delay={0.05}>
+                <h1 className="font-display mt-6 text-[clamp(2.7rem,6.2vw,4.7rem)] leading-[0.97] font-semibold tracking-[-0.035em] text-balance">
+                  The workbench for{' '}
+                  <span className="signal-underline">serious prompting.</span>
+                </h1>
+              </FadeIn>
+              <FadeIn delay={0.1}>
+                <p className="text-muted-foreground mt-6 max-w-xl text-[15.5px] leading-7 text-pretty sm:text-[17px]">
+                  Draft, optimize, test, and version your prompts in one
+                  structured workspace — then publish or fork the best from the
+                  community. Multi-model, free to start, no copy-paste chaos.
                 </p>
-                <div className="text-foreground/60 group-hover:text-foreground mt-5 flex items-center gap-2 transition-colors">
-                  <div className="hand-rule flex-1 opacity-60" />
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </div>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
-      </section>
-
-      {/* ── № 04 — BEFORE / AFTER ────────────────────────────────────── */}
-      <section className="page-shell">
-        <FadeIn>
-          <div className="mb-8 max-w-3xl space-y-3">
-            <ChapterMark label="№ 04 — Before / After" />
-            <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-              What “better prompt structure” actually{' '}
-              <span className="italic">looks like</span>.
-            </h2>
-            <p className="page-copy">
-              The goal isn’t longer prompts. It’s more precise, reusable,
-              testable ones.
-            </p>
-          </div>
-        </FadeIn>
-
-        <StaggerGroup className="grid gap-8 lg:grid-cols-2">
-          {examples.map((ex, i) => (
-            <StaggerItem key={ex.title}>
-              <div className="paper-edge bg-card overflow-hidden">
-                <div className="border-foreground/85 flex items-center justify-between border-b px-5 py-3">
-                  <Badge>{ex.label}</Badge>
-                  <span className="text-muted-foreground font-mono text-[10px] tracking-[0.24em] uppercase">
-                    Sample № {String(i + 1).padStart(2, '0')}
+              </FadeIn>
+              <FadeIn delay={0.14}>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button
+                    render={
+                      <AppLink
+                        href="/builder"
+                        transitionTypes={appLinkTransitionTypes.builder}
+                      />
+                    }
+                    size="lg"
+                    className="h-11 rounded-lg px-5 text-[0.95rem]"
+                  >
+                    Open the builder
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    render={<AppLink href="/gallery" />}
+                    className="h-11 rounded-lg px-5 text-[0.95rem]"
+                  >
+                    Explore the gallery
+                  </Button>
+                  <span className="text-muted-foreground ml-1 hidden items-center gap-1.5 font-mono text-[11px] tracking-wide sm:flex">
+                    or press
+                    <kbd className="border-border-strong bg-card rounded-[5px] border px-1.5 py-0.5 text-[10px]">
+                      Ctrl
+                    </kbd>
+                    <kbd className="border-border-strong bg-card rounded-[5px] border px-1.5 py-0.5 text-[10px]">
+                      K
+                    </kbd>
                   </span>
                 </div>
-                <div className="px-5 pt-5">
-                  <h3 className="font-display text-[1.35rem] leading-snug font-medium tracking-tight">
-                    {ex.title}
-                  </h3>
+              </FadeIn>
+              <FadeIn delay={0.18}>
+                <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <span className="text-muted-foreground font-mono text-[10px] tracking-[0.24em] uppercase">
+                    Runs on
+                  </span>
+                  {models.map((m) => (
+                    <span
+                      key={m}
+                      className="text-foreground/80 inline-flex items-center gap-1.5 font-mono text-[12.5px]"
+                    >
+                      <span className="bg-foreground/30 h-1 w-1 rounded-full" />
+                      {m}
+                    </span>
+                  ))}
                 </div>
-                <div className="grid gap-0 px-5 pt-4 pb-5 md:grid-cols-[1fr_auto_1fr] md:items-stretch">
-                  <div className="border-foreground/85 bg-background relative border p-4">
-                    <p className="text-muted-foreground font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
-                      Draft
-                    </p>
-                    <p className="text-foreground/85 mt-2 font-mono text-[12.5px] leading-6">
-                      “{ex.before}”
-                    </p>
+              </FadeIn>
+            </div>
+
+            {/* Right: live instrument panel */}
+            <FadeIn delay={0.12} className="lg:pl-2">
+              <div className="term overflow-hidden">
+                <TerminalChrome label="prompt-expert / optimize" />
+                <div className="px-4 py-4 font-mono text-[12.5px] leading-6 sm:px-5 sm:py-5">
+                  <p className="text-[var(--t-muted)]">
+                    <span className="select-none opacity-50">$ </span>
+                    draft “review this PR and tell me what’s wrong”
+                  </p>
+                  <div className="my-3.5 flex items-center gap-3 text-[var(--t-muted)]">
+                    <span className="h-px flex-1 bg-[var(--t-border)]" />
+                    <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase">
+                      <Sparkles className="h-3 w-3 text-[var(--t-signal)]" />
+                      optimizing
+                    </span>
+                    <span className="h-px flex-1 bg-[var(--t-border)]" />
                   </div>
-                  <div className="flex items-center justify-center px-3 py-3 md:px-2">
-                    <div className="text-foreground/70 rotate-90 font-mono text-xs tracking-[0.24em] uppercase md:rotate-0">
-                      →
+                  <div className="space-y-1.5">
+                    {heroPrompt.map((line, i) => (
+                      <div key={line.label} className="flex gap-3">
+                        <span className="w-4 shrink-0 text-right text-[var(--t-muted)] opacity-40 select-none">
+                          {i + 1}
+                        </span>
+                        <span className="text-[10.5px] font-semibold tracking-[0.1em] text-[var(--t-signal)]">
+                          {line.label}
+                        </span>
+                        <span
+                          className={`text-[var(--t-fg)] ${i === heroPrompt.length - 1 ? 'caret-blink' : ''}`}
+                        >
+                          {line.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Stat strip */}
+          <FadeIn delay={0.2}>
+            <div className="border-border bg-border mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border sm:grid-cols-4">
+              {stats.map((s) => (
+                <div key={s.label} className="bg-background px-5 py-5">
+                  <div className="font-display nums text-3xl leading-none font-semibold tracking-tight">
+                    {s.value}
+                  </div>
+                  <p className="text-muted-foreground mt-2 text-[12.5px] leading-snug">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
+      <section className="mx-auto w-full max-w-6xl px-5 pt-24 sm:px-6">
+        <FadeIn>
+          <Eyebrow>How it works</Eyebrow>
+          <h2 className="font-display mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.02em] text-balance sm:text-[2.6rem] sm:leading-[1.05]">
+            Three moves, one workspace.
+          </h2>
+        </FadeIn>
+        <StaggerGroup className="mt-10 grid gap-4 md:grid-cols-3">
+          {steps.map((step) => (
+            <StaggerItem key={step.n}>
+              <div className="group border-border bg-card hover:border-border-strong relative flex h-full flex-col rounded-2xl border p-6 transition-colors">
+                <div className="flex items-center justify-between">
+                  <span className="border-border bg-background flex h-10 w-10 items-center justify-center rounded-xl border">
+                    <step.icon className="text-foreground h-[18px] w-[18px]" />
+                  </span>
+                  <span className="text-muted-foreground/60 font-mono text-xs tracking-[0.2em]">
+                    {step.n}
+                  </span>
+                </div>
+                <h3 className="font-display mt-5 text-xl font-semibold tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="text-muted-foreground mt-2.5 text-[14px] leading-6">
+                  {step.body}
+                </p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
+      </section>
+
+      {/* ── BEFORE / AFTER DIFF ──────────────────────────────────── */}
+      <section className="mx-auto w-full max-w-6xl px-5 pt-24 sm:px-6">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]">
+          <FadeIn>
+            <Eyebrow>Before / after</Eyebrow>
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-[-0.02em] text-balance sm:text-[2.6rem] sm:leading-[1.05]">
+              Watch a vague ask <br className="hidden sm:block" />
+              become a <span className="signal-underline">spec.</span>
+            </h2>
+            <p className="text-muted-foreground mt-5 max-w-md text-[15px] leading-7">
+              The goal isn’t longer prompts — it’s precise, reusable, testable
+              ones. Prompt Expert turns a one-liner into a structured brief a
+              model can follow every time.
+            </p>
+            <div className="mt-6 space-y-2.5">
+              {[
+                'Roles and constraints made explicit',
+                'Output format defined up front',
+                'Reusable across models and projects',
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2.5 text-sm">
+                  <span className="bg-signal/15 flex h-5 w-5 items-center justify-center rounded-full">
+                    <Check className="text-signal h-3 w-3" />
+                  </span>
+                  <span className="text-foreground/85">{item}</span>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.08}>
+            <div className="term overflow-hidden">
+              <TerminalChrome label="launch-post.prompt · diff" />
+              <div className="px-3 py-4 font-mono text-[12.5px] leading-[1.55] sm:px-4">
+                {diff.map((line, i) => {
+                  if (line.kind === 'gap') {
+                    return <div key={i} className="h-3" />
+                  }
+                  const isDel = line.kind === 'del'
+                  return (
+                    <div
+                      key={i}
+                      className={`flex gap-3 rounded px-2 py-0.5 ${
+                        isDel
+                          ? 'bg-[oklch(0.72_0.13_22/0.1)]'
+                          : 'bg-[oklch(0.86_0.18_130/0.08)]'
+                      }`}
+                    >
+                      <span
+                        className={`w-3 shrink-0 select-none ${
+                          isDel
+                            ? 'text-[var(--t-del)]'
+                            : 'text-[var(--t-add)]'
+                        }`}
+                      >
+                        {isDel ? '−' : '+'}
+                      </span>
+                      <span
+                        className={
+                          isDel
+                            ? 'text-[var(--t-del)] line-through opacity-80'
+                            : line.text.startsWith('##')
+                              ? 'font-semibold text-[var(--t-add)]'
+                              : 'text-[var(--t-fg)]'
+                        }
+                      >
+                        {line.text || ' '}
+                      </span>
                     </div>
-                  </div>
-                  <div className="border-foreground relative border bg-[color-mix(in_oklch,var(--marigold)_14%,var(--background))] p-4 shadow-[var(--shadow-paper-sm)]">
-                    <p className="font-mono text-[10px] font-medium tracking-[0.24em] uppercase">
-                      Revised
-                    </p>
-                    <p className="font-display mt-2 text-[14px] leading-7">
-                      {ex.after}
-                    </p>
-                  </div>
+                  )
+                })}
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── TOOLKIT ──────────────────────────────────────────────── */}
+      <section className="mx-auto w-full max-w-6xl px-5 pt-24 sm:px-6">
+        <FadeIn>
+          <Eyebrow>The toolkit</Eyebrow>
+          <h2 className="font-display mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.02em] text-balance sm:text-[2.6rem] sm:leading-[1.05]">
+            Everything that lives around the prompt.
+          </h2>
+        </FadeIn>
+        <StaggerGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <StaggerItem key={f.title}>
+              <div className="group border-border bg-card hover:border-border-strong flex h-full items-start gap-4 rounded-2xl border p-5 transition-colors">
+                <span className="border-border bg-background flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-colors group-hover:border-[color-mix(in_oklch,var(--signal)_55%,var(--border))]">
+                  <f.icon className="text-foreground h-[18px] w-[18px]" />
+                </span>
+                <div>
+                  <h3 className="text-[15px] font-semibold tracking-tight">
+                    {f.title}
+                  </h3>
+                  <p className="text-muted-foreground mt-1 text-[13.5px] leading-6">
+                    {f.body}
+                  </p>
                 </div>
               </div>
             </StaggerItem>
@@ -307,36 +408,28 @@ export default function HomePage() {
         </StaggerGroup>
       </section>
 
-      {/* ── № 05 — CTA ───────────────────────────────────────────────── */}
-      <section className="page-shell">
+      {/* ── CTA ──────────────────────────────────────────────────── */}
+      <section className="mx-auto w-full max-w-6xl px-5 pt-24 sm:px-6">
         <FadeIn>
-          <div className="paper-edge bg-card relative overflow-hidden px-6 py-12 sm:px-10 sm:py-16">
-            {/* Postcard corner stamp */}
-            <div className="border-foreground bg-background absolute top-5 right-5 hidden h-20 w-16 -rotate-3 flex-col items-center justify-center gap-1 border-2 sm:flex">
-              <Sparkles className="text-foreground h-3.5 w-3.5" />
-              <span className="font-mono text-[8.5px] leading-none tracking-[0.2em] uppercase">
-                Prompt
+          <div className="term relative overflow-hidden px-6 py-14 sm:px-12 sm:py-20">
+            <div
+              aria-hidden
+              className="tech-grid pointer-events-none absolute inset-0 opacity-[0.18]"
+            />
+            <div className="relative max-w-2xl">
+              <span className="inline-flex items-center gap-2.5 font-mono text-[11px] font-medium tracking-[0.3em] text-[var(--t-muted)] uppercase">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--t-signal)]" />
+                Get started
               </span>
-              <span className="font-mono text-[8.5px] leading-none tracking-[0.2em] uppercase">
-                Expert
-              </span>
-              <span className="text-muted-foreground font-mono text-[7.5px] leading-none tracking-[0.18em]">
-                v · 2026
-              </span>
-            </div>
-            <div className="max-w-2xl space-y-5">
-              <ChapterMark label="№ 05 — Get started" />
-              <h2 className="font-display text-4xl font-medium tracking-tight sm:text-5xl">
-                Build with structure now.{' '}
-                <span className="text-muted-foreground block italic">
-                  Refine the rest with the product.
-                </span>
+              <h2 className="font-display mt-5 text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.02] font-semibold tracking-[-0.03em] text-balance text-[var(--t-fg)]">
+                Start building.{' '}
+                <span className="text-[var(--t-signal)]">It’s free.</span>
               </h2>
-              <p className="page-copy">
-                Start free. Save your best prompts. Test the workflow against
-                real work before you scale up.
+              <p className="mt-5 max-w-lg text-[15px] leading-7 text-[var(--t-muted)]">
+                Open the builder, save your best work, and test the workflow
+                against real prompts before you scale. No card, no paywall.
               </p>
-              <div className="flex flex-wrap items-center gap-3 pt-3">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button
                   render={
                     <AppLink
@@ -345,7 +438,7 @@ export default function HomePage() {
                     />
                   }
                   size="lg"
-                  className="rounded-md px-4 py-2.5 text-[0.95rem]"
+                  className="bg-signal h-11 rounded-lg border-transparent px-5 text-[0.95rem] font-semibold text-[oklch(0.2_0.04_140)] shadow-none hover:bg-[oklch(0.84_0.2_128)] hover:text-[oklch(0.2_0.04_140)]"
                 >
                   Open the builder
                   <ArrowRight className="h-4 w-4" />
@@ -354,8 +447,9 @@ export default function HomePage() {
                   variant="outline"
                   size="lg"
                   render={<AppLink href="/gallery" />}
-                  className="rounded-md px-4 py-2.5 text-[0.95rem]"
+                  className="h-11 rounded-lg border-[var(--t-border)] bg-transparent px-5 text-[0.95rem] text-[var(--t-fg)] shadow-none hover:bg-[oklch(1_0_0/0.06)] hover:text-[var(--t-fg)]"
                 >
+                  <FlaskConical className="h-4 w-4" />
                   Browse the gallery
                 </Button>
               </div>
