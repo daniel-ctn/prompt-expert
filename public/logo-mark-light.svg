@@ -1,20 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Prompt Expert">
   <title>Prompt Expert</title>
-  <!-- Cream knockout block (for dark backgrounds) -->
-  <rect width="64" height="64" fill="#F4ECDD"/>
-  <rect x="3" y="3" width="58" height="58" fill="none" stroke="#1B2240" stroke-opacity="0.08" stroke-width="0.75"/>
-  <!-- Prompt caret -->
-  <polyline points="18,18 35,32 18,46" fill="none" stroke="#1B2240" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Marigold cursor block (deeper tone for contrast on cream) -->
-  <rect x="40" y="23" width="7" height="18" fill="#C77F1F"/>
-  <g fill="#1B2240" fill-opacity="0.4">
-    <rect x="4" y="4" width="3" height="1"/>
-    <rect x="4" y="4" width="1" height="3"/>
-    <rect x="57" y="4" width="3" height="1"/>
-    <rect x="59" y="4" width="1" height="3"/>
-    <rect x="4" y="59" width="3" height="1"/>
-    <rect x="4" y="57" width="1" height="3"/>
-    <rect x="57" y="59" width="3" height="1"/>
-    <rect x="59" y="57" width="1" height="3"/>
-  </g>
+  <!-- Light/paper tile variant for light surfaces -->
+  <rect width="64" height="64" rx="14" fill="#FBFCFD"/>
+  <rect x="0.6" y="0.6" width="62.8" height="62.8" rx="13.4" fill="none" stroke="#0E0F12" stroke-opacity="0.08"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#0E0F12"
+        d="M17 14 Q17 13 18 13 L36 13 A12 12 0 0 1 36 37 L26 37 L26 48 Q26 49 25 49 L18 49 Q17 49 17 48 Z M26 20 L35 20 A5 5 0 0 1 35 30 L26 30 Z"/>
+  <!-- deeper lime holds contrast on a light counter -->
+  <rect x="29.5" y="22" width="5" height="6" rx="1.3" fill="#6FB200"/>
 </svg>

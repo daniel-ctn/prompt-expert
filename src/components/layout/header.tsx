@@ -129,9 +129,10 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full px-3 pt-3 sm:px-4">
       <div className="border-foreground bg-card mx-auto flex h-16 max-w-7xl items-center justify-between border px-3 shadow-[var(--shadow-paper-sm)] sm:px-4">
         <AppLink href="/" className="group flex items-center gap-3">
-          <div className="border-foreground bg-foreground text-background flex h-10 w-10 items-center justify-center border shadow-[var(--shadow-paper-sm)] transition-transform group-hover:-translate-y-0.5 group-hover:rotate-[-3deg]">
-            <LogoMark className="h-6 w-6" />
-          </div>
+          <LogoMark
+            animated
+            className="h-10 w-10 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:rotate-[-3deg]"
+          />
           <div className="space-y-0.5">
             <span className="font-display block text-base font-medium tracking-tight">
               {APP_NAME}

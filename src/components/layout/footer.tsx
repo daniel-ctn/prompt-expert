@@ -14,9 +14,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="border-foreground bg-foreground text-background flex h-11 w-11 items-center justify-center border shadow-[var(--shadow-paper-sm)]">
-                <LogoMark className="h-6 w-6" />
-              </div>
+              <LogoMark className="h-11 w-11 shrink-0" />
               <div>
                 <p className="font-display text-lg font-medium">{APP_NAME}</p>
                 <p className="text-muted-foreground font-mono text-[10px] tracking-[0.2em] uppercase">

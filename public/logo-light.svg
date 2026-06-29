@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 64" fill="none" role="img" aria-label="Prompt Expert">
   <title>Prompt Expert</title>
-  <!-- Mark (44px, vertically centered) -->
+  <!-- Mark keeps the dark instrument tile even on light surfaces -->
   <g transform="translate(6 10) scale(0.6875)">
     <rect width="64" height="64" rx="14" fill="#101216"/>
     <rect x="0.6" y="0.6" width="62.8" height="62.8" rx="13.4" fill="none" stroke="#F2F4F5" stroke-opacity="0.07"/>
@@ -8,10 +8,8 @@
           d="M17 14 Q17 13 18 13 L36 13 A12 12 0 0 1 36 37 L26 37 L26 48 Q26 49 25 49 L18 49 Q17 49 17 48 Z M26 20 L35 20 A5 5 0 0 1 35 30 L26 30 Z"/>
     <rect x="29.5" y="22" width="5" height="6" rx="1.3" fill="#B1EF4A"/>
   </g>
-  <!-- Wordmark (Inter, tight) -->
   <text x="64" y="35.5" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
-        font-size="24.5" font-weight="600" letter-spacing="-0.7" fill="#F2F4F5">Prompt Expert</text>
-  <!-- Technical micro-label (Geist Mono register) -->
+        font-size="24.5" font-weight="600" letter-spacing="-0.7" fill="#0E0F12">Prompt Expert</text>
   <text x="65" y="51" font-family="'Geist Mono', ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, monospace"
-        font-size="8" letter-spacing="2.6" fill="#F2F4F5" fill-opacity="0.5">PROMPT · WORKBENCH</text>
+        font-size="8" letter-spacing="2.6" fill="#0E0F12" fill-opacity="0.55">PROMPT · WORKBENCH</text>
 </svg>

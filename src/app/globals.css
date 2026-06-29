@@ -495,15 +495,6 @@
     display: inline-block;
   }
 
-  /* Hand-drawn wavy underline */
-  .hand-underline {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 4 T 60 4 T 90 4 T 120 4' stroke='%23E0A23A' stroke-width='2.2' fill='none' stroke-linecap='round'/></svg>");
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 100% 0.5em;
-    padding-bottom: 0.18em;
-  }
-
   /* Marker-style highlight behind text */
   .marker-highlight {
     background-image: linear-gradient(
@@ -1048,6 +1039,41 @@
 
 @media (prefers-reduced-motion: reduce) {
   .caret-blink::after {
+    animation: none !important;
+  }
+}
+
+/* Logo mark — single calm "cursor settle" on mount, then rest solid. */
+.logo-cursor {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logo-cursor-settle 1.8s var(--ease-standard) 0.25s 1 both;
+}
+@keyframes logo-cursor-settle {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  62% {
+    opacity: 1;
+  }
+  74% {
+    opacity: 0.16;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-cursor {
     animation: none !important;
   }
 }
